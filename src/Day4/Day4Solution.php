@@ -2,9 +2,10 @@
 
 namespace Jean85\AdventOfCode\Day4;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day4Solution implements SolutionInterface
+class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     private const INPUT = [
         ['nyot', 'babgr', 'babgr', 'kqtu', 'kqtu', 'kzshonp', 'ylyk', 'psqk'],
@@ -38,7 +39,19 @@ class Day4Solution implements SolutionInterface
         ['eznxd', 'kgbfy', 'jqyc', 'net', 'vzfege', 'tprzyc'],
         ['mqnapzn', 'vrgw', 'ilzp', 'vgw'],
         ['aie', 'zkkih', 'fhpwu', 'bbn', 'fhpwu', 'wvxxgmd'],
-        ['ksoasrn', 'yll', 'mvdjxdo', 'wydymx', 'dmodvjx', 'drnjlm', 'tcjpjhj', 'xzakb', 'wrsbuwl', 'vaygdwf', 'rsasonk'],
+        [
+            'ksoasrn',
+            'yll',
+            'mvdjxdo',
+            'wydymx',
+            'dmodvjx',
+            'drnjlm',
+            'tcjpjhj',
+            'xzakb',
+            'wrsbuwl',
+            'vaygdwf',
+            'rsasonk',
+        ],
         ['qahbh', 'tfhkl', 'apdqqpm', 'tfhkl', 'nsox'],
         ['xkelwve', 'mvdmesj', 'xrto', 'tgku', 'gkb', 'bpe'],
         ['nni', 'nyylpu', 'cyusxe', 'zydeyok', 'yokzdye', 'xiscesy'],
@@ -101,7 +114,19 @@ class Day4Solution implements SolutionInterface
         ['tcrimv', 'xye', 'twii', 'xye', 'twii', 'tad'],
         ['mtxcg', 'lwjxdj', 'zjudqu', 'ekoujd', 'ysf', 'ajtfta', 'dkj', 'lwjxdj'],
         ['aowhmvv', 'kkic', 'kjize', 'fnohl', 'ukx', 'remfmii', 'usbp'],
-        ['wkossu', 'limxmhp', 'xnoeocb', 'wkossu', 'lnrlqf', 'kjozfg', 'xeulstx', 'sjncsw', 'ekaimuv', 'xnoeocb', 'sxjegcg'],
+        [
+            'wkossu',
+            'limxmhp',
+            'xnoeocb',
+            'wkossu',
+            'lnrlqf',
+            'kjozfg',
+            'xeulstx',
+            'sjncsw',
+            'ekaimuv',
+            'xnoeocb',
+            'sxjegcg',
+        ],
         ['lsfe', 'zpewzlc', 'yhjyiay', 'lou', 'ukhi', 'lpwezzc', 'slef', 'zvtidgg', 'kdeseq', 'enka', 'tfvgudr'],
         ['ovfsa', 'vuv', 'tbtorv', 'tbtorv', 'gmxn', 'opspw', 'lli', 'mfzvkv', 'zlyhr', 'oznalr'],
         ['kugrpw', 'sduq', 'rdc', 'ciaxwir', 'ylnzwec', 'kugrpw', 'sduq'],
@@ -545,6 +570,19 @@ class Day4Solution implements SolutionInterface
         return $count;
     }
 
+    public function solveSecondPart()
+    {
+        $count = 0;
+
+        foreach ($this->input as $passPhrase) {
+            if ($this->isValidWithPermutation($passPhrase)) {
+                ++$count;
+            }
+        }
+
+        return $count;
+    }
+
     public function isValid(array $passPhrase): bool
     {
         do {
@@ -555,5 +593,23 @@ class Day4Solution implements SolutionInterface
         } while (\count($passPhrase) > 1);
 
         return true;
+    }
+
+    public function isValidWithPermutation(array $passPhrase): bool
+    {
+        return $this->isValid($this->sortPermutations($passPhrase));
+    }
+
+    private function sortPermutations(array $passPhrase)
+    {
+        $permutatedPassPhrase = [];
+
+        foreach ($passPhrase as $word) {
+            $exploded = str_split($word);
+            sort($exploded);
+            $permutatedPassPhrase[] = $exploded;
+        }
+
+        return $permutatedPassPhrase;
     }
 }

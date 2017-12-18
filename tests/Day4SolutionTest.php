@@ -21,4 +21,21 @@ class Day4SolutionTest extends TestCase
         yield ['aa bb cc dd aa', false];
         yield ['aa bb cc dd aaa', true];
     }
+
+    /**
+     * @dataProvider passPhraseWithPermutationsProvider
+     */
+    public function testIsValidWithPermutations(string $passPhrase, bool $isValid)
+    {
+        $this->assertSame($isValid, (new Day4Solution([]))->isValidWithPermutation(explode(' ', $passPhrase)));
+    }
+
+    public function passPhraseWithPermutationsProvider()
+    {
+        yield ['abcde fghij', true];
+        yield ['abcde xyz ecdab', false];
+        yield ['a ab abc abd abf abj', true];
+        yield ['iiii oiii ooii oooi oooo', true];
+        yield ['oiii ioii iioi iiio', false];
+    }
 }
