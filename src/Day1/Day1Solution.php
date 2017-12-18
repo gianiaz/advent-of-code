@@ -22,7 +22,7 @@ class Day1Solution implements SolutionInterface
 
     public function solve()
     {
-        // TODO: Implement solve() method.
+        return array_sum($this->getMatchingNumbers());
     }
 
     /**
@@ -30,6 +30,20 @@ class Day1Solution implements SolutionInterface
      */
     public function getMatchingNumbers(): array
     {
-        // todo
+        $singleNumbers = [];
+
+        foreach (str_split($this->input) as $char) {
+            $singleNumbers[] = (int) $char;
+        }
+
+        $matching = [];
+        foreach ($singleNumbers as $position => $number) {
+            $nextPosition = ($position + 1) % \count($singleNumbers);
+            if ($number === $singleNumbers[$nextPosition]) {
+                $matching[] = $number;
+            }
+        }
+
+        return $matching;
     }
 }

@@ -14,8 +14,10 @@ $config->setUsingCache(false);
 $config->setRiskyAllowed(false);
 
 $finder = PhpCsFixer\Finder::create();
-$finder->in(array (
-));
+$finder->in([
+    'src',
+    'tests'
+]);
 
 $config->setFinder($finder);
 

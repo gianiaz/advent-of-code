@@ -16,15 +16,15 @@ class Day1SolutionTest extends TestCase
     public function testSolution(string $input, array $expectedNumbers, int $expectedSum)
     {
         $solution = new Day1Solution($input);
-        
-        $this->markTestIncomplete();
 
+        $this->assertSame($expectedNumbers, $solution->getMatchingNumbers());
+        $this->assertSame($expectedSum, $solution->solve());
     }
 
     public function dataProvider()
     {
         yield ['1122', [1, 2], 3];
-        yield ['1111', [1, 2], 3];
+        yield ['1111', [1, 1, 1, 1], 4];
         yield ['1234', [], 0];
         yield ['91212129', [9], 9];
     }
