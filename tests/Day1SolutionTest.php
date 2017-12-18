@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Day1;
+namespace Tests;
 
 use Jean85\AdventOfCode\Day1\Day1Solution;
 use PHPUnit\Framework\TestCase;
