@@ -347,11 +347,11 @@
                     "PhpCsFixer\\": "src/"
                 },
                 "classmap": [
-                    "tests/Test/Assert/AssertTokensTrait.php",
-                    "tests/Test/AbstractFixerTestCase.php",
-                    "tests/Test/AbstractIntegrationTestCase.php",
-                    "tests/Test/IntegrationCase.php",
-                    "tests/Test/IntegrationCaseFactory.php"
+                    "tests/Day1SolutionTest/Assert/AssertTokensTrait.php",
+                    "tests/Day1SolutionTest/AbstractFixerTestCase.php",
+                    "tests/Day1SolutionTest/AbstractIntegrationTestCase.php",
+                    "tests/Day1SolutionTest/IntegrationCase.php",
+                    "tests/Day1SolutionTest/IntegrationCaseFactory.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
