@@ -19,4 +19,17 @@ class Day2SolutionTest extends TestCase
         $this->assertSame([8, 4, 6], $solution->getRowDifferences());
         $this->assertSame(18, $solution->solve());
     }
+
+    public function testPartTwo()
+    {
+        $input = [
+            [5, 9, 2, 8],
+            [9, 4, 7, 3],
+            [3, 8, 6, 5],
+        ];
+        $solution = new Day2Solution($input);
+
+        $this->assertSame([4, 3, 2], $solution->getRowDifferencesPartTwo());
+        $this->assertSame(9, $solution->solveSecondPart());
+    }
 }

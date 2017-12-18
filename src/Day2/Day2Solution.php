@@ -2,9 +2,10 @@
 
 namespace Jean85\AdventOfCode\Day2;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day2Solution implements SolutionInterface
+class Day2Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     private const INPUT = [
         [3093, 749, 3469, 142, 2049, 3537, 1596, 3035, 2424, 3982, 3290, 125, 249, 131, 118, 3138],
@@ -42,6 +43,11 @@ class Day2Solution implements SolutionInterface
         return array_sum($this->getRowDifferences());
     }
 
+    public function solveSecondPart()
+    {
+        return array_sum($this->getRowDifferencesPartTwo());
+    }
+
     /**
      * @return int[]
      */
@@ -58,5 +64,37 @@ class Day2Solution implements SolutionInterface
     private function calcRowDiffs(array $row): int
     {
         return max($row) - min($row);
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getRowDifferencesPartTwo(): array
+    {
+        $diffs = [];
+        foreach ($this->input as $row) {
+            $diffs[] = $this->calcRowDiffsPartTwo($row);
+        }
+
+        return $diffs;
+    }
+
+    private function calcRowDiffsPartTwo(array $row): int
+    {
+        sort($row, SORT_DESC);
+        $rowSize = \count($row);
+
+        foreach ($row as $position => $value) {
+            for ($i = $position + 1; $i < $rowSize; ++$i) {
+                $max = max($value, $row[$i]);
+                $min = min($value, $row[$i]);
+
+                if ($max % $min === 0) {
+                    return $max / $min;
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException('Couple not found!');
     }
 }
