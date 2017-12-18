@@ -13,7 +13,20 @@
             "email": "alessandro.lai85@gmail.com"
         }
     ],
-    "require": [],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Jean85\\AdventOfCode\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
     "scripts": {
         "cs-check": "php-cs-fixer fix --dry-run --diff",
         "cs-fix": "php-cs-fixer fix --diff"
