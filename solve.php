@@ -21,6 +21,9 @@ echo 'Solution for day ' . $day . PHP_EOL . PHP_EOL;
 
 print_r($solution->solve());
 
+echo PHP_EOL;
+echo PHP_EOL;
+
 if ($solution instanceof SecondPartSolutionInterface) {
     echo 'Second part of the solution for day ' . $day . PHP_EOL . PHP_EOL;
 
