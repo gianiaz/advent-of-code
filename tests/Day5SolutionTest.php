@@ -22,4 +22,11 @@ class Day5SolutionTest extends TestCase
         $this->assertSame(10, $solution->solveSecondPart());
         $this->assertSame([2, 3, 2, 3, -1], $solution->getInput());
     }
+
+    public function testSolveSecondPartWithTheRealInput()
+    {
+        $solution = new Day5Solution();
+
+        $this->assertSame(27688760, $solution->solveSecondPart());
+    }
 }

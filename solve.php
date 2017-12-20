@@ -1,6 +1,7 @@
 <?php
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
+use Jean85\AdventOfCode\SolutionInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -15,11 +16,12 @@ if (! class_exists($className)) {
     throw new \InvalidArgumentException('Missing solution class: ' . $className);
 }
 
+/** @var SolutionInterface $solution */
 $solution = new $className();
 
 echo 'Solution for day ' . $day . PHP_EOL . PHP_EOL;
 
-print_r($solution->solve());
+echo $solution->solve();
 
 echo PHP_EOL;
 echo PHP_EOL;
@@ -27,7 +29,7 @@ echo PHP_EOL;
 if ($solution instanceof SecondPartSolutionInterface) {
     echo 'Second part of the solution for day ' . $day . PHP_EOL . PHP_EOL;
 
-    print_r($solution->solveSecondPart());
+    echo $solution->solveSecondPart();
 }
 
 echo PHP_EOL;
