@@ -19,7 +19,7 @@ class Tower
      * @param int $weight
      * @param string[] $supports
      */
-    public function __construct(string $name, int $weight, array $supports)
+    public function __construct(string $name, int $weight, array $supports = [])
     {
         $this->name = $name;
         $this->weight = $weight;

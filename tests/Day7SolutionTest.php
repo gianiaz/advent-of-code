@@ -12,17 +12,6 @@ class Day7SolutionTest extends TestCase
     {
         $solution = new Day7Solution($this->getTestInput());
 
-        $reversedList = $solution->getReverseTowerList();
-        $this->assertCount(13, $reversedList);
-
-        $filteredReversedList = [];
-        foreach ($reversedList as $towerName => $supportedBy) {
-            if ($supportedBy === []) {
-                $filteredReversedList[] = $towerName;
-            }
-        }
-
-        $this->assertSame(['tknk'], $filteredReversedList);
         $this->assertSame('tknk', $solution->solve());
     }
 
