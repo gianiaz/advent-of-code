@@ -52,21 +52,16 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
     public function solveSecondPart()
     {
         $unbalancedSupportingTower = $this->getUnbalancedTower();
-        $unbalancedWeights = [];
-        foreach ($unbalancedSupportingTower->getSupports() as $supportedTowerName) {
-            $unbalancedWeights[$supportedTowerName] = $this->getTowerWeight($this->getTowerByName($supportedTowerName));
-        }
+        $unbalancedWeights = $this->getSupportedWeights($unbalancedSupportingTower);
         $min = min($unbalancedWeights);
         $max = max($unbalancedWeights);
-        
         $unbalancedTower = $this->findWrongWeight($unbalancedWeights);
-        
+
         $weightDiff = $max - $min;
-        
         if ($unbalancedTower->getWeight() === $min) {
             return $unbalancedTower->getWeight() + $weightDiff;
         }
-        
+
         return $unbalancedTower->getWeight() - $weightDiff;
     }
 
@@ -78,7 +73,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $min = min($unbalanced);
         $max = max($unbalanced);
-        
 
         foreach ([$min, $max] as $weight) {
             $count = 0;
@@ -87,10 +81,10 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
             foreach ($unbalanced as $towerName => $item) {
                 if ($item === $weight) {
                     $unbalancedTowerName = $towerName;
-                    $count++;
+                    ++$count;
                 }
             }
-            
+
             if ($count === 1) {
                 return $this->getTowerByName($unbalancedTowerName);
             }
@@ -99,21 +93,31 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function getUnbalancedTower(): Tower
     {
-        foreach ($this->input as $tower) {
-            $weights = [];
-            foreach ($tower->getSupports() as $supportedTowerName) {
-                $supportedTower = $this->getTowerByName($supportedTowerName);
-                $weights[$supportedTowerName] = $this->getTowerWeight($supportedTower);
-            }
+        $tower = $this->getTowerByName($this->solve());
 
-            if (empty($weights)) {
-                continue;
-            }
+        if ($this->isUnbalanced($tower)) {
+            return $tower;
+        }
 
-            if (min($weights) !== max($weights)) {
-                return $tower;
+        foreach ($tower->getSupports() as $supportedName) {
+            $childTower = $this->getTowerByName($supportedName);
+            if ($this->isUnbalanced($childTower)) {
+                return $childTower;
             }
         }
+
+        throw new \RuntimeException('Unbalanced tower not found!');
+    }
+
+    private function isUnbalanced(Tower $tower)
+    {
+        $supportedWeights = $this->getSupportedWeights($tower);
+
+        if (empty($supportedWeights)) {
+            return false;
+        }
+
+        return min($supportedWeights) !== max($supportedWeights);
     }
 
     /**
@@ -1437,5 +1441,19 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
     public function getTowerByName($supportedTowerName): Tower
     {
         return $this->input[$supportedTowerName];
+    }
+
+    /**
+     * @param Tower $tower
+     * @return int[]
+     */
+    private function getSupportedWeights(Tower $tower): array
+    {
+        $unbalancedWeights = [];
+        foreach ($tower->getSupports() as $supportedTowerName) {
+            $unbalancedWeights[$supportedTowerName] = $this->getTowerWeight($this->getTowerByName($supportedTowerName));
+        }
+
+        return $unbalancedWeights;
     }
 }
