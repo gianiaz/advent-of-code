@@ -8,8 +8,11 @@
          bootstrap="vendor/autoload.php"
 >
     <testsuites>
-        <testsuite name="tests">
-            <directory>tests/</directory>
+        <testsuite name="2017">
+            <directory>tests/Xmas2017</directory>
+        </testsuite>
+        <testsuite name="2018">
+            <directory>tests/Xmas2018</directory>
         </testsuite>
     </testsuites>
 
