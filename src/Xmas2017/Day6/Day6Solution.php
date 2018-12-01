@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2017\Day6;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
@@ -19,6 +21,7 @@ class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day4Solution constructor.
+     *
      * @param $input
      */
     public function __construct(array $input = self::INPUT)

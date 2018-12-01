@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2017\Day7;
 
 class Tower
@@ -15,8 +17,7 @@ class Tower
 
     /**
      * Tower constructor.
-     * @param string $name
-     * @param int $weight
+     *
      * @param string[] $supports
      */
     public function __construct(string $name, int $weight, array $supports = [])
@@ -26,17 +27,11 @@ class Tower
         $this->supports = $supports;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return int
-     */
     public function getWeight(): int
     {
         return $this->weight;

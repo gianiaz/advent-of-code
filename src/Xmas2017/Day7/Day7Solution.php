@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2017\Day7;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
@@ -15,6 +17,7 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day4Solution constructor.
+     *
      * @param Tower[] $input
      */
     public function __construct(array $input = null)
@@ -67,7 +70,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * @param int[] $unbalanced
-     * @return Tower
      */
     private function findWrongWeight(array $unbalanced): Tower
     {
@@ -1436,7 +1438,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * @param $supportedTowerName
-     * @return Tower
      */
     public function getTowerByName($supportedTowerName): Tower
     {
@@ -1444,7 +1445,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
     }
 
     /**
-     * @param Tower $tower
      * @return int[]
      */
     private function getSupportedWeights(Tower $tower): array

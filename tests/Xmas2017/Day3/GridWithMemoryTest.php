@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Xmas2017\Day3;
 
 use Jean85\AdventOfCode\Xmas2017\Day3\GridWithMemory;

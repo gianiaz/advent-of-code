@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Xmas2017;
 
 use Jean85\AdventOfCode\Xmas2017\Day1\Day1Solution;
@@ -9,9 +11,6 @@ class Day1SolutionTest extends TestCase
 {
     /**
      * @dataProvider dataProvider
-     * @param string $input
-     * @param array $expectedNumbers
-     * @param int $expectedSum
      */
     public function testSolution(string $input, array $expectedNumbers, int $expectedSum)
     {
@@ -31,9 +30,8 @@ class Day1SolutionTest extends TestCase
 
     /**
      * @dataProvider dataProviderPartTwo
-     * @param string $input
+     *
      * @param array $expectedNumbers
-     * @param int $expectedSum
      */
     public function testPartTwo(string $input, ?array $expectedNumbers, int $expectedSum)
     {

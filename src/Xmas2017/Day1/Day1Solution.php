@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2017\Day1;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
@@ -15,6 +17,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day1Solution constructor.
+     *
      * @param $input
      */
     public function __construct(string $input = self::INPUT)
@@ -71,7 +74,6 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * @param $position
-     * @return int
      */
     private function getMatchingPosition($position): int
     {
@@ -80,7 +82,6 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * @param $position
-     * @return int
      */
     private function getMatchingPositionForSecondPart($position): int
     {
