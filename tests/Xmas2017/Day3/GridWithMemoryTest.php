@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Day3;
+namespace Tests\Xmas2017\Day3;
 
-use Jean85\AdventOfCode\Day3\GridWithMemory;
+use Jean85\AdventOfCode\Xmas2017\Day3\GridWithMemory;
 use PHPUnit\Framework\TestCase;
 
 class GridWithMemoryTest extends TestCase

@@ -11,7 +11,13 @@ if (! is_int($day)) {
     throw new \InvalidArgumentException('Invalid day: ' . $day);
 }
 
-$className = \sprintf('\Jean85\AdventOfCode\Day%s\Day%sSolution', $day, $day);
+$year = (int) $argv[2];
+
+if (! is_int($year) || $year < 2010) {
+    $year = (int)(new \DateTime('-11 months'))->format('Y');
+}
+
+$className = \sprintf('\Jean85\AdventOfCode\Xmas%d\Day%d\Day%dSolution', $year, $day, $day);
 if (! class_exists($className)) {
     throw new \InvalidArgumentException('Missing solution class: ' . $className);
 }

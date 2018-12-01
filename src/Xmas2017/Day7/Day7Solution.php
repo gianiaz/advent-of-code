@@ -1,6 +1,6 @@
 <?php
 
-namespace Jean85\AdventOfCode\Day7;
+namespace Jean85\AdventOfCode\Xmas2017\Day7;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;

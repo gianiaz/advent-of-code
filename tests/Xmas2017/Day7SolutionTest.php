@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests;
+namespace Tests\Xmas2017;
 
-use Jean85\AdventOfCode\Day7\Day7Solution;
-use Jean85\AdventOfCode\Day7\Tower;
+use Jean85\AdventOfCode\Xmas2017\Day7\Day7Solution;
+use Jean85\AdventOfCode\Xmas2017\Day7\Tower;
 use PHPUnit\Framework\TestCase;
 
 class Day7SolutionTest extends TestCase
