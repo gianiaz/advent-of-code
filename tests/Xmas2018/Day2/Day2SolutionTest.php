@@ -15,4 +15,11 @@ class Day2SolutionTest extends TestCase
 
         $this->assertSame(12, $solution->solve());
     }
+
+    public function testSolveSecondPart(): void
+    {
+        $solution = new Day2Solution('abcde fghij klmno pqrst fguij axcye wvxyz');
+
+        $this->assertSame('fghij' . PHP_EOL . 'fguij', $solution->solveSecondPart());
+    }
 }

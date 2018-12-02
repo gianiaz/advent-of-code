@@ -31,4 +31,24 @@ class BoxIdTest extends TestCase
             ['ababab', false, true],
         ];
     }
+
+    /**
+     * @dataProvider isSimilarDataProvider
+     */
+    public function testIsSimilarTo(string $firstId, string $secondId, bool $isSimilar): void
+    {
+        $boxId1 = new BoxId($firstId);
+        $boxId2 = new BoxId($secondId);
+
+        $this->assertSame($isSimilar, $boxId1->isSimilarTo($boxId2));
+    }
+
+    public function isSimilarDataProvider()
+    {
+        return [
+            ['abcde', 'axcye', false],
+            ['fghij', 'fguij', true],
+            ['dghfbsyizizumkjlxevacpxqtr', 'ighfbsyizxoumkjlxevacpzqtr', false],
+        ];
+    }
 }
