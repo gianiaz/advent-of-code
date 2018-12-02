@@ -11,9 +11,10 @@ if (! is_int($day)) {
     throw new \InvalidArgumentException('Invalid day: ' . $day);
 }
 
-$year = (int) $argv[2];
 
-if (! is_int($year) || $year < 2010) {
+if (array_key_exists(2, $argv)) {
+    $year = (int) $argv[2];
+} else {
     $year = (int)(new \DateTime('-11 months'))->format('Y');
 }
 
