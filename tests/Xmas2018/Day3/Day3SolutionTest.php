@@ -14,13 +14,28 @@ class Day3SolutionTest extends TestCase
     public function testSolve(): void
     {
         $fabric = new Fabric(8, 8);
-        $claims = [
+        $solution = new Day3Solution($fabric, $this->getExampleClaims());
+
+        $this->assertSame(4, $solution->solve());
+    }
+
+    public function testSolveSecondPart(): void
+    {
+        $fabric = new Fabric(8, 8);
+        $solution = new Day3Solution($fabric, $this->getExampleClaims());
+
+        $this->assertSame('3', $solution->solveSecondPart());
+    }
+
+    /**
+     * @return Claim[]
+     */
+    private function getExampleClaims(): array
+    {
+        return [
             new Claim('1', 1, 3, 4, 4),
             new Claim('2', 3, 1, 4, 4),
             new Claim('3', 5, 5, 2, 2),
         ];
-        $solution = new Day3Solution($fabric, $claims);
-
-        $this->assertSame(4, $solution->solve());
     }
 }

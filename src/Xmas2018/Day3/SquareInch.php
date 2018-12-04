@@ -14,6 +14,14 @@ class SquareInch
         $this->claims[] = $claim;
     }
 
+    /**
+     * @return Claim[]
+     */
+    public function getClaims(): array
+    {
+        return $this->claims;
+    }
+
     public function getClaimCount(): int
     {
         return \count($this->claims);
