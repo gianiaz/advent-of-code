@@ -91,7 +91,7 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function findMostSleptMinuteByGuard(int $selectedGuard): int
     {
-        $sleptMinutes = $this->getSleepPatternByGuard($selectedGuard)[$selectedGuard];
+        $sleptMinutes = $this->getSleepPatternByGuard()[$selectedGuard];
 
         return (int) \array_search(\max($sleptMinutes), $sleptMinutes, true);
     }
