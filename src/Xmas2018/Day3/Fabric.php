@@ -50,6 +50,18 @@ class Fabric
         return $this->fabric[$left][$top];
     }
 
+    /**
+     * @return \Generator|SquareInch[]
+     */
+    public function iterate(): \Generator
+    {
+        foreach (range(0, $this->height - 1) as $top) {
+            foreach (range(0, $this->width - 1) as $left) {
+                yield $this->getSquareInch($left, $top);
+            }
+        }
+    }
+
     public function toStringArray(): string
     {
         $stringArray = '';
