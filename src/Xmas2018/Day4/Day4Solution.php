@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day4;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day4Solution implements SolutionInterface
+class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     /** @var AbstractTimestamp[] */
     private $timestamps;
@@ -25,6 +26,24 @@ class Day4Solution implements SolutionInterface
         $guardIdThatSleptMostMinutes = $this->getGuardIdThatSleptMostMinutes();
 
         return $guardIdThatSleptMostMinutes * $this->findMostSleptMinuteByGuard($guardIdThatSleptMostMinutes);
+    }
+
+    public function solveSecondPart()
+    {
+        $sleepPatterns = $this->getSleepPatternByGuard();
+        $max = 0;
+        $maxGuardId = null;
+
+        foreach ($sleepPatterns as $guardId => $sleptMinutes) {
+            $maxForGuard = \max($sleptMinutes);
+
+            if ($maxForGuard > $max) {
+                $max = $maxForGuard;
+                $maxGuardId = $guardId;
+            }
+        }
+
+        return $maxGuardId * \array_search($max, $sleepPatterns[$maxGuardId], true);
     }
 
     private function createSortedTimestamps(string $input): \Generator
@@ -72,6 +91,13 @@ class Day4Solution implements SolutionInterface
 
     public function findMostSleptMinuteByGuard(int $selectedGuard): int
     {
+        $sleptMinutes = $this->getSleepPatternByGuard($selectedGuard)[$selectedGuard];
+
+        return (int) \array_search(\max($sleptMinutes), $sleptMinutes, true);
+    }
+
+    private function getSleepPatternByGuard(): array
+    {
         $sleptMinutes = [];
         $currentGuard = null;
         $fallenAsleep = null;
@@ -81,10 +107,6 @@ class Day4Solution implements SolutionInterface
                 $currentGuard = $timestamp->getGuardId();
                 $fallenAsleep = null;
 
-                continue;
-            }
-
-            if ($currentGuard !== $selectedGuard) {
                 continue;
             }
 
@@ -100,11 +122,15 @@ class Day4Solution implements SolutionInterface
                 }
 
                 foreach (range($fallenAsleep->getMinutes(), $timestamp->getMinutes() - 1) as $minute) {
-                    if (! array_key_exists($minute, $sleptMinutes)) {
-                        $sleptMinutes[$minute] = 0;
+                    if (! array_key_exists($currentGuard, $sleptMinutes)) {
+                        $sleptMinutes[$currentGuard] = [];
                     }
 
-                    ++$sleptMinutes[$minute];
+                    if (! array_key_exists($minute, $sleptMinutes[$currentGuard])) {
+                        $sleptMinutes[$currentGuard][$minute] = 0;
+                    }
+
+                    ++$sleptMinutes[$currentGuard][$minute];
                 }
 
                 $fallenAsleep = null;
@@ -113,7 +139,7 @@ class Day4Solution implements SolutionInterface
             }
         }
 
-        return (int) \array_search(\max($sleptMinutes), $sleptMinutes, true);
+        return $sleptMinutes;
     }
 
     private function defaultInput(): string

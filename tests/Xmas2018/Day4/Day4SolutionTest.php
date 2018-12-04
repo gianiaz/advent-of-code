@@ -39,6 +39,16 @@ class Day4SolutionTest extends TestCase
         $this->assertSame(240, $solution->solve());
     }
 
+    /**
+     * @dataProvider inputDataProvider
+     */
+    public function testSolveSecondPart(string $input): void
+    {
+        $solution = new Day4Solution($input);
+
+        $this->assertSame(4455, $solution->solveSecondPart());
+    }
+
     public function inputDataProvider()
     {
         return [[
