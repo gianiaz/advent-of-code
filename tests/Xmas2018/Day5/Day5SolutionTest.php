@@ -48,6 +48,10 @@ class Day5SolutionTest extends TestCase
             ['abAB', 'abAB'],
             ['aabAAB', 'aabAAB'],
             ['dabAcCaCBAcCcaDA', 'dabCBAcaDA'],
+            ['dbcCCBcCcD', 'dbCBcD'],
+            ['daAcCaCAcCcaDA', 'daCAcaDA'],
+            ['dabAaBAaDA', 'daDA'],
+            ['abAcCaCBAcCcaA', 'abCBAc'],
         ];
     }
 
@@ -56,5 +60,19 @@ class Day5SolutionTest extends TestCase
         $solution = new Day5Solution('dabAcCaCBAcCcaDA');
 
         $this->assertSame(\strlen('dabCBAcaDA'), $solution->solve());
+    }
+
+    public function testSolveForReal(): void
+    {
+        $solution = new Day5Solution();
+
+        $this->assertSame(9202, $solution->solve());
+    }
+
+    public function testSolveSecondPart(): void
+    {
+        $solution = new Day5Solution('dabAcCaCBAcCcaDA');
+
+        $this->assertSame(4, $solution->solveSecondPart());
     }
 }
