@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day6;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day6Solution implements SolutionInterface
+class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     /** @var Point[] */
     private $points;
@@ -14,12 +15,15 @@ class Day6Solution implements SolutionInterface
     /** @var Grid */
     private $grid;
 
+    /** @var int */
+    private $maximumSumDistance;
+
     /**
      * Day6Solution constructor.
      *
      * @param Point[] $points
      */
-    public function __construct(array $points = null)
+    public function __construct(array $points = null, int $maximumSumDistance = 10000)
     {
         $this->points = $points ?? $this->getInput();
 
@@ -35,6 +39,7 @@ class Day6Solution implements SolutionInterface
         }
 
         $this->grid = new Grid($maxWidth + 1, $maxHeight + 1);
+        $this->maximumSumDistance = $maximumSumDistance;
     }
 
     public function solve()
@@ -43,6 +48,22 @@ class Day6Solution implements SolutionInterface
         $areaCounts = $this->excludeInfiniteAreas($this->grid->getCounts());
 
         return $areaCounts[\count($areaCounts) - 1];
+    }
+
+    public function solveSecondPart()
+    {
+        $this->populateGridWithSums();
+
+        $validCells = 0;
+        foreach (range(0, $this->grid->getWidth() - 1) as $x) {
+            foreach (range(0, $this->grid->getHeight() - 1) as $y) {
+                if ($this->grid->get($x, $y) < $this->maximumSumDistance) {
+                    ++$validCells;
+                }
+            }
+        }
+
+        return $validCells;
     }
 
     private function getNearest(int $x, int $y): string
@@ -76,6 +97,27 @@ class Day6Solution implements SolutionInterface
                 $this->grid->set($this->getNearest($x, $y), $x, $y);
             }
         }
+    }
+
+    private function populateGridWithSums()
+    {
+        foreach (range(0, $this->grid->getWidth() - 1) as $x) {
+            foreach (range(0, $this->grid->getHeight() - 1) as $y) {
+                $this->grid->set($this->getDistanceSum($x, $y), $x, $y);
+            }
+        }
+    }
+
+    private function getDistanceSum(int $x, int $y): int
+    {
+        $sumDistance = 0;
+        $currentPoint = new Point($x, $y);
+
+        foreach ($this->points as $name => $point) {
+            $sumDistance += $currentPoint->getDistance($point);
+        }
+
+        return $sumDistance;
     }
 
     private function excludeInfiniteAreas(array $counts): array

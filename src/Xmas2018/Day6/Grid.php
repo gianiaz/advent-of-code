@@ -6,10 +6,12 @@ namespace Jean85\AdventOfCode\Xmas2018\Day6;
 
 class Grid
 {
-    /** @var string[][] */
+    /** @var (string|int)[][] */
     private $grid;
+
     /** @var int */
     private $width;
+
     /** @var int */
     private $height;
 
@@ -30,12 +32,15 @@ class Grid
         $this->height = $height;
     }
 
-    public function get(int $x, int $y): string
+    /**
+     * @return string|int
+     */
+    public function get(int $x, int $y)
     {
         return $this->grid[$y][$x];
     }
 
-    public function set(string $val, int $x, int $y)
+    public function set($val, int $x, int $y)
     {
         if (! isset($this->grid[$y][$x])) {
             echo PHP_EOL;

@@ -12,6 +12,20 @@ class Day6SolutionTest extends TestCase
 {
     public function testSolve(): void
     {
+        $solution = new Day6Solution($this->getInput());
+
+        $this->assertSame(17, $solution->solve());
+    }
+
+    public function testSolveSecondPart(): void
+    {
+        $solution = new Day6Solution($this->getInput(), 32);
+
+        $this->assertSame(16, $solution->solveSecondPart());
+    }
+
+    private function getInput(): array
+    {
         $input = [
             new Point(1, 1),
             new Point(1, 6),
@@ -20,8 +34,7 @@ class Day6SolutionTest extends TestCase
             new Point(5, 5),
             new Point(8, 9),
         ];
-        $solution = new Day6Solution($input);
 
-        $this->assertSame(17, $solution->solve());
+        return $input;
     }
 }
