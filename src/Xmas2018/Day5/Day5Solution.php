@@ -28,11 +28,11 @@ class Day5Solution implements SolutionInterface
         return \strlen($this->reducePolymer($this->input));
     }
 
-    public function reducePolymer(string $polymer, int $startFrom = 0): string
+    public function reducePolymer(string $polymer): string
     {
-        for ($i = $startFrom; $i < \strlen($polymer) - 1; ++$i) {
-            if ($this->canReact($polymer, $i)) {
-                $polymer = substr($polymer, 0, $i) . substr($polymer, $i + 2);
+        for ($i = 0; $i < \strlen($polymer) - 1; ++$i) {
+            if ($this->canReduceAt($polymer, $i)) {
+                $polymer = $this->reduceAt($polymer, $i);
                 $i = max(0, $i - 2);
             }
         }
@@ -44,19 +44,24 @@ class Day5Solution implements SolutionInterface
     {
         $max = \strlen($polymer) - 1;
         for ($i = $startFrom; $i < $max; ++$i) {
-            if ($this->canReact($polymer, $i)) {
-                return substr($polymer, 0, $i) . substr($polymer, $i + 2);
+            if ($this->canReduceAt($polymer, $i)) {
+                return $this->reduceAt($polymer, $i);
             }
         }
 
         return $polymer;
     }
 
-    private function canReact(string $polymer, int $position): bool
+    private function canReduceAt(string $polymer, int $position): bool
     {
         $unit1 = $polymer[$position];
         $unit2 = $polymer[$position + 1];
 
         return $unit1 !== $unit2 && strtolower($unit1) === strtolower($unit2);
+    }
+
+    private function reduceAt(string $polymer, int $position): string
+    {
+        return substr($polymer, 0, $position) . substr($polymer, $position + 2);
     }
 }

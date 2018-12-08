@@ -30,11 +30,25 @@ class Day5SolutionTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider reducePolymerDataProvider
+     */
     public function testReducePolymer(): void
     {
         $solution = new Day5Solution();
 
         $this->assertSame('dabCBAcaDA', $solution->reducePolymer('dabAcCaCBAcCcaDA'));
+    }
+
+    public function reducePolymerDataProvider(): array
+    {
+        return [
+            ['aA', ''],
+            ['abBA', ''],
+            ['abAB', 'abAB'],
+            ['aabAAB', 'aabAAB'],
+            ['dabAcCaCBAcCcaDA', 'dabCBAcaDA'],
+        ];
     }
 
     public function testSolve(): void
