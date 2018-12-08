@@ -30,12 +30,14 @@ class Day5Solution implements SolutionInterface
 
     public function reducePolymer(string $polymer): string
     {
-        for ($i = 0; $i < \strlen($polymer) - 1; ++$i) {
-            if ($this->canReduceAt($polymer, $i)) {
-                $polymer = $this->reduceAt($polymer, $i);
-                $i = max(0, $i - 2);
+        do {
+            $originalLength = \strlen($polymer);
+            for ($i = 0; $i < \strlen($polymer) - 1; ++$i) {
+                if ($this->canReduceAt($polymer, $i)) {
+                    $polymer = $this->reduceAt($polymer, $i);
+                }
             }
-        }
+        } while ($originalLength !== \strlen($polymer));
 
         return $polymer;
     }
