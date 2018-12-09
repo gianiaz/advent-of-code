@@ -30,6 +30,11 @@ class Step
         return $this->name;
     }
 
+    public function getCost(): int
+    {
+        return \ord($this->name) - 64;
+    }
+
     public function isComplete(): bool
     {
         return $this->complete;

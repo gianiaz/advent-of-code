@@ -27,4 +27,15 @@ class Graph
 
         return array_shift($availables);
     }
+
+    public function areAllComplete(): bool
+    {
+        foreach ($this->steps as $step) {
+            if (! $step->isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

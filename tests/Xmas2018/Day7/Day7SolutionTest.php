@@ -16,6 +16,13 @@ class Day7SolutionTest extends TestCase
         $this->assertSame('CABDFE', $solution->solve());
     }
 
+    public function testSolveSecondPart(): void
+    {
+        $solution = new Day7Solution($this->getInput(), 2, 0);
+
+        $this->assertSame(15, $solution->solveSecondPart());
+    }
+
     private function getInput()
     {
         return [
