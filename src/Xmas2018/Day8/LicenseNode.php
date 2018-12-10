@@ -51,4 +51,25 @@ class LicenseNode
 
         return $sum;
     }
+
+    public function getValue(): int
+    {
+        if (0 === \count($this->childNodes)) {
+            return $this->sumMetadata();
+        }
+
+        $value = 0;
+
+        foreach ($this->metadata as $metadatum) {
+            $childIndex = $metadatum - 1;
+
+            if (! \array_key_exists($childIndex, $this->childNodes)) {
+                continue;
+            }
+
+            $value += $this->childNodes[$childIndex]->getValue();
+        }
+
+        return $value;
+    }
 }
