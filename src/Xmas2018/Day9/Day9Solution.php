@@ -11,15 +11,14 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
-        return '';
-        $marbleGame = new MarbleGame(418, 71339);
+        $marbleGame = new OptimizedMarbleGame(418, 71339);
 
         return $marbleGame->play();
     }
 
     public function solveSecondPart()
     {
-        $marbleGame = new MarbleGame(418, 7133900);
+        $marbleGame = new OptimizedMarbleGame(418, 7133900);
 
         return $marbleGame->play();
     }

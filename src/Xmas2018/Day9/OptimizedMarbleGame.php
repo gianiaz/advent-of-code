@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day9;
 
-use Ds\Deque;
-
 class OptimizedMarbleGame
 {
     /** @var int[] */
@@ -45,11 +43,10 @@ class OptimizedMarbleGame
     public function play(): int
     {
         $currentPlayer = 0;
-        $leftMarbles = new Deque();
+        $marbles = [];
         $currentMarble = 0;
-        $rightMarbles = new Deque();
 
-        $this->addDebugTrace($currentPlayer, $leftMarbles, $currentMarble, $rightMarbles);
+        $this->addDebugTrace($currentPlayer, $marbles, $currentMarble);
 
         do {
             $currentPlayer = ($currentPlayer + 1) % \count($this->players);
@@ -60,65 +57,56 @@ class OptimizedMarbleGame
             ++$this->turn;
 
             if ($this->turn % 23 === 0) {
-                $this->players[$currentPlayer] += $this->turn + $this->shift7ToTheLeftAndExtract($leftMarbles, $currentMarble, $rightMarbles);
-                $currentMarble = $rightMarbles->shift();
+                $this->players[$currentPlayer] += $this->turn;
+
+                $marbleToExtract = \array_slice($marbles, -7, 1, true);
+                $this->players[$currentPlayer] += \array_pop($marbleToExtract);
+
+                $newCurrentMarble = \array_slice($marbles, -6, 1, true);
+
+
+                $marbles = \array_merge(
+                    \array_slice($marbles, -5, null, true),
+                    [$currentMarble],
+                    \array_slice($marbles, 0, -7, true)
+                );
+
+                $currentMarble = \array_pop($newCurrentMarble);
             } else {
-                $this->shiftToTheRight($leftMarbles, $currentMarble, $rightMarbles);
+                $marbles[] = $currentMarble;
+                
+                $first = \array_key_first($marbles);
+                $marbles[] = $marbles[$first];
+                unset($marbles[$first]);
+                
                 $currentMarble = $this->turn;
             }
 
-            $this->addDebugTrace($currentPlayer, $leftMarbles, $currentMarble, $rightMarbles);
+            if ($this->turn % 10000 === 0) {
+                echo date('H:i:s') . $this->turn . PHP_EOL;
+            }
+
+            $this->addDebugTrace($currentPlayer, $marbles, $currentMarble);
         } while ($this->turn < $this->lastMarble);
 
         return max($this->players);
     }
 
-    private function shiftToTheRight(Deque $leftMarbles, int $currentMarble, Deque $rightMarbles): void
+    private function addDebugTrace(int $currentPlayer, array $marbles, int $currentMarble)
     {
-        $leftMarbles->push($currentMarble);
-
-        if (0 === \count($rightMarbles)) {
-            $leftMarbles->push($leftMarbles->shift());
-        } else {
-            $leftMarbles->push($rightMarbles->shift());
+        if (! $this->debug) {
+            return;
         }
-    }
-
-    private function shift7ToTheLeftAndExtract(Deque $leftMarbles, int $currentMarble, Deque $rightMarbles): int
-    {
-        $rightMarbles->unshift($currentMarble);
-
-        for ($i = 0; $i < 6; ++$i) {
-            if (0 === \count($leftMarbles)) {
-                $rightMarbles->unshift($rightMarbles->pop());
-            } else {
-                $rightMarbles->unshift($leftMarbles->pop());
-            }
-        }
-
-        if (0 === \count($leftMarbles)) {
-            return $rightMarbles->pop();
-        } else {
-            return $leftMarbles->pop();
-        }
-    }
-
-    private function addDebugTrace(int $currentPlayer, Deque $leftMarbles, int $currentMarble, Deque $rightMarbles)
-    {
+        
         $debugTrace = sprintf('[%d] ', $currentPlayer);
 
-        foreach ($leftMarbles as $marble) {
+        foreach ($marbles as $marble) {
             $debugTrace .= ' ';
             $debugTrace .= $marble;
         }
 
         $debugTrace .= ' ';
         $debugTrace .= $currentMarble . '<';
-
-        foreach ($rightMarbles as $marble) {
-            $debugTrace .= ' ';
-            $debugTrace .= $marble;
-        }
 
         $debugTrace = preg_replace('/\s+/', ' ', $debugTrace);
 
