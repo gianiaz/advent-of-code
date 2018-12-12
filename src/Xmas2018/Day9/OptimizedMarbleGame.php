@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day9;
 
+use Ds\Deque;
+
 class OptimizedMarbleGame
 {
     /** @var int[] */
@@ -43,9 +45,9 @@ class OptimizedMarbleGame
     public function play(): int
     {
         $currentPlayer = 0;
-        $leftMarbles = [];
+        $leftMarbles = new Deque();
         $currentMarble = 0;
-        $rightMarbles = [];
+        $rightMarbles = new Deque();
 
         $this->addDebugTrace($currentPlayer, $leftMarbles, $currentMarble, $rightMarbles);
 
@@ -59,7 +61,7 @@ class OptimizedMarbleGame
 
             if ($this->turn % 23 === 0) {
                 $this->players[$currentPlayer] += $this->turn + $this->shift7ToTheLeftAndExtract($leftMarbles, $currentMarble, $rightMarbles);
-                $currentMarble = array_shift($rightMarbles);
+                $currentMarble = $rightMarbles->shift();
             } else {
                 $this->shiftToTheRight($leftMarbles, $currentMarble, $rightMarbles);
                 $currentMarble = $this->turn;
@@ -71,37 +73,37 @@ class OptimizedMarbleGame
         return max($this->players);
     }
 
-    private function shiftToTheRight(array &$leftMarbles, int $currentMarble, array &$rightMarbles): void
+    private function shiftToTheRight(Deque $leftMarbles, int $currentMarble, Deque $rightMarbles): void
     {
-        $leftMarbles[] = $currentMarble;
+        $leftMarbles->push($currentMarble);
 
         if (0 === \count($rightMarbles)) {
-            $leftMarbles[] = array_shift($leftMarbles);
+            $leftMarbles->push($leftMarbles->shift());
         } else {
-            $leftMarbles[] = array_shift($rightMarbles);
+            $leftMarbles->push($rightMarbles->shift());
         }
     }
 
-    private function shift7ToTheLeftAndExtract(array &$leftMarbles, int $currentMarble, array &$rightMarbles): int
+    private function shift7ToTheLeftAndExtract(Deque $leftMarbles, int $currentMarble, Deque $rightMarbles): int
     {
-        array_unshift($rightMarbles, $currentMarble);
+        $rightMarbles->unshift($currentMarble);
 
         for ($i = 0; $i < 6; ++$i) {
             if (0 === \count($leftMarbles)) {
-                array_unshift($rightMarbles, array_pop($rightMarbles));
+                $rightMarbles->unshift($rightMarbles->pop());
             } else {
-                array_unshift($rightMarbles, array_pop($leftMarbles));
+                $rightMarbles->unshift($leftMarbles->pop());
             }
         }
 
         if (0 === \count($leftMarbles)) {
-            return array_pop($rightMarbles);
+            return $rightMarbles->pop();
         } else {
-            return array_pop($leftMarbles);
+            return $leftMarbles->pop();
         }
     }
 
-    private function addDebugTrace(int $currentPlayer, array $leftMarbles, int $currentMarble, array $rightMarbles)
+    private function addDebugTrace(int $currentPlayer, Deque $leftMarbles, int $currentMarble, Deque $rightMarbles)
     {
         $debugTrace = sprintf('[%d] ', $currentPlayer);
 
