@@ -64,7 +64,7 @@ class SameMarbleGame
             }
 
             $this->addDebugTrace($currentMarble, $currentPlayer);
-            
+
             if ($this->turn % 10000 === 0) {
                 echo date('H:i:s') . 'Turn ' . $this->turn . PHP_EOL;
             }

@@ -64,7 +64,6 @@ class OptimizedMarbleGame
 
                 $newCurrentMarble = \array_slice($marbles, -6, 1, true);
 
-
                 $marbles = \array_merge(
                     \array_slice($marbles, -5, null, true),
                     [$currentMarble],
@@ -74,11 +73,11 @@ class OptimizedMarbleGame
                 $currentMarble = \array_pop($newCurrentMarble);
             } else {
                 $marbles[] = $currentMarble;
-                
+
                 $first = \array_key_first($marbles);
                 $marbles[] = $marbles[$first];
                 unset($marbles[$first]);
-                
+
                 $currentMarble = $this->turn;
             }
 
@@ -97,7 +96,7 @@ class OptimizedMarbleGame
         if (! $this->debug) {
             return;
         }
-        
+
         $debugTrace = sprintf('[%d] ', $currentPlayer);
 
         foreach ($marbles as $marble) {
