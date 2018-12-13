@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day10;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day10Solution implements SolutionInterface
+class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     /** @var Sky */
     private $sky = [];
@@ -27,8 +28,15 @@ class Day10Solution implements SolutionInterface
 
     public function solve()
     {
-        // area low point: 10085 iterations, found with $this->sky->findTurnWithSmallestArea();
-        return $this->sky->moveAndPrint(10085);
+        // area low point: 10086 iterations, found with $this->sky->findTurnWithSmallestArea();
+        return $this->sky->moveAndPrint(10086);
+    }
+
+    public function solveSecondPart()
+    {
+        $this->sky->moveAndPrint(-4);
+
+        return $this->sky->findTurnWithSmallestArea();
     }
 
     /**

@@ -16,7 +16,7 @@ class Sky
 
     public function findTurnWithSmallestArea(): int
     {
-        $turn = 0;
+        $turn = 1;
         $smallestArea = INF;
         $bestTurn = null;
 
@@ -27,7 +27,7 @@ class Sky
                 $smallestArea = $area;
                 $bestTurn = $turn;
             }
-        } while (++$turn < 100000);
+        } while (++$turn < 10);
 
         return $bestTurn;
     }
@@ -68,7 +68,7 @@ class Sky
         $maxY = -INF;
 
         foreach ($this->points as $point) {
-            $point->moveTimes($turn + 1);
+            $point->moveTimes($turn);
 
             if ($point->getX() < $minX) {
                 $minX = $point->getX();
