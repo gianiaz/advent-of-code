@@ -35,6 +35,12 @@ class Point
         $this->y += $this->speedY;
     }
 
+    public function moveTimes(int $times): void
+    {
+        $this->x += $this->speedX * $times;
+        $this->y += $this->speedY * $times;
+    }
+
     public function getX(): int
     {
         return $this->x;

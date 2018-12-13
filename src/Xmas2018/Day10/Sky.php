@@ -55,6 +55,44 @@ class Sky
             }
         }
 
-        return (int) abs(($maxX - $minX) * ($maxY - $minY));
+        return (int)abs(($maxX - $minX) * ($maxY - $minY));
+    }
+
+    public function moveAndPrint(int $turn): string
+    {
+        /** @var Point[][] $indexedPoints */
+        $indexedPoints = [];
+        $minX = INF;
+        $minY = INF;
+        $maxX = -INF;
+        $maxY = -INF;
+
+        foreach ($this->points as $point) {
+            $point->moveTimes($turn + 1);
+
+            if ($point->getX() < $minX) {
+                $minX = $point->getX();
+            }
+            if ($point->getY() < $minY) {
+                $minY = $point->getY();
+            }
+            if ($point->getX() > $maxX) {
+                $maxX = $point->getX();
+            }
+            if ($point->getY() > $maxY) {
+                $maxY = $point->getY();
+            }
+            $indexedPoints[$point->getY()][$point->getX()] = true;
+        }
+
+        $printedSky = '';
+        foreach (range($minY, $maxY) as $y) {
+            foreach (range($minX, $maxX) as $x) {
+                $printedSky .= isset($indexedPoints[$y][$x]) ? '#' : ' ';
+            }
+            $printedSky .= PHP_EOL;
+        }
+        
+        return $printedSky;
     }
 }
