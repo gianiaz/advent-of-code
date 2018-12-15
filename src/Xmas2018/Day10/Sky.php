@@ -55,7 +55,7 @@ class Sky
             }
         }
 
-        return (int)abs(($maxX - $minX) * ($maxY - $minY));
+        return (int) abs(($maxX - $minX) * ($maxY - $minY));
     }
 
     public function moveAndPrint(int $turn): string
@@ -92,7 +92,7 @@ class Sky
             }
             $printedSky .= PHP_EOL;
         }
-        
+
         return $printedSky;
     }
 }
