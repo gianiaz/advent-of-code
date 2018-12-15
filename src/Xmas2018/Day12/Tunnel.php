@@ -68,4 +68,13 @@ class Tunnel
 
         return $state;
     }
+
+    public function getSum(): int
+    {
+        $potsWithPlants = \array_filter($this->pots, function (string $pot) {
+            return $pot === '#';
+        });
+
+        return \array_sum(\array_keys($potsWithPlants));
+    }
 }

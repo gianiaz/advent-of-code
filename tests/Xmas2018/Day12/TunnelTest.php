@@ -11,7 +11,7 @@ class TunnelTest extends TestCase
 {
     public function testGetNextGenerationOver20Iterations(): void
     {
-        $tunnel = new Tunnel(str_split('#..#.#..##......###...###'), $this->getExampleRules());
+        $tunnel = new Tunnel($this->getExampleInitialState(), $this->getExampleRules());
 
         $generation = 0;
         $output = $this->printGeneration($tunnel, $generation) . PHP_EOL;
@@ -46,6 +46,18 @@ class TunnelTest extends TestCase
         $this->assertSame($expectedResult, $output);
     }
 
+    public function testGetSum(): void
+    {
+        $tunnel = new Tunnel($this->getExampleInitialState(), $this->getExampleRules());
+
+        $generation = 0;
+        while (++$generation <= 20) {
+            $tunnel = $tunnel->getNextGeneration();
+        }
+
+        $this->assertSame(325, $tunnel->getSum());
+    }
+
     private function getExampleRules(): array
     {
         return [
@@ -77,5 +89,10 @@ class TunnelTest extends TestCase
         }
 
         return $string;
+    }
+
+    private function getExampleInitialState(): array
+    {
+        return str_split('#..#.#..##......###...###');
     }
 }
