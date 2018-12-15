@@ -6,75 +6,63 @@ namespace Jean85\AdventOfCode\Xmas2018\Day12;
 
 class Tunnel
 {
-    /** @var string[] */
+    /** @var string */
     private $pots;
 
     /** @var string[] */
     private $rules;
 
-    /**
-     * Tunnel constructor.
-     *
-     * @param string[] $pots
-     * @param string[] $rules
-     */
-    public function __construct(array $pots, array $rules)
+    /** @var int */
+    private $firstPotNumber;
+
+    public function __construct(string $pots, array $rules)
     {
+        $this->firstPotNumber = 0;
         $this->pots = $pots;
         $this->rules = $rules;
     }
 
-    public function getPotsToString(): string
-    {
-        return implode($this->pots);
-    }
-
-    public function getPots(): array
+    public function getPots(): string
     {
         return $this->pots;
     }
 
-    public function getNextGeneration(): self
+    public function evolve(): void
     {
-        $nextGeneration = [];
-        $potNumbers = \array_keys($this->pots);
-        $min = \array_shift($potNumbers);
-        $max = \array_pop($potNumbers);
+        $this->reducePots();
 
-        foreach (range($min - 2, $max + 2) as $potNumber) {
-            $state = $this->getStateAt($potNumber);
+        $potLengths = \strlen($this->pots) - 5;
 
-            if (\array_key_exists($state, $this->rules)) {
-                $nextGeneration[$potNumber] = $this->rules[$state];
-            } else {
-                $nextGeneration[$potNumber] = '.';
-            }
+        $newGeneration = '';
+
+        foreach (\range(0, $potLengths) as $potNumber) {
+            $newGeneration .= $this->rules[\substr($this->pots, $potNumber, 5)] ?? '.';
         }
 
-        return new self($nextGeneration, $this->rules);
-    }
-
-    private function getStateAt(int $number): string
-    {
-        $state = '';
-
-        foreach (range($number - 2, $number + 2) as $potNumber) {
-            if (\array_key_exists($potNumber, $this->pots)) {
-                $state .= $this->pots[$potNumber];
-            } else {
-                $state .= '.';
-            }
-        }
-
-        return $state;
+        $this->pots = '..' . $newGeneration;
     }
 
     public function getSum(): int
     {
-        $potsWithPlants = \array_filter($this->pots, function (string $pot) {
+        $potsWithPlants = \array_filter(str_split($this->pots), function (string $pot) {
             return $pot === '#';
         });
 
-        return \array_sum(\array_keys($potsWithPlants));
+        return \array_sum(\array_keys($potsWithPlants)) + ($this->firstPotNumber * \count($potsWithPlants));
+    }
+
+    public function getFirstPotNumber(): int
+    {
+        return $this->firstPotNumber;
+    }
+
+    private function reducePots(): void
+    {
+        if (\strpos(\substr($this->pots, 0, 4), '#') !== false) {
+            $this->pots = '....' . $this->pots;
+            $this->firstPotNumber -= 4;
+        }
+
+        $this->pots = \rtrim($this->pots, '.') . '....';
     }
 }

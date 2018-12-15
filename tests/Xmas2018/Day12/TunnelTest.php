@@ -9,16 +9,25 @@ use PHPUnit\Framework\TestCase;
 
 class TunnelTest extends TestCase
 {
+    public function testGetNextGeneration(): void
+    {
+        $tunnel = new Tunnel('##..##...##....#..#..#..##..........', $this->getExampleRules());
+
+        $tunnel->evolve();
+
+        $this->assertSame('...#.#...#..#.#....#..#..#...#..', $tunnel->getPots());
+    }
+
     public function testGetNextGenerationOver20Iterations(): void
     {
         $tunnel = new Tunnel($this->getExampleInitialState(), $this->getExampleRules());
 
         $generation = 0;
-        $output = $this->printGeneration($tunnel, $generation) . PHP_EOL;
+        $output[] = $this->printGeneration($tunnel, $generation);
 
         while (++$generation <= 20) {
-            $tunnel = $tunnel->getNextGeneration();
-            $output .= $this->printGeneration($tunnel, $generation) . PHP_EOL;
+            $tunnel->evolve();
+            $output[] = $this->printGeneration($tunnel, $generation);
         }
 
         $expectedResult = '0: ...#..#.#..##......###...###...........
@@ -41,9 +50,8 @@ class TunnelTest extends TestCase
 17: ..#...##...#.#.#.#...##...#....#...#...
 18: ..##.#.#....#####.#.#.#...##...##..##..
 19: .#..###.#..#.#.#######.#.#.#..#.#...#..
-20: .#....##....#####...#######....#.#..##.
-';
-        $this->assertSame($expectedResult, $output);
+20: .#....##....#####...#######....#.#..##.';
+        $this->assertSame($expectedResult, implode(PHP_EOL, $output));
     }
 
     public function testGetSum(): void
@@ -52,7 +60,7 @@ class TunnelTest extends TestCase
 
         $generation = 0;
         while (++$generation <= 20) {
-            $tunnel = $tunnel->getNextGeneration();
+            $tunnel->evolve();
         }
 
         $this->assertSame(325, $tunnel->getSum());
@@ -80,19 +88,20 @@ class TunnelTest extends TestCase
 
     private function printGeneration(Tunnel $tunnel, int $generation): string
     {
-        $string = sprintf('%d: ', $generation);
-
         $pots = $tunnel->getPots();
+        $shiftToTheLeft = $tunnel->getFirstPotNumber() + 3;
 
-        foreach (range(-3, 35) as $potNumber) {
-            $string .= $pots[$potNumber] ?? '.';
+        if ($shiftToTheLeft > 0) {
+            $pots = str_repeat('.', $shiftToTheLeft) . $pots;
+        } elseif ($shiftToTheLeft < 0) {
+            $pots = \substr($pots, -$shiftToTheLeft);
         }
 
-        return $string;
+        return sprintf('%d: %s', $generation, str_pad($pots, 39, '.'));
     }
 
-    private function getExampleInitialState(): array
+    private function getExampleInitialState(): string
     {
-        return str_split('#..#.#..##......###...###');
+        return '#..#.#..##......###...###';
     }
 }

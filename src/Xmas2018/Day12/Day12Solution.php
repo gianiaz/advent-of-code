@@ -4,24 +4,40 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day12;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day12Solution implements SolutionInterface
+class Day12Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
+        return '';
         $tunnel = new Tunnel($this->getInitialState(), $this->getRules());
 
         foreach (range(1, 20) as $generation) {
-            $tunnel = $tunnel->getNextGeneration();
+            $tunnel->evolve();
         }
 
         return $tunnel->getSum();
     }
 
-    private function getInitialState(): array
+    public function solveSecondPart()
     {
-        return str_split('#.#.#..##.#....#.#.##..##.##..#..#...##....###..#......###.#..#.....#.###.#...#####.####...#####.#.#');
+        $tunnel = new Tunnel($this->getInitialState(), $this->getRules());
+
+        for ($generation = 0; $generation < 50000000000; ++$generation) {
+            if ($generation % 10000 === 0) {
+                echo $generation . PHP_EOL;
+            }
+            $tunnel->evolve();
+        }
+
+        return $tunnel->getSum();
+    }
+
+    private function getInitialState(): string
+    {
+        return '#.#.#..##.#....#.#.##..##.##..#..#...##....###..#......###.#..#.....#.###.#...#####.####...#####.#.#';
     }
 
     private function getRules(): array
