@@ -27,7 +27,7 @@ class Sky
                 $smallestArea = $area;
                 $bestTurn = $turn;
             }
-        } while (++$turn < 10);
+        } while (++$turn < 11000);
 
         return $bestTurn;
     }

@@ -34,8 +34,6 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart()
     {
-        $this->sky->moveAndPrint(-4);
-
         return $this->sky->findTurnWithSmallestArea();
     }
 
