@@ -26,8 +26,8 @@ class Day12Solution implements SolutionInterface, SecondPartSolutionInterface
         $tunnel = new Tunnel($this->getInitialState(), $this->getRules());
 
         for ($generation = 0; $generation < 50000000000; ++$generation) {
-            if ($generation % 10000 === 0) {
-                echo $generation . PHP_EOL;
+            if ($generation % 100000 === 0) {
+                echo date('h:i:s ') . $generation . PHP_EOL;
             }
             $tunnel->evolve();
         }

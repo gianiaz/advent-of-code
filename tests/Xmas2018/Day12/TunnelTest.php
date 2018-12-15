@@ -15,7 +15,7 @@ class TunnelTest extends TestCase
 
         $tunnel->evolve();
 
-        $this->assertSame('...#.#...#..#.#....#..#..#...#..', $tunnel->getPots());
+        $this->assertSame('#.#...#..#.#....#..#..#...#', trim($tunnel->getPots(), '.'));
     }
 
     public function testGetNextGenerationOver20Iterations(): void
