@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day13;
 
 class Tracks
@@ -12,7 +14,6 @@ class Tracks
 
     public function __construct(string $input)
     {
-        $y = 0;
         foreach (explode(PHP_EOL, $input) as $y => $row) {
             $this->tracks[$y] = $row;
 
@@ -63,6 +64,19 @@ class Tracks
             case Cart::DIRECTION_RIGHT:
             case Cart::DIRECTION_LEFT:
                 return '-';
+            default:
+                throw new \InvalidArgumentException('Unrecognized char: ' . $char);
+        }
+    }
+
+    public function tick(): void
+    {
+        $carts = $this->carts;
+        foreach ($carts as $cart) {
+            unset($this->carts[$cart->getCoordHash()]);
+            $nextPieceOfTrack = $this->tracks[$cart->getNextY()][$cart->getNextX()];
+            $cart->tick($nextPieceOfTrack);
+            $this->carts[$cart->getCoordHash()] = $cart;
         }
     }
 }

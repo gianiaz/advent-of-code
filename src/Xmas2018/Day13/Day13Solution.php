@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day13;
 
 class Day13Solution
 {
-    private function getTracks(): string 
+    private function getTracks(): string
     {
         return
 '            /--------------------------------------------------------\                           /------------------------------------------------\   
