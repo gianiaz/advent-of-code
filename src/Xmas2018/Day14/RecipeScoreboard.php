@@ -15,13 +15,26 @@ class RecipeScoreboard
     /** @var int */
     private $secondElf;
 
-    public function __construct()
+    /** @var string */
+    private $stringToFind;
+
+    /** @var int */
+    private $currentFoundChars;
+
+    /** @var int */
+    private $charsToBeFound;
+
+    public function __construct(string $stringToFind = 'X')
     {
         $this->recipes[] = 3;
         $this->recipes[] = 7;
 
         $this->firstElf = 0;
         $this->secondElf = 1;
+
+        $this->stringToFind = $stringToFind;
+        $this->currentFoundChars = 0;
+        $this->charsToBeFound = \strlen($this->stringToFind);
     }
 
     public function tick()
@@ -31,7 +44,7 @@ class RecipeScoreboard
         $newSum = \array_sum(str_split($newRecipeTotal));
         $newRecipes = \str_split((string) $newSum);
         foreach ($newRecipes as $newRecipe) {
-            $this->recipes[] = $newRecipe;
+            $this->addToTheRecipes($newRecipe);
         }
 
         $this->firstElf = $this->moveElf($this->firstElf);
@@ -65,5 +78,25 @@ class RecipeScoreboard
         $stepsForward = $currentElfPosition + 1 + $this->recipes[$currentElfPosition];
 
         return $stepsForward % \count($this->recipes);
+    }
+
+    /**
+     * @param $newRecipe
+     */
+    private function addToTheRecipes(string $newRecipe): void
+    {
+        if ($newRecipe === $this->stringToFind[$this->currentFoundChars]) {
+            ++$this->currentFoundChars;
+
+            if ($this->currentFoundChars === $this->charsToBeFound) {
+                throw new \RuntimeException('SEQUENCE FOUND!');
+            }
+        } elseif ($newRecipe === $this->stringToFind[0]) {
+            $this->currentFoundChars = 1;
+        } else {
+            $this->currentFoundChars = 0;
+        }
+
+        $this->recipes[] = $newRecipe;
     }
 }

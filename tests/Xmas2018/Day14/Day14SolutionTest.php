@@ -28,4 +28,24 @@ class Day14SolutionTest extends TestCase
             [2018, '5941429882'],
         ];
     }
+
+    /**
+     * @dataProvider solveSecondPartDataProvider
+     */
+    public function testSolveSecondPart(string $stringToSearch, int $expectedSolution)
+    {
+        $solution = new Day14Solution($stringToSearch);
+
+        $this->assertSame($expectedSolution, $solution->solveSecondPart());
+    }
+
+    public function solveSecondPartDataProvider()
+    {
+        return [
+            ['01245', 5],
+            ['51589', 9],
+            ['92510', 18],
+            ['59414', 2018],
+        ];
+    }
 }
