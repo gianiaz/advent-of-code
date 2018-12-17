@@ -56,9 +56,14 @@ class Cart
         return $this->currentDirection === self::DIRECTION_CRASHED;
     }
 
-    public function getCoordHash(): string
+    public function getCoords(): string
     {
         return $this->x . ',' . $this->y;
+    }
+
+    public function getCoordHash(): string
+    {
+        return $this->y * 1000 . ',' . $this->x;
     }
 
     public function tick(string $nextPieceOfTrack): void

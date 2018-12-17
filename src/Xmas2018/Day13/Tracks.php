@@ -80,9 +80,10 @@ class Tracks
 
     public function tick(): void
     {
-        $carts = $this->carts;
-        foreach ($carts as $cart) {
-            unset($this->carts[$cart->getCoordHash()]);
+        $this->resortCarts();
+
+        foreach ($this->carts as $key => $cart) {
+            unset($this->carts[$key]);
 
             if ($cart->isCrashed()) {
                 continue;
@@ -112,5 +113,19 @@ class Tracks
     public function getCrashedCarts(): array
     {
         return $this->crashedCarts;
+    }
+
+    private function resortCarts(): void
+    {
+        \usort($this->carts, function (Cart $a, Cart $b) {
+            return $a->getY() <=> $b->getY() ?? $a->getX() <=> $b->getX();
+        });
+
+        $temp = $this->carts;
+        $this->carts = [];
+
+        foreach ($temp as $sortedCart) {
+            $this->carts[$sortedCart->getCoordHash()] = $sortedCart;
+        }
     }
 }

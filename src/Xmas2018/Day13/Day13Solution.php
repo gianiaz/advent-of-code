@@ -30,7 +30,7 @@ class Day13Solution implements SolutionInterface, SecondPartSolutionInterface
             $tracks->tick();
         } while ([] === $tracks->getCrashedCarts());
 
-        return $tracks->getCrashedCarts()[0]->getCoordHash();
+        return $tracks->getCrashedCarts()[0]->getCoords();
     }
 
     public function solveSecondPart()
@@ -45,7 +45,7 @@ class Day13Solution implements SolutionInterface, SecondPartSolutionInterface
         /** @var Cart $remainingCart */
         $remainingCart = \array_pop($carts);
 
-        return $remainingCart->getCoordHash();
+        return $remainingCart->getCoords();
     }
 
     private function getTracks(): string
