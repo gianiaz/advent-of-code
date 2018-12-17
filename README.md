@@ -4,7 +4,7 @@ My attempts at solving http://adventofcode.com using PHP
 To use this repository, you can simply request a solution from the CLI:
 
 ```
-$ php solve.php 4                                                       
+$ php tick.php 4                                                       
 Solution for day 4
 
 325
