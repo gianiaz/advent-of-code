@@ -58,7 +58,7 @@ class Cart
 
     public function getCoordHash(): string
     {
-        return $this->x . '-' . $this->y;
+        return $this->x . ',' . $this->y;
     }
 
     public function tick(string $nextPieceOfTrack): void

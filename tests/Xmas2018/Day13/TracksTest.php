@@ -29,6 +29,23 @@ class TracksTest extends TestCase
         }
     }
 
+    public function testTickWithoutCrashedCarts(): void
+    {
+        $start = '/>-<\
+|   |
+| /<+-\
+| | | v
+\>+</ |
+  |   ^
+  \<->/';
+        $tracks = new Tracks($start);
+
+        foreach ($this->getExampleSequenceWithoutCrashedCarts() as $situation) {
+            $tracks->tick();
+            $this->assertSame($situation, $tracks->getActualSituation(false));
+        }
+    }
+
     private function getExampleTracks(): string
     {
         return
@@ -140,6 +157,35 @@ class TracksTest extends TestCase
 | | |  X |  |
 \-+-/  \-+--/
   \------/',
+        ];
+    }
+
+    private function getExampleSequenceWithoutCrashedCarts(): array
+    {
+        return [
+            '/---\
+|   |
+| v-+-\
+| | | |
+\-+-/ |
+  |   |
+  ^---^',
+
+            '/---\
+|   |
+| /-+-\
+| v | |
+\-+-/ |
+  ^   ^
+  \---/',
+
+            '/---\
+|   |
+| /-+-\
+| | | |
+\-+-/ ^
+  |   |
+  \---/',
         ];
     }
 }

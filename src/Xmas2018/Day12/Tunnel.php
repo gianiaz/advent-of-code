@@ -63,9 +63,9 @@ class Tunnel
             $this->firstPotNumber -= 4;
         }
 
-        $originalLenght = \strlen($this->pots);
+        $originalLength = \strlen($this->pots);
         $this->pots = \ltrim($this->pots, '.');
-        $this->firstPotNumber += $originalLenght - \strlen($this->pots) - 3;
+        $this->firstPotNumber += $originalLength - \strlen($this->pots) - 3;
         $this->pots = '...' . rtrim($this->pots, '.') . '...';
     }
 }

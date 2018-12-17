@@ -12,6 +12,9 @@ class Tracks
     /** @var Cart[] */
     private $carts;
 
+    /** @var Cart[] */
+    private $crashedCarts = [];
+
     public function __construct(string $input)
     {
         foreach (explode(PHP_EOL, $input) as $y => $row) {
@@ -23,12 +26,18 @@ class Tracks
         }
     }
 
-    public function getActualSituation(): string
+    public function getActualSituation(bool $withCrashedCarts = true): string
     {
         $situation = $this->tracks;
 
         foreach ($this->carts as $cart) {
             $situation[$cart->getY()][$cart->getX()] = $cart->__toString();
+        }
+
+        if ($withCrashedCarts) {
+            foreach ($this->crashedCarts as $crashedCart) {
+                $situation[$crashedCart->getY()][$crashedCart->getX()] = $crashedCart->__toString();
+            }
         }
 
         return implode(PHP_EOL, $situation);
@@ -74,15 +83,34 @@ class Tracks
         $carts = $this->carts;
         foreach ($carts as $cart) {
             unset($this->carts[$cart->getCoordHash()]);
+
+            if ($cart->isCrashed()) {
+                continue;
+            }
+
             $nextPieceOfTrack = $this->tracks[$cart->getNextY()][$cart->getNextX()];
             $cart->tick($nextPieceOfTrack);
 
             if (\array_key_exists($cart->getCoordHash(), $this->carts)) {
+                $otherCart = $this->carts[$cart->getCoordHash()];
+                unset($this->carts[$cart->getCoordHash()]);
+
                 $cart->setCrashed();
-                $this->carts[$cart->getCoordHash()]->setCrashed();
+                $otherCart->setCrashed();
+
+                $this->crashedCarts[] = $cart;
+                $this->crashedCarts[] = $otherCart;
             } else {
                 $this->carts[$cart->getCoordHash()] = $cart;
             }
         }
+    }
+
+    /**
+     * @return Cart[]
+     */
+    public function getCrashedCarts(): array
+    {
+        return $this->crashedCarts;
     }
 }
