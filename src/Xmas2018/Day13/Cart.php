@@ -10,6 +10,7 @@ class Cart
     public const DIRECTION_DOWN = 'v';
     public const DIRECTION_LEFT = '<';
     public const DIRECTION_RIGHT = '>';
+    public const DIRECTION_CRASHED = 'X';
 
     /** @var string */
     private $currentDirection;
@@ -43,6 +44,16 @@ class Cart
     public function __toString(): string
     {
         return $this->currentDirection;
+    }
+
+    public function setCrashed(): void
+    {
+        $this->currentDirection = self::DIRECTION_CRASHED;
+    }
+
+    public function isCrashed(): bool
+    {
+        return $this->currentDirection === self::DIRECTION_CRASHED;
     }
 
     public function getCoordHash(): string

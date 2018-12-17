@@ -76,7 +76,13 @@ class Tracks
             unset($this->carts[$cart->getCoordHash()]);
             $nextPieceOfTrack = $this->tracks[$cart->getNextY()][$cart->getNextX()];
             $cart->tick($nextPieceOfTrack);
-            $this->carts[$cart->getCoordHash()] = $cart;
+
+            if (\array_key_exists($cart->getCoordHash(), $this->carts)) {
+                $cart->setCrashed();
+                $this->carts[$cart->getCoordHash()]->setCrashed();
+            } else {
+                $this->carts[$cart->getCoordHash()] = $cart;
+            }
         }
     }
 }
