@@ -25,9 +25,8 @@ class Dungeon
     public function tick(): void
     {
         $warriors = array_merge($this->elves, $this->goblins);
-        usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
-            return $a->getY() <=> $b->getY()
-                ?? $a->getX() <=> $b->getX();
+        \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
+            return $a->compareTo($b);
         });
 
         foreach ($warriors as $warrior) {
@@ -156,6 +155,10 @@ class Dungeon
             $adjacent[] = $neighbour;
         }
 
+        \usort($adjacent, function (Distance $a, Distance $b) {
+            return $a->compareTo($b);
+        });
+
         return $adjacent;
     }
 
@@ -165,11 +168,6 @@ class Dungeon
     private function getBestMove(AbstractWarrior $warrior, array $distanceMap): ?Distance
     {
         $possibleMoves = $this->getAdjacentDistances($distanceMap, $warrior->getX(), $warrior->getY());
-        usort($possibleMoves, function (Distance $a, Distance $b) {
-            return $a->getCost() <=> $b->getCost()
-                ?? $a->getY() <=> $b->getY()
-                ?? $a->getX() <=> $b->getX();
-        });
 
         return \array_shift($possibleMoves);
     }

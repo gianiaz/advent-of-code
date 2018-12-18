@@ -4,38 +4,13 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day15;
 
-class Distance
+class Distance extends AbstractPosition
 {
-    /** @var int */
-    private $x;
-
-    /** @var int */
-    private $y;
-
     /** @var int */
     private $cost = 9999999;
 
     /** @var Distance[] */
     private $neighbors = [];
-
-    /**
-     * Distance constructor.
-     */
-    public function __construct(int $x, int $y)
-    {
-        $this->x = $x;
-        $this->y = $y;
-    }
-
-    public function getX(): int
-    {
-        return $this->x;
-    }
-
-    public function getY(): int
-    {
-        return $this->y;
-    }
 
     public function getCost(): int
     {
@@ -53,6 +28,21 @@ class Distance
         foreach ($this->neighbors as $neighbor) {
             $neighbor->setCost($cost + 1);
         }
+    }
+
+    public function compareTo(AbstractPosition $other): int
+    {
+        if (! $other instanceof self) {
+            throw new \InvalidArgumentException('Not comparable: ' . \get_class($other));
+        }
+
+        $compare = $this->getCost() <=> $other->getCost();
+
+        if ($compare !== 0) {
+            return $compare;
+        }
+
+        return parent::compareTo($other);
     }
 
     /**
