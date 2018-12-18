@@ -7,11 +7,16 @@ namespace Jean85\AdventOfCode\Xmas2018\Day15;
 abstract class AbstractWarrior extends AbstractPosition
 {
     /** @var int */
-    private $health = 300;
+    private $health = 200;
 
     public function getHealth(): int
     {
         return $this->health;
+    }
+
+    public function isDead(): bool
+    {
+        return $this->health <= 0;
     }
 
     public function moveTo(Distance $distance): void
@@ -51,5 +56,10 @@ abstract class AbstractWarrior extends AbstractPosition
         $manhattanDistance = abs($this->x - $tango->x) + abs($this->y - $tango->y);
 
         return 1 === $manhattanDistance;
+    }
+
+    public function attack(AbstractWarrior $tango): void
+    {
+        $tango->health -= 3;
     }
 }

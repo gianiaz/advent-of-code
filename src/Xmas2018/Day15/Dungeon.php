@@ -40,10 +40,10 @@ class Dungeon
 
             if ($this->moveWarrior($warrior, $targets)) {
                 $hasSomethingToDo = true;
-            };
+            }
             $this->attack($warrior, $targets);
         }
-        
+
         return $hasSomethingToDo;
     }
 
@@ -116,7 +116,7 @@ class Dungeon
                 $targetFound = true;
             }
         }
-        
+
         if (! $targetFound) {
             return false;
         }
@@ -126,7 +126,7 @@ class Dungeon
             $warrior->moveTo($bestMove);
             $this->map[$warrior->getY()][$warrior->getX()] = (string) $warrior;
         }
-        
+
         return true;
     }
 
@@ -197,7 +197,11 @@ class Dungeon
     private function attack(AbstractWarrior $warrior, array $targets): void
     {
         if ($tango = $this->getBestTarget($warrior, $targets)) {
-            // TODO
+            $warrior->attack($tango);
+
+            if ($tango->isDead()) {
+                $this->removeWarrior($tango);
+            }
         }
     }
 
@@ -212,5 +216,38 @@ class Dungeon
         });
 
         return \array_shift($targetsInRange);
+    }
+
+    private function removeWarrior(AbstractWarrior $tango): void
+    {
+        $this->map[$tango->getY()][$tango->getX()] = self::SPACE;
+
+        switch (true) {
+            case $tango instanceof Goblin:
+                unset($this->goblins[\array_search($tango, $this->goblins, true)]);
+
+                return;
+            case $tango instanceof Elf:
+                unset($this->elves[\array_search($tango, $this->elves, true)]);
+
+                return;
+            default:
+                throw new \InvalidArgumentException('Unrecognized warrior: ' . \get_class($tango));
+        }
+    }
+
+    public function getTotalHealth(): int
+    {
+        $totalHitPoints = 0;
+
+        foreach ($this->goblins as $goblin) {
+            $totalHitPoints += $goblin->getHealth();
+        }
+
+        foreach ($this->elves as $elf) {
+            $totalHitPoints += $elf->getHealth();
+        }
+
+        return $totalHitPoints;
     }
 }

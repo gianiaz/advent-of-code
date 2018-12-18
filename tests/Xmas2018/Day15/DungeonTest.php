@@ -69,7 +69,7 @@ class DungeonTest extends TestCase
         $this->assertSame($expectedSituation, $dungeon->getActualSituation());
     }
 
-    public function tickDataProvider()
+    public function tickDataProvider(): array
     {
         return [
             'simple with obstacle' => [
@@ -183,6 +183,138 @@ class DungeonTest extends TestCase
 #.......#
 #.......#
 #########',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getTotalHealthProvider
+     */
+    public function testGetOutcome(string $input, string $expectedSituation, int $expectedOutcome, int $expectedTurn, int $expectedTotalHP): void
+    {
+        $this->assertSame($expectedOutcome, $expectedTotalHP * $expectedTurn, 'BAD PROVIDER');
+
+        $dungeon = new Dungeon($input);
+
+        $turns = 0;
+        while ($dungeon->tick()) {
+            ++$turns;
+        }
+
+        $this->assertSame($expectedSituation, $dungeon->getActualSituation());
+        $this->assertSame($expectedTurn, $turns);
+        $this->assertSame($expectedTotalHP, $dungeon->getTotalHealth());
+        $this->assertSame($expectedOutcome, $dungeon->getTotalHealth() * $turns);
+    }
+
+    public function getTotalHealthProvider()
+    {
+        return[
+            [
+                '#######   
+#.G...#
+#...EG#
+#.#.#G#
+#..G#E#
+#.....#
+#######',
+                '#######   
+#G....#
+#.G...#
+#.#.#G#
+#...#.#
+#....G#
+#######',
+                27730, 47, 590,
+            ],
+            [
+                '#######
+#G..#E#
+#E#E.E#
+#G.##.#
+#...#E#
+#...E.#
+#######',
+                '#######
+#...#E#
+#E#...#
+#.E##.#
+#E..#E#
+#.....#
+#######',
+                36334, 37, 982,
+            ],
+            [
+                '#######   
+#E..EG#
+#.#G.E#
+#E.##E#
+#G..#.#
+#..E#.#
+#######',
+                '#######
+#.E.E.#
+#.#E..#
+#E.##.#
+#.E.#.#
+#...#.#
+#######',
+                39514, 46, 859,
+            ],
+            [
+                '#######   
+#E.G#.#
+#.#G..#
+#G.#.G#   
+#G..#.#
+#...E.#
+#######',
+                '#######   
+#G.G#.#
+#.#G..#
+#..#..#
+#...#G#
+#...G.#
+#######',
+                27755, 35, 793,
+            ],
+            [
+                '#######   
+#.E...#   
+#.#..G#
+#.###.#   
+#E#G#G#   
+#...#G#
+#######',
+                '#######   
+#.....#
+#.#G..#
+#.###.#
+#.#.#.#
+#G.G#G#
+#######',
+                28944, 54, 536,
+            ],
+            [
+                '#########
+#G......#
+#.E.#...#
+#..##..G#
+#...##..#   
+#...#...#
+#.G...G.#   
+#.....G.#   
+#########',
+                '#########   
+#.G.....#
+#G.G#...#
+#.G##...#
+#...##..#
+#.G.#...#
+#.......#
+#.......#
+#########',
+                18740, 20, 937,
             ],
         ];
     }
