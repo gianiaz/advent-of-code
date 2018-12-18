@@ -7,10 +7,35 @@ namespace Jean85\AdventOfCode\Xmas2018\Day15;
 class Distance
 {
     /** @var int */
+    private $x;
+
+    /** @var int */
+    private $y;
+
+    /** @var int */
     private $cost = 9999999;
 
     /** @var Distance[] */
     private $neighbors = [];
+
+    /**
+     * Distance constructor.
+     */
+    public function __construct(int $x, int $y)
+    {
+        $this->x = $x;
+        $this->y = $y;
+    }
+
+    public function getX(): int
+    {
+        return $this->x;
+    }
+
+    public function getY(): int
+    {
+        return $this->y;
+    }
 
     public function getCost(): int
     {
@@ -30,22 +55,6 @@ class Distance
         }
     }
 
-    public function forceRefresh(int $newNeighborCost): void
-    {
-        if ($newNeighborCost > $this->cost) {
-            return;
-        }
-
-        if ($distance->cost < $this->cost) {
-            $this->neighbors = [$distance];
-            $this->cost = $distance->cost + 1;
-        }
-
-        if ($distance->cost === $this->cost) {
-            $this->neighbors[] = $distance;
-        }
-    }
-
     /**
      * @return Distance[]
      */
@@ -54,7 +63,7 @@ class Distance
         return $this->neighbors;
     }
 
-    public function addNeighbor(self $new): void 
+    public function addNeighbor(self $new): void
     {
         $this->neighbors[] = $new;
     }

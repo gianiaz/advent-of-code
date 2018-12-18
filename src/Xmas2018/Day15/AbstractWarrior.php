@@ -31,6 +31,12 @@ abstract class AbstractWarrior
         return $this->y;
     }
 
+    public function moveTo(Distance $distance): void
+    {
+        $this->x = $distance->getX();
+        $this->y = $distance->getY();
+    }
+
     abstract public static function getSymbol(): string;
 
     public function __toString()
