@@ -44,10 +44,12 @@ abstract class AbstractWarrior extends AbstractPosition
 
     public function canAttack(AbstractWarrior $tango): bool
     {
-        if ($tango instanceof self) {
+        if ($tango instanceof static) {
             return false;
         }
 
-        return 1 === abs($this->x - $tango->x) + abs($this->y - $tango->y);
+        $manhattanDistance = abs($this->x - $tango->x) + abs($this->y - $tango->y);
+
+        return 1 === $manhattanDistance;
     }
 }

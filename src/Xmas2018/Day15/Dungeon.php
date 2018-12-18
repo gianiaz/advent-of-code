@@ -22,12 +22,14 @@ class Dungeon
         $this->map = $this->initMap($map);
     }
 
-    public function tick(): void
+    public function tick(): bool
     {
         $warriors = array_merge($this->elves, $this->goblins);
         \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
             return $a->compareTo($b);
         });
+
+        $hasSomethingToDo = false;
 
         foreach ($warriors as $warrior) {
             if ($warrior instanceof Elf) {
@@ -36,9 +38,13 @@ class Dungeon
                 $targets = $this->elves;
             }
 
-            $this->moveWarrior($warrior, $targets);
+            if ($this->moveWarrior($warrior, $targets)) {
+                $hasSomethingToDo = true;
+            };
             $this->attack($warrior, $targets);
         }
+        
+        return $hasSomethingToDo;
     }
 
     public function getActualSituation(): string
@@ -94,19 +100,25 @@ class Dungeon
         return $translatedMap;
     }
 
-    private function moveWarrior(AbstractWarrior $warrior, array $targets): void
+    private function moveWarrior(AbstractWarrior $warrior, array $targets): bool
     {
         if ($this->getBestTarget($warrior, $targets)) {
             // can attack, doesn't move
-            return;
+            return true;
         }
 
         $distanceMap = $this->createEmptyDistanceMap();
 
+        $targetFound = false;
         foreach ($targets as $tango) {
             foreach ($this->getSortedAdjacentPositions($distanceMap, $tango->getX(), $tango->getY()) as $target) {
                 $target->setCost(0);
+                $targetFound = true;
             }
+        }
+        
+        if (! $targetFound) {
+            return false;
         }
 
         if ($bestMove = $this->getBestMove($warrior, $distanceMap)) {
@@ -114,6 +126,8 @@ class Dungeon
             $warrior->moveTo($bestMove);
             $this->map[$warrior->getY()][$warrior->getX()] = (string) $warrior;
         }
+        
+        return true;
     }
 
     /**

@@ -72,7 +72,7 @@ class DungeonTest extends TestCase
     public function tickDataProvider()
     {
         return [
-            [
+            'simple with obstacle' => [
                 '#######
 #.E...#
 #..#..#
@@ -84,7 +84,7 @@ class DungeonTest extends TestCase
 #..#..#
 #######',
             ],
-            [
+            'only 2 goblins' => [
                 '#########
 #...G...#
 #.......#
@@ -104,7 +104,7 @@ class DungeonTest extends TestCase
 #.......#
 #########',
             ],
-            [
+            'only 2 goblins, step 2' => [
                 '#########
 #.......#
 #...G...#
@@ -124,7 +124,7 @@ class DungeonTest extends TestCase
 #.......#
 #########',
             ],
-            [
+            'example from the site' => [
                 '#########
 #G..G..G#
 #.......#
@@ -160,6 +160,26 @@ class DungeonTest extends TestCase
 #.G.E.G.#
 #.......#
 #G..G..G#
+#.......#
+#.......#
+#########',
+            ],
+            'last step from example' => [
+                '#########
+#..G.G..#
+#...G...#
+#.G.E.G.#
+#.......#
+#G..G..G#
+#.......#
+#.......#
+#########',
+                '#########
+#.......#
+#..GGG..#
+#..GEG..#
+#G..G...#
+#......G#
 #.......#
 #.......#
 #########',
