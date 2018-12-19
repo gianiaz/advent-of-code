@@ -493,6 +493,157 @@ class DungeonTest extends TestCase
         ];
     }
 
+    public function testGetOutcomeDebugCornerCase(): void
+    {
+        $input = '#######
+#G..#E#
+#E#E.E#
+#G.##.#
+#...#E#
+#...E.#
+#######';
+        $dungeon = new Dungeon($input);
+
+        $this->assertSame($input, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 200, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#G.E#E#
+#E#..E#
+#G.##.#
+#...#E#
+#..E..#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([197, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 194, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#..E#
+#G.##.#
+#..E#E#
+#.....#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([191, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 188, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#..E#
+#G.##.#
+#.E.#.#
+#....E#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([185, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 182, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#..E#
+#GE##.#
+#...#.#
+#...E.#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([179, 197], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 176, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#..E#
+#GE##.#
+#...#.#
+#..E..#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([173, 194], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 170, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#..E#
+#GE##.#
+#..E#.#
+#.....#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([167, 191], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 164, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#...#
+#GE##E#
+#.E.#.#
+#.....#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([161, 188], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 158, 200, 200, 200], $dungeon->getElves());
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#E#...#
+#GE##.#
+#E..#E#
+#.....#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([155, 182], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 152, 200, 200, 200], $dungeon->getElves());
+        
+        do {
+            $dungeon->tick();
+            $this->assertSame($situation, $dungeon->getActualSituation(), 'At turn ' . $dungeon->getTurns());
+        } while($dungeon->getTurns() < 33);
+
+        $this->assertWarriorsHP([5, 32], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 2, 200, 200, 200], $dungeon->getElves());
+
+
+        $dungeon->tick();
+
+        $situation = '#######
+#GE.#E#
+#.#...#
+#GE##.#
+#E..#E#
+#.....#
+#######';
+
+        $this->assertSame($situation, $dungeon->getActualSituation());
+        $this->assertWarriorsHP([2, 26], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200, 197, 200, 200], $dungeon->getElves());
+    }
+
     /**
      * @param int[] $expectedHPs
      * @param AbstractWarrior[] $warriors

@@ -28,14 +28,16 @@ class Dungeon
 
     public function tick(): bool
     {
+        /** @var AbstractWarrior[] $warriors */
         $warriors = array_merge($this->elves, $this->goblins);
         \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
             return $a->compareByDistanceOnly($b);
         });
 
-        $lastOneDidSomething = false;
-
         foreach ($warriors as $warrior) {
+            if ($warrior->isDead()) {
+                continue;
+            }
             if ($warrior instanceof Elf) {
                 $targets = $this->goblins;
             } else {
