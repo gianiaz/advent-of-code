@@ -38,7 +38,7 @@ abstract class AbstractWarrior extends AbstractPosition
             throw new \InvalidArgumentException('Not comparable: ' . \get_class($other));
         }
 
-        $compareHealth = $other->getHealth() <=> $this->getHealth();
+        $compareHealth = $this->getHealth() <=> $other->getHealth();
 
         if ($compareHealth !== 0) {
             return $compareHealth;
