@@ -33,7 +33,7 @@ class Dungeon
             return $a->compareByDistanceOnly($b);
         });
 
-        $turnWasComplete = false;
+        $lastOneDidSomething = false;
 
         foreach ($warriors as $warrior) {
             if ($warrior instanceof Elf) {
@@ -42,15 +42,17 @@ class Dungeon
                 $targets = $this->elves;
             }
 
-            $turnWasComplete = $this->moveWarrior($warrior, $targets);
+            if (\count($targets) === 0) {
+                return false;
+            }
+
+            $this->moveWarrior($warrior, $targets);
             $this->attack($warrior, $targets);
         }
 
-        if ($turnWasComplete) {
-            ++$this->turns;
-        }
+        ++$this->turns;
 
-        return $turnWasComplete;
+        return true;
     }
 
     public function getActualSituation(): string
@@ -213,7 +215,7 @@ class Dungeon
         return \array_shift($possibleMoves);
     }
 
-    private function attack(AbstractWarrior $warrior, array $targets): void
+    private function attack(AbstractWarrior $warrior, array $targets): bool
     {
         if ($tango = $this->getBestTarget($warrior, $targets)) {
             $warrior->attack($tango);
@@ -221,7 +223,11 @@ class Dungeon
             if ($tango->isDead()) {
                 $this->removeWarrior($tango);
             }
+
+            return true;
         }
+
+        return false;
     }
 
     private function getBestTarget(AbstractWarrior $warrior, array $targets): ?AbstractWarrior
