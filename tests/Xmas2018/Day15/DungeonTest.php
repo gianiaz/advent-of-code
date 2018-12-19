@@ -261,7 +261,7 @@ class DungeonTest extends TestCase
         } while (++$turn < 47);
 
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
-        $this->assertWarriorsHP([200, 131, 59, 131], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 131, 59, 200], $dungeon->getGoblins());
         $this->assertEmpty($dungeon->getElves());
     }
 
