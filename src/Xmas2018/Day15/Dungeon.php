@@ -8,6 +8,9 @@ class Dungeon
 {
     private const SPACE = '.';
 
+    /** @var int */
+    private $turns;
+
     /** @var AbstractWarrior[] */
     private $map;
 
@@ -20,6 +23,7 @@ class Dungeon
     public function __construct(string $map)
     {
         $this->map = $this->initMap($map);
+        $this->turns = 0;
     }
 
     public function tick(): bool
@@ -29,7 +33,7 @@ class Dungeon
             return $a->compareByDistanceOnly($b);
         });
 
-        $hasSomethingToDo = false;
+        $turnWasComplete = false;
 
         foreach ($warriors as $warrior) {
             if ($warrior instanceof Elf) {
@@ -38,13 +42,15 @@ class Dungeon
                 $targets = $this->elves;
             }
 
-            if ($this->moveWarrior($warrior, $targets)) {
-                $hasSomethingToDo = true;
-            }
+            $turnWasComplete = $this->moveWarrior($warrior, $targets);
             $this->attack($warrior, $targets);
         }
 
-        return $hasSomethingToDo;
+        if ($turnWasComplete) {
+            ++$this->turns;
+        }
+
+        return $turnWasComplete;
     }
 
     public function getActualSituation(): string
@@ -72,6 +78,16 @@ class Dungeon
     public function getGoblins(): array
     {
         return $this->goblins;
+    }
+
+    public function getTurns(): int
+    {
+        return $this->turns;
+    }
+
+    public function getOutcome(): int
+    {
+        return $this->getTotalHealth() * $this->getTurns();
     }
 
     private function initMap(string $map): array
