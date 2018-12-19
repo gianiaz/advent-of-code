@@ -187,8 +187,133 @@ class DungeonTest extends TestCase
         ];
     }
 
+
+    public function testGetActualSituationWithLimitedCombat(): void
+    {
+        $outcomes = $this->getFullCombatSequence();
+        
+        $dungeon = new Dungeon($outcomes[0]);
+
+        $turn = 0;
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $turn++;
+        $dungeon->tick();
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $turn++;
+        $dungeon->tick();
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        do {
+            $dungeon->tick();
+        } while (++$turn < 23);
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $turn++;
+        $dungeon->tick();
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+    }
+
+    public function testGetActualSituationWithFullCombat(): void
+    {
+        $outcomes = $this->getFullCombatSequence();
+        
+        $dungeon = new Dungeon($outcomes[0]);
+
+        $this->assertSame($outcomes[0], $dungeon->getActualSituation());
+        $turns = 0;
+
+        foreach ($outcomes as $turn => $situation) {
+            while ($turns < $turn) {
+                $turns++;
+                $dungeon->tick();
+            }
+            
+            $this->assertSame($situation, $dungeon->getActualSituation(), 'Failed on turn ' . $turn . ' ' . $turns);
+        }
+
+        $this->assertSame($situation, $dungeon->getActualSituation(), 'Something happened, game should have ended!');
+
+        $this->assertSame(47, $turns);
+        $this->assertSame(590, $dungeon->getTotalHealth());
+        $this->assertSame(27730, $dungeon->getTotalHealth() * $turns);
+    }
+
+    public function getFullCombatSequence(): array
+    {
+        return [
+                0 => '#######
+#.G...#
+#...EG#
+#.#.#G#
+#..G#E#
+#.....#
+#######',
+                1=> '#######
+#..G..#
+#...EG#
+#.#G#G#
+#...#E#
+#.....#
+#######',
+                2=> '#######
+#...G.#
+#..GEG#
+#.#.#G#
+#...#E#
+#.....#
+#######',
+                23 => '#######
+#...G.#
+#..G.G#
+#.#.#G#
+#...#E#
+#.....#
+#######',
+                24 => '#######
+#..G..#
+#...G.#
+#.#G#G#
+#...#E#
+#.....#
+#######',
+                25 => '#######
+#.G...#
+#..G..#
+#.#.#G#
+#..G#E#
+#.....#
+#######',
+                26 => '#######
+#G....#
+#.G...#
+#.#.#G#
+#...#E#
+#..G..#
+#######',
+                27 => '#######
+#G....#
+#.G...#
+#.#.#G#
+#...#E#
+#...G.#
+#######',
+                28 => '#######
+#G....#
+#.G...#
+#.#.#G#
+#...#E#
+#....G#
+#######',
+                47 => '#######
+#G....#
+#.G...#
+#.#.#G#
+#...#.#
+#....G#
+#######',
+        ];
+    }
+
     /**
-     * @dataProvider getTotalHealthProvider
+     * @dataProvider getOutcomeProvider
      */
     public function testGetOutcome(string $input, string $expectedSituation, int $expectedOutcome, int $expectedTurn, int $expectedTotalHP): void
     {
@@ -207,7 +332,7 @@ class DungeonTest extends TestCase
         $this->assertSame($expectedOutcome, $dungeon->getTotalHealth() * $turns);
     }
 
-    public function getTotalHealthProvider()
+    public function getOutcomeProvider(): array
     {
         return[
             [

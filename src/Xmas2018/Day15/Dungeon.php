@@ -26,7 +26,7 @@ class Dungeon
     {
         $warriors = array_merge($this->elves, $this->goblins);
         \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
-            return $a->compareTo($b);
+            return $a->compareByDistanceOnly($b);
         });
 
         $hasSomethingToDo = false;
@@ -190,6 +190,9 @@ class Dungeon
     private function getBestMove(AbstractWarrior $warrior, array $distanceMap): ?Distance
     {
         $possibleMoves = $this->getSortedAdjacentPositions($distanceMap, $warrior->getX(), $warrior->getY());
+        $possibleMoves = \array_filter($possibleMoves, function (Distance $distance) {
+            return $distance->getCost() < 1000;
+        });
 
         return \array_shift($possibleMoves);
     }
