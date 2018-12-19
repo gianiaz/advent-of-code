@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2018\Day15;
 
+use Jean85\AdventOfCode\Xmas2018\Day15\AbstractWarrior;
 use Jean85\AdventOfCode\Xmas2018\Day15\Dungeon;
 use Jean85\AdventOfCode\Xmas2018\Day15\Elf;
 use Jean85\AdventOfCode\Xmas2018\Day15\Goblin;
@@ -191,24 +192,77 @@ class DungeonTest extends TestCase
     public function testGetActualSituationWithLimitedCombat(): void
     {
         $outcomes = $this->getFullCombatSequence();
-        
         $dungeon = new Dungeon($outcomes[0]);
-
         $turn = 0;
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
-        $turn++;
+        $this->assertWarriorsHP([200, 200, 200, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([200, 200], $dungeon->getElves());
+        
+        $turn++; // 1
         $dungeon->tick();
+        
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
-        $turn++;
+        $this->assertWarriorsHP([200, 197, 200, 197], $dungeon->getGoblins());
+        $this->assertWarriorsHP([197, 197], $dungeon->getElves());
+        
+        $turn++; // 2
         $dungeon->tick();
+        
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 200, 194, 194], $dungeon->getGoblins());
+        $this->assertWarriorsHP([188, 194], $dungeon->getElves());
+        
         do {
             $dungeon->tick();
         } while (++$turn < 23);
+        
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 200, 131, 131], $dungeon->getGoblins());
+        $this->assertWarriorsHP([131], $dungeon->getElves());
+
         $turn++;
         $dungeon->tick();
+        
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 131, 200, 128], $dungeon->getGoblins());
+        $this->assertWarriorsHP([128], $dungeon->getElves());
+
+        $turn++;
+        $dungeon->tick();
+        
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 131, 125, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([125], $dungeon->getElves());
+
+        $turn++;
+        $dungeon->tick();
+        
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 131, 122, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([122], $dungeon->getElves());
+
+        $turn++;
+        $dungeon->tick();
+        
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 131, 119, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([119], $dungeon->getElves());
+
+        $turn++;
+        $dungeon->tick();
+        
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 131, 116, 200], $dungeon->getGoblins());
+        $this->assertWarriorsHP([113], $dungeon->getElves());
+
+        do {
+            $dungeon->tick();
+        } while (++$turn < 47);
+
+        $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
+        $this->assertWarriorsHP([200, 131, 59, 131], $dungeon->getGoblins());
+        $this->assertEmpty($dungeon->getElves());
     }
 
     public function testGetActualSituationWithFullCombat(): void
@@ -442,5 +496,25 @@ class DungeonTest extends TestCase
                 18740, 20, 937,
             ],
         ];
+    }
+
+    /**
+     * @param int[] $expectedHPs
+     * @param AbstractWarrior[] $warriors
+     */
+    private function assertWarriorsHP(array $expectedHPs, array $warriors): void
+    {
+        \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
+            return $a->compareByDistanceOnly($b);
+        });
+
+        foreach ($expectedHPs as $key => $expectedHP) {
+            $warrior = $warriors[$key];
+            $this->assertSame(
+                $expectedHP, 
+                $warrior->getHealth(), 
+                sprintf('Wrong HP on %s at %d,%d', $warrior, $warrior->getX(), $warrior->getY())
+            );
+        }
     }
 }
