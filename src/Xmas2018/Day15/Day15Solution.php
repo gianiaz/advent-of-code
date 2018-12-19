@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day15;
 
 use Jean85\AdventOfCode\SolutionInterface;
@@ -10,6 +12,7 @@ class Day15Solution implements SolutionInterface
 
     /**
      * Day15Solution constructor.
+     *
      * @param $input
      */
     public function __construct(string $input = null)
@@ -19,11 +22,12 @@ class Day15Solution implements SolutionInterface
 
     public function solve()
     {
-        ini_set('xdebug.max_nesting_level', 1024);
+        ini_set('xdebug.max_nesting_level', '1024');
         $dungeon = new Dungeon($this->input);
-        
-        do {} while ($dungeon->tick());
-        
+
+        do {
+        } while ($dungeon->tick());
+
         return $dungeon->getOutcome();
     }
 
@@ -62,5 +66,4 @@ class Day15Solution implements SolutionInterface
 #####...####.#..#..##..#########
 ################################';
     }
-
 }

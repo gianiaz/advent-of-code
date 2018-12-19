@@ -25,8 +25,15 @@ class Distance extends AbstractPosition
 
         $this->cost = $cost;
 
+        $costForNeighbours = $cost + 1;
         foreach ($this->neighbors as $neighbor) {
-            $neighbor->setCost($cost + 1);
+            if ($costForNeighbours < $neighbor->cost) {
+                $neighbor->cost = $costForNeighbours;
+            }
+        }
+
+        foreach ($this->neighbors as $neighbor) {
+            $neighbor->setCost($costForNeighbours);
         }
     }
 

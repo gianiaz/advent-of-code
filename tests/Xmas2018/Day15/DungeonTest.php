@@ -619,15 +619,14 @@ class DungeonTest extends TestCase
         $this->assertSame($situation, $dungeon->getActualSituation());
         $this->assertWarriorsHP([155, 182], $dungeon->getGoblins());
         $this->assertWarriorsHP([200, 200, 152, 200, 200, 200], $dungeon->getElves());
-        
+
         do {
             $dungeon->tick();
             $this->assertSame($situation, $dungeon->getActualSituation(), 'At turn ' . $dungeon->getTurns());
-        } while($dungeon->getTurns() < 33);
+        } while ($dungeon->getTurns() < 33);
 
         $this->assertWarriorsHP([5, 32], $dungeon->getGoblins());
         $this->assertWarriorsHP([200, 200, 2, 200, 200, 200], $dungeon->getElves());
-
 
         $dungeon->tick();
 

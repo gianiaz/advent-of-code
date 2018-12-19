@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Xmas2018\Day15;
 
 use Jean85\AdventOfCode\Xmas2018\Day15\Day15Solution;
@@ -10,10 +12,10 @@ class Day15SolutionTest extends TestCase
     /**
      * @dataProvider solveDataProvider
      */
-    public function testSolve(string $input, int $outcome): void 
+    public function testSolve(string $input, int $outcome): void
     {
         $solution = new Day15Solution($input);
-        
+
         $this->assertSame($outcome, $solution->solve());
     }
 
@@ -39,7 +41,7 @@ class Day15SolutionTest extends TestCase
 #...E.#
 #######',
                 36334,
-            ]
+            ],
         ];
     }
 }

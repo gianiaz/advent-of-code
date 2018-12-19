@@ -131,6 +131,7 @@ class Dungeon
 
         $targetFound = false;
         foreach ($targets as $tango) {
+            /** @var Distance $target */
             foreach ($this->getSortedAdjacentPositions($distanceMap, $tango->getX(), $tango->getY()) as $target) {
                 $target->setCost(0);
                 $targetFound = true;
@@ -167,7 +168,7 @@ class Dungeon
 
         foreach ($distanceMap as $y => $row) {
             foreach ($row as $x => $distance) {
-                foreach ($this->getSortedAdjacentPositions($distanceMap, $x, $y) as $neighbour) {
+                foreach ($this->getUnsortedAdjacentPositions($distanceMap, $x, $y) as $neighbour) {
                     $distance->addNeighbor($neighbour);
                 }
             }
@@ -183,19 +184,7 @@ class Dungeon
      */
     private function getSortedAdjacentPositions(array $distanceMap, int $x, int $y): array
     {
-        $adjacent = [];
-        if ($neighbour = $distanceMap[$y - 1][$x] ?? null) {
-            $adjacent[] = $neighbour;
-        }
-        if ($neighbour = $distanceMap[$y][$x - 1] ?? null) {
-            $adjacent[] = $neighbour;
-        }
-        if ($neighbour = $distanceMap[$y][$x + 1] ?? null) {
-            $adjacent[] = $neighbour;
-        }
-        if ($neighbour = $distanceMap[$y + 1][$x] ?? null) {
-            $adjacent[] = $neighbour;
-        }
+        $adjacent = $this->getUnsortedAdjacentPositions($distanceMap, $x, $y);
 
         \usort($adjacent, function (AbstractPosition $a, AbstractPosition $b) {
             return $a->compareTo($b);
@@ -276,5 +265,24 @@ class Dungeon
         }
 
         return $totalHitPoints;
+    }
+
+    private function getUnsortedAdjacentPositions(array $distanceMap, int $x, int $y): array
+    {
+        $adjacent = [];
+        if ($neighbour = $distanceMap[$y - 1][$x] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+        if ($neighbour = $distanceMap[$y][$x - 1] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+        if ($neighbour = $distanceMap[$y][$x + 1] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+        if ($neighbour = $distanceMap[$y + 1][$x] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+
+        return $adjacent;
     }
 }
