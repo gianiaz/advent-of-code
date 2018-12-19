@@ -19,10 +19,12 @@ abstract class AbstractWarrior extends AbstractPosition
         return $this->health <= 0;
     }
 
-    public function moveTo(Distance $distance): void
+    public function moveToward(Distance $target): void
     {
-        $this->x = $distance->getX();
-        $this->y = $distance->getY();
+        $move = $target->findStepToward();
+
+        $this->x = $move->getX();
+        $this->y = $move->getY();
     }
 
     abstract public static function getSymbol(): string;
@@ -44,7 +46,7 @@ abstract class AbstractWarrior extends AbstractPosition
             return $compareHealth;
         }
 
-        return $this->compareByDistanceOnly($other);
+        return $this->compareByReadingOrder($other);
     }
 
     public function canAttack(AbstractWarrior $tango): bool
@@ -61,5 +63,10 @@ abstract class AbstractWarrior extends AbstractPosition
     public function attack(AbstractWarrior $tango): void
     {
         $tango->health -= 3;
+    }
+
+    public function getDistanceFrom(AbstractPosition $a): int
+    {
+        return abs($a->x - $this->x) + abs($a->y - $this->y);
     }
 }

@@ -30,10 +30,10 @@ abstract class AbstractPosition
 
     public function compareTo(AbstractPosition $other): int
     {
-        return $this->compareByDistanceOnly($other);
+        return $this->compareByReadingOrder($other);
     }
 
-    public function compareByDistanceOnly(AbstractPosition $other): int
+    public function compareByReadingOrder(AbstractPosition $other): int
     {
         $compareY = $this->getY() <=> $other->getY();
 

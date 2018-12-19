@@ -31,7 +31,7 @@ class Dungeon
         /** @var AbstractWarrior[] $warriors */
         $warriors = array_merge($this->elves, $this->goblins);
         \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
-            return $a->compareByDistanceOnly($b);
+            return $a->compareByReadingOrder($b);
         });
 
         foreach ($warriors as $warrior) {
@@ -120,6 +120,11 @@ class Dungeon
         return $translatedMap;
     }
 
+    /**
+     * @param AbstractWarrior $warrior
+     * @param AbstractWarrior[] $targets
+     * @return bool
+     */
     private function moveWarrior(AbstractWarrior $warrior, array $targets): bool
     {
         if ($this->getBestTarget($warrior, $targets)) {
@@ -127,26 +132,28 @@ class Dungeon
             return true;
         }
 
-        $distanceMap = $this->createEmptyDistanceMap();
+        $distanceMap = $this->createDistanceMap($warrior);
 
-        $targetFound = false;
+        $bestMoves = [];
         foreach ($targets as $tango) {
-            /** @var Distance $target */
-            foreach ($this->getSortedAdjacentPositions($distanceMap, $tango->getX(), $tango->getY()) as $target) {
-                $target->setCost(0);
-                $targetFound = true;
+            $adjacentPositions = $this->getUnsortedAdjacentPositions($distanceMap, $tango->getX(), $tango->getY());
+            if ($adjacentPositions) {
+                array_push($bestMoves, ...$adjacentPositions);
             }
         }
 
-        if (! $targetFound) {
+        $bestMoves = \array_filter($bestMoves, function (Distance $a) { return $a->getCost() < 1000;});
+        if (\count($bestMoves) === 0) {
             return false;
         }
 
-        if ($bestMove = $this->getBestMove($warrior, $distanceMap)) {
-            $this->map[$warrior->getY()][$warrior->getX()] = self::SPACE;
-            $warrior->moveTo($bestMove);
-            $this->map[$warrior->getY()][$warrior->getX()] = (string) $warrior;
-        }
+        \usort($bestMoves, function (Distance $a, Distance $b) {
+            return $a->compareTo($b);
+        });
+
+        $this->map[$warrior->getY()][$warrior->getX()] = self::SPACE;
+        $warrior->moveToward(\array_shift($bestMoves));
+        $this->map[$warrior->getY()][$warrior->getX()] = (string) $warrior;
 
         return true;
     }
@@ -154,7 +161,7 @@ class Dungeon
     /**
      * @return Distance[][]
      */
-    private function createEmptyDistanceMap(): array
+    private function createDistanceMap(AbstractWarrior $warrior): array
     {
         /** @var Distance[][] $distanceMap */
         $distanceMap = [];
@@ -166,6 +173,8 @@ class Dungeon
             }
         }
 
+        $origin = $distanceMap[$warrior->getY()][$warrior->getX()] = new Distance($warrior->getX(), $warrior->getY());
+
         foreach ($distanceMap as $y => $row) {
             foreach ($row as $x => $distance) {
                 foreach ($this->getUnsortedAdjacentPositions($distanceMap, $x, $y) as $neighbour) {
@@ -173,6 +182,8 @@ class Dungeon
                 }
             }
         }
+
+        $origin->setCost(0);
 
         return $distanceMap;
     }

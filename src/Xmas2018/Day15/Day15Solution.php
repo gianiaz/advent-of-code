@@ -26,6 +26,7 @@ class Day15Solution implements SolutionInterface
         $dungeon = new Dungeon($this->input);
 
         do {
+            echo 'Turn: ' . $dungeon->getTurns() . PHP_EOL;
         } while ($dungeon->tick());
 
         return $dungeon->getOutcome();

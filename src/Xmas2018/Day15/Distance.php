@@ -64,4 +64,25 @@ class Distance extends AbstractPosition
     {
         $this->neighbors[] = $new;
     }
+
+    public function findStepToward(): ?self
+    {
+        if ($this->cost === 1) {
+            return $this;
+        }
+        $cost = $this->cost;
+        $neighborsWithLesserCost = \array_filter($this->neighbors, function (self $a) use ($cost) {
+            return $a->cost < $cost;
+        });
+        
+        $firstStepToward = \array_map(function (self $a) {
+            return $a->findStepToward();
+        }, \array_filter($neighborsWithLesserCost));
+
+        \usort($firstStepToward, function (self $a, self $b) {
+            return $a->compareTo($b);
+        });
+
+        return array_shift($firstStepToward);
+    }
 }

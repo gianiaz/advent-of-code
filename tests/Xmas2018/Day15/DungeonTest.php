@@ -650,7 +650,7 @@ class DungeonTest extends TestCase
     private function assertWarriorsHP(array $expectedHPs, array $warriors): void
     {
         \usort($warriors, function (AbstractWarrior $a, AbstractWarrior $b) {
-            return $a->compareByDistanceOnly($b);
+            return $a->compareByReadingOrder($b);
         });
 
         foreach ($expectedHPs as $key => $expectedHP) {
