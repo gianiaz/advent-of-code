@@ -188,7 +188,6 @@ class DungeonTest extends TestCase
         ];
     }
 
-
     public function testGetActualSituationWithLimitedCombat(): void
     {
         $outcomes = $this->getFullCombatSequence();
@@ -198,60 +197,60 @@ class DungeonTest extends TestCase
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 200, 200, 200], $dungeon->getGoblins());
         $this->assertWarriorsHP([200, 200], $dungeon->getElves());
-        
-        $turn++; // 1
+
+        ++$turn; // 1
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 197, 200, 197], $dungeon->getGoblins());
         $this->assertWarriorsHP([197, 197], $dungeon->getElves());
-        
-        $turn++; // 2
+
+        ++$turn; // 2
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 200, 194, 194], $dungeon->getGoblins());
         $this->assertWarriorsHP([188, 194], $dungeon->getElves());
-        
+
         do {
             $dungeon->tick();
         } while (++$turn < 23);
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 200, 131, 131], $dungeon->getGoblins());
         $this->assertWarriorsHP([131], $dungeon->getElves());
 
-        $turn++;
+        ++$turn;
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 131, 200, 128], $dungeon->getGoblins());
         $this->assertWarriorsHP([128], $dungeon->getElves());
 
-        $turn++;
+        ++$turn;
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 131, 125, 200], $dungeon->getGoblins());
         $this->assertWarriorsHP([125], $dungeon->getElves());
 
-        $turn++;
+        ++$turn;
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 131, 122, 200], $dungeon->getGoblins());
         $this->assertWarriorsHP([122], $dungeon->getElves());
 
-        $turn++;
+        ++$turn;
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 131, 119, 200], $dungeon->getGoblins());
         $this->assertWarriorsHP([119], $dungeon->getElves());
 
-        $turn++;
+        ++$turn;
         $dungeon->tick();
-        
+
         $this->assertSame($outcomes[$turn], $dungeon->getActualSituation());
         $this->assertWarriorsHP([200, 131, 116, 200], $dungeon->getGoblins());
         $this->assertWarriorsHP([113], $dungeon->getElves());
@@ -268,7 +267,7 @@ class DungeonTest extends TestCase
     public function testGetActualSituationWithFullCombat(): void
     {
         $outcomes = $this->getFullCombatSequence();
-        
+
         $dungeon = new Dungeon($outcomes[0]);
 
         $this->assertSame($outcomes[0], $dungeon->getActualSituation());
@@ -276,10 +275,10 @@ class DungeonTest extends TestCase
 
         foreach ($outcomes as $turn => $situation) {
             while ($turns < $turn) {
-                $turns++;
+                ++$turns;
                 $dungeon->tick();
             }
-            
+
             $this->assertSame($situation, $dungeon->getActualSituation(), 'Failed on turn ' . $turn . ' ' . $turns);
         }
 
@@ -293,70 +292,70 @@ class DungeonTest extends TestCase
     public function getFullCombatSequence(): array
     {
         return [
-                0 => '#######
+            0 => '#######
 #.G...#
 #...EG#
 #.#.#G#
 #..G#E#
 #.....#
 #######',
-                1=> '#######
+            1 => '#######
 #..G..#
 #...EG#
 #.#G#G#
 #...#E#
 #.....#
 #######',
-                2=> '#######
+            2 => '#######
 #...G.#
 #..GEG#
 #.#.#G#
 #...#E#
 #.....#
 #######',
-                23 => '#######
+            23 => '#######
 #...G.#
 #..G.G#
 #.#.#G#
 #...#E#
 #.....#
 #######',
-                24 => '#######
+            24 => '#######
 #..G..#
 #...G.#
 #.#G#G#
 #...#E#
 #.....#
 #######',
-                25 => '#######
+            25 => '#######
 #.G...#
 #..G..#
 #.#.#G#
 #..G#E#
 #.....#
 #######',
-                26 => '#######
+            26 => '#######
 #G....#
 #.G...#
 #.#.#G#
 #...#E#
 #..G..#
 #######',
-                27 => '#######
+            27 => '#######
 #G....#
 #.G...#
 #.#.#G#
 #...#E#
 #...G.#
 #######',
-                28 => '#######
+            28 => '#######
 #G....#
 #.G...#
 #.#.#G#
 #...#E#
 #....G#
 #######',
-                47 => '#######
+            47 => '#######
 #G....#
 #.G...#
 #.#.#G#
@@ -511,8 +510,8 @@ class DungeonTest extends TestCase
         foreach ($expectedHPs as $key => $expectedHP) {
             $warrior = $warriors[$key];
             $this->assertSame(
-                $expectedHP, 
-                $warrior->getHealth(), 
+                $expectedHP,
+                $warrior->getHealth(),
                 sprintf('Wrong HP on %s at %d,%d', $warrior, $warrior->getX(), $warrior->getY())
             );
         }
