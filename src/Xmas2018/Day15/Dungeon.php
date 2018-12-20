@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day15;
 
+use function foo\func;
+
 class Dungeon
 {
-    private const SPACE = '.';
+    public const SPACE = '.';
+    public const WALL = '#';
 
     /** @var int */
     private $turns;
 
-    /** @var AbstractWarrior[] */
+    /** @var DungeonWall[][] */
     private $map;
 
     /** @var Elf[] */
@@ -38,6 +41,7 @@ class Dungeon
             if ($warrior->isDead()) {
                 continue;
             }
+
             if ($warrior instanceof Elf) {
                 $targets = $this->goblins;
             } else {
@@ -96,34 +100,78 @@ class Dungeon
 
     private function initMap(string $map): array
     {
+        /** @var DungeonWall[][] $translatedMap */
         $translatedMap = [];
 
         foreach (explode(PHP_EOL, $map) as $y => $row) {
-            foreach (str_split($row) as $x => $cell) {
-                $toBeFilled = $cell;
+            foreach (str_split($row) as $x => $char) {
+                $dungeonCell = new DungeonCell($x, $y);
 
-                switch ($cell) {
+                switch ($char) {
+                    case self::WALL:
+                        $dungeonCell = new DungeonWall($x, $y);
+                        break;
                     case Goblin::getSymbol():
-                        $toBeFilled = new Goblin($x, $y);
-                        $this->goblins[] = $toBeFilled;
+                        $warrior = new Goblin($dungeonCell);
+                        $this->goblins[] = $warrior;
                         break;
                     case Elf::getSymbol():
-                        $toBeFilled = new Elf($x, $y);
-                        $this->elves[] = $toBeFilled;
+                        $warrior = new Elf($dungeonCell);
+                        $this->elves[] = $warrior;
                         break;
+                    case self::SPACE:
+                        break;
+                    default:
+                        throw new \InvalidArgumentException('Unecognized dungeon symbol: ' . $char);
                 }
 
-                $translatedMap[$y][$x] = $toBeFilled;
+                $translatedMap[$y][$x] = $dungeonCell;
             }
+        }
+
+        foreach ($translatedMap as $y => $row) {
+            foreach ($row as $x => $cell) {
+                if ($cell instanceof DungeonCell) {
+                    foreach ($this->getAdjacentCells($translatedMap, $x, $y) as $adjacentCell) {
+                        $cell->addNeighbor($adjacentCell);
+                    }
+                }
+            }
+
         }
 
         return $translatedMap;
     }
 
     /**
-     * @param AbstractWarrior $warrior
+     * @param DungeonWall[][] $map
+     * @param int $x
+     * @param int $y
+     * @return DungeonCell[]
+     */
+    private function getAdjacentCells(array $map, int $x, int $y): array
+    {
+        $adjacent = [];
+        if ($neighbour = $map[$y - 1][$x] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+        if ($neighbour = $map[$y][$x - 1] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+        if ($neighbour = $map[$y][$x + 1] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+        if ($neighbour = $map[$y + 1][$x] ?? null) {
+            $adjacent[] = $neighbour;
+        }
+
+        return \array_filter($adjacent, function ($a) {
+            return $a instanceof DungeonCell;
+        });
+    }
+
+    /**
      * @param AbstractWarrior[] $targets
-     * @return bool
      */
     private function moveWarrior(AbstractWarrior $warrior, array $targets): bool
     {
@@ -132,94 +180,47 @@ class Dungeon
             return true;
         }
 
-        $distanceMap = $this->createDistanceMap($warrior);
+        $this->resetMap();
+        /** @var DungeonCell[] $nextCellsToBeEvaluated */
+        $nextCellsToBeEvaluated = [$warrior->getCell()];
+        $seenCells = $nextCellsToBeEvaluated;
+        /** @var DungeonCell[] $targets */
+        $targets = [];
+        do {
+            $cellsToBeEvaluated = $nextCellsToBeEvaluated;
+            $nextCellsToBeEvaluated = [];
+            foreach ($cellsToBeEvaluated as $cell) {
+                $neighbors = $cell->getNeighbors();
+                foreach ($neighbors as $neighborCell) {
+                    $neighborCell->setPrevious($cell);
 
-        $bestMoves = [];
-        foreach ($targets as $tango) {
-            $adjacentPositions = $this->getUnsortedAdjacentPositions($distanceMap, $tango->getX(), $tango->getY());
-            if ($adjacentPositions) {
-                array_push($bestMoves, ...$adjacentPositions);
+                    if ($neighborCell->getWarrior()) {
+                        $targets[] = $cell;
+                    } elseif (! \in_array($neighborCell, $seenCells, true)) {
+                        $seenCells[] = $neighborCell;
+                        $nextCellsToBeEvaluated[] = $neighborCell;
+                    }
+                }
             }
-        }
+        } while ($targets === []);
 
-        $bestMoves = \array_filter($bestMoves, function (Distance $a) { return $a->getCost() < 1000;});
-        if (\count($bestMoves) === 0) {
-            return false;
-        }
-
-        \usort($bestMoves, function (Distance $a, Distance $b) {
+        \usort($targets, function (DungeonCell $a, DungeonCell $b) {
             return $a->compareTo($b);
         });
+        $chosenTarget = $targets[0];
 
-        $this->map[$warrior->getY()][$warrior->getX()] = self::SPACE;
-        $warrior->moveToward(\array_shift($bestMoves));
-        $this->map[$warrior->getY()][$warrior->getX()] = (string) $warrior;
+        while (null !== $chosenTarget->getPrevious() && $warrior->getCell() !== $chosenTarget->getPrevious()) {
+            $chosenTarget = $chosenTarget->getPrevious();
+        }
+
+        $warrior->setCell($chosenTarget);
 
         return true;
     }
 
-    /**
-     * @return Distance[][]
-     */
-    private function createDistanceMap(AbstractWarrior $warrior): array
+    private function attack(AbstractWarrior $warrior): bool
     {
-        /** @var Distance[][] $distanceMap */
-        $distanceMap = [];
-        foreach ($this->map as $y => $row) {
-            foreach ($row as $x => $cell) {
-                if (self::SPACE === $this->map[$y][$x]) {
-                    $distanceMap[$y][$x] = new Distance($x, $y);
-                }
-            }
-        }
-
-        $origin = $distanceMap[$warrior->getY()][$warrior->getX()] = new Distance($warrior->getX(), $warrior->getY());
-
-        foreach ($distanceMap as $y => $row) {
-            foreach ($row as $x => $distance) {
-                foreach ($this->getUnsortedAdjacentPositions($distanceMap, $x, $y) as $neighbour) {
-                    $distance->addNeighbor($neighbour);
-                }
-            }
-        }
-
-        $origin->setCost(0);
-
-        return $distanceMap;
-    }
-
-    /**
-     * @param AbstractPosition[][] $distanceMap
-     *
-     * @return AbstractPosition[]
-     */
-    private function getSortedAdjacentPositions(array $distanceMap, int $x, int $y): array
-    {
-        $adjacent = $this->getUnsortedAdjacentPositions($distanceMap, $x, $y);
-
-        \usort($adjacent, function (AbstractPosition $a, AbstractPosition $b) {
-            return $a->compareTo($b);
-        });
-
-        return $adjacent;
-    }
-
-    /**
-     * @param Distance[][] $distanceMap
-     */
-    private function getBestMove(AbstractWarrior $warrior, array $distanceMap): ?Distance
-    {
-        $possibleMoves = $this->getSortedAdjacentPositions($distanceMap, $warrior->getX(), $warrior->getY());
-        $possibleMoves = \array_filter($possibleMoves, function (Distance $distance) {
-            return $distance->getCost() < 1000;
-        });
-
-        return \array_shift($possibleMoves);
-    }
-
-    private function attack(AbstractWarrior $warrior, array $targets): bool
-    {
-        if ($tango = $this->getBestTarget($warrior, $targets)) {
+        if ($tango = $this->getBestTarget($warrior)) {
             $warrior->attack($tango);
 
             if ($tango->isDead()) {
@@ -232,11 +233,16 @@ class Dungeon
         return false;
     }
 
-    private function getBestTarget(AbstractWarrior $warrior, array $targets): ?AbstractWarrior
+    private function getBestTarget(AbstractWarrior $warrior): ?AbstractWarrior
     {
-        $targetsInRange = \array_filter($targets, function (AbstractWarrior $tango) use ($warrior) {
-            return $warrior->canAttack($tango);
-        });
+        $possibleTargets = [];
+        foreach ($this->getAdjacentCells($this->map, $warrior->getX(), $warrior->getY()) as $adjacentCell) {
+            if ($adjacentCell->getWarrior()) {
+                $possibleTargets[] = $adjacentCell->getWarrior();
+            }
+        }
+
+        $targetsInRange = \array_filter($possibleTargets, function(AbstractWarrior $a) use ($warrior) { return $warrior->canAttack($a); });
 
         \usort($targetsInRange, function (AbstractWarrior $a, AbstractWarrior $b) {
             return $a->compareTo($b);
@@ -278,22 +284,14 @@ class Dungeon
         return $totalHitPoints;
     }
 
-    private function getUnsortedAdjacentPositions(array $distanceMap, int $x, int $y): array
+    private function resetMap(): void
     {
-        $adjacent = [];
-        if ($neighbour = $distanceMap[$y - 1][$x] ?? null) {
-            $adjacent[] = $neighbour;
+        foreach ($this->map as $row) {
+            foreach ($row as $cell) {
+                if ($cell instanceof DungeonCell) {
+                    $cell->setPrevious(null);
+                }
+            }
         }
-        if ($neighbour = $distanceMap[$y][$x - 1] ?? null) {
-            $adjacent[] = $neighbour;
-        }
-        if ($neighbour = $distanceMap[$y][$x + 1] ?? null) {
-            $adjacent[] = $neighbour;
-        }
-        if ($neighbour = $distanceMap[$y + 1][$x] ?? null) {
-            $adjacent[] = $neighbour;
-        }
-
-        return $adjacent;
     }
 }

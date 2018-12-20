@@ -9,6 +9,29 @@ abstract class AbstractWarrior extends AbstractPosition
     /** @var int */
     private $health = 200;
 
+    /** @var DungeonCell */
+    private $cell;
+
+    public function __construct(DungeonCell $cell)
+    {
+        $this->setCell($cell);
+    }
+
+    public function getCell(): DungeonCell
+    {
+        return $this->cell;
+    }
+
+    public function setCell(DungeonCell $cell): void
+    {
+        if ($cell->getWarrior()) {
+            throw new \RuntimeException('Cell is occupied!');
+        }
+
+        $cell->setWarrior($this);
+        $this->cell = $cell;
+    }
+
     public function getHealth(): int
     {
         return $this->health;
@@ -19,12 +42,14 @@ abstract class AbstractWarrior extends AbstractPosition
         return $this->health <= 0;
     }
 
-    public function moveToward(Distance $target): void
+    public function getX(): int
     {
-        $move = $target->findStepToward();
+        return $this->cell->getX();
+    }
 
-        $this->x = $move->getX();
-        $this->y = $move->getY();
+    public function getY(): int
+    {
+        return $this->cell->getY();
     }
 
     abstract public static function getSymbol(): string;
@@ -55,7 +80,7 @@ abstract class AbstractWarrior extends AbstractPosition
             return false;
         }
 
-        $manhattanDistance = abs($this->x - $tango->x) + abs($this->y - $tango->y);
+        $manhattanDistance = abs($this->getX() - $tango->getX()) + abs($this->getY() - $tango->getY());
 
         return 1 === $manhattanDistance;
     }
@@ -67,6 +92,6 @@ abstract class AbstractWarrior extends AbstractPosition
 
     public function getDistanceFrom(AbstractPosition $a): int
     {
-        return abs($a->x - $this->x) + abs($a->y - $this->y);
+        return abs($a->getX() - $this->cell->getX()) + abs($a->getY() - $this->cell->getY());
     }
 }
