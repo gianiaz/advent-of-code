@@ -52,8 +52,8 @@ class Dungeon
                 return false;
             }
 
-            $this->moveWarrior($warrior, $targets);
-            $this->attack($warrior, $targets);
+            $this->moveWarrior($warrior);
+            $this->attack($warrior);
         }
 
         ++$this->turns;
@@ -173,9 +173,9 @@ class Dungeon
     /**
      * @param AbstractWarrior[] $targets
      */
-    private function moveWarrior(AbstractWarrior $warrior, array $targets): bool
+    private function moveWarrior(AbstractWarrior $warrior): bool
     {
-        if ($this->getBestTarget($warrior, $targets)) {
+        if ($this->getBestTarget($warrior)) {
             // can attack, doesn't move
             return true;
         }
@@ -192,13 +192,17 @@ class Dungeon
             foreach ($cellsToBeEvaluated as $cell) {
                 $neighbors = $cell->getNeighbors();
                 foreach ($neighbors as $neighborCell) {
-                    $neighborCell->setPrevious($cell);
+                    if (\in_array($neighborCell, $seenCells, true)) {
+                        continue;
+                    }
 
-                    if ($neighborCell->getWarrior()) {
-                        $targets[] = $cell;
-                    } elseif (! \in_array($neighborCell, $seenCells, true)) {
-                        $seenCells[] = $neighborCell;
+                    $seenCells[] = $neighborCell;
+
+                    if (null === $possibleFoe = $neighborCell->getWarrior()) {
                         $nextCellsToBeEvaluated[] = $neighborCell;
+                        $neighborCell->setPrevious($cell);
+                    } elseif ($warrior->canAttack($possibleFoe)) {
+                        $targets[] = $cell;
                     }
                 }
             }

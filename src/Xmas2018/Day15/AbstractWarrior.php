@@ -27,6 +27,10 @@ abstract class AbstractWarrior extends AbstractPosition
         if ($cell->getWarrior()) {
             throw new \RuntimeException('Cell is occupied!');
         }
+        
+        if ($this->cell) {
+            $this->cell->setWarrior(null);
+        }
 
         $cell->setWarrior($this);
         $this->cell = $cell;
@@ -76,13 +80,7 @@ abstract class AbstractWarrior extends AbstractPosition
 
     public function canAttack(AbstractWarrior $tango): bool
     {
-        if ($tango instanceof static) {
-            return false;
-        }
-
-        $manhattanDistance = abs($this->getX() - $tango->getX()) + abs($this->getY() - $tango->getY());
-
-        return 1 === $manhattanDistance;
+        return ! $tango instanceof static;
     }
 
     public function attack(AbstractWarrior $tango): void

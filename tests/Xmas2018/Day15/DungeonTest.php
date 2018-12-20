@@ -67,7 +67,7 @@ class DungeonTest extends TestCase
 
         $dungeon->tick();
 
-        $this->assertSame($expectedSituation, $dungeon->getActualSituation());
+        $this->assertSame($expectedSituation, $dungeon->getActualSituation(), PHP_EOL . $expectedSituation . $dungeon->getActualSituation());
     }
 
     public function tickDataProvider(): array
