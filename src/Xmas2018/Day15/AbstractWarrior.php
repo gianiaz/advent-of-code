@@ -27,7 +27,7 @@ abstract class AbstractWarrior extends AbstractPosition
         if ($cell->getWarrior()) {
             throw new \RuntimeException('Cell is occupied!');
         }
-        
+
         if ($this->cell) {
             $this->cell->setWarrior(null);
         }

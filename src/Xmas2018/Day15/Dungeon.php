@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day15;
 
-use function foo\func;
-
 class Dungeon
 {
     public const SPACE = '.';
@@ -137,7 +135,6 @@ class Dungeon
                     }
                 }
             }
-
         }
 
         return $translatedMap;
@@ -145,8 +142,7 @@ class Dungeon
 
     /**
      * @param DungeonWall[][] $map
-     * @param int $x
-     * @param int $y
+     *
      * @return DungeonCell[]
      */
     private function getAdjacentCells(array $map, int $x, int $y): array
@@ -170,9 +166,6 @@ class Dungeon
         });
     }
 
-    /**
-     * @param AbstractWarrior[] $targets
-     */
     private function moveWarrior(AbstractWarrior $warrior): bool
     {
         if ($this->getBestTarget($warrior)) {
@@ -215,7 +208,7 @@ class Dungeon
         \usort($targets, function (DungeonCell $a, DungeonCell $b) {
             return $a->compareTo($b);
         });
-        
+
         $chosenTarget = $targets[0];
 
         while (null !== $chosenTarget->getPrevious() && $warrior->getCell() !== $chosenTarget->getPrevious()) {
@@ -251,7 +244,9 @@ class Dungeon
             }
         }
 
-        $targetsInRange = \array_filter($possibleTargets, function(AbstractWarrior $a) use ($warrior) { return $warrior->canAttack($a); });
+        $targetsInRange = \array_filter($possibleTargets, function (AbstractWarrior $a) use ($warrior) {
+            return $warrior->canAttack($a);
+        });
 
         \usort($targetsInRange, function (AbstractWarrior $a, AbstractWarrior $b) {
             return $a->compareTo($b);
