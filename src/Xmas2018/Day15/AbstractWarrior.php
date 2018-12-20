@@ -92,4 +92,9 @@ abstract class AbstractWarrior extends AbstractPosition
     {
         return abs($a->getX() - $this->cell->getX()) + abs($a->getY() - $this->cell->getY());
     }
+
+    public function die(): void
+    {
+        $this->cell->setWarrior(null);
+    }
 }

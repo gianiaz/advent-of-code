@@ -197,8 +197,8 @@ class Dungeon
                     }
 
                     $seenCells[] = $neighborCell;
-
-                    if (null === $possibleFoe = $neighborCell->getWarrior()) {
+                    $possibleFoe = $neighborCell->getWarrior();
+                    if ($possibleFoe === null) {
                         $nextCellsToBeEvaluated[] = $neighborCell;
                         $neighborCell->setPrevious($cell);
                     } elseif ($warrior->canAttack($possibleFoe)) {
@@ -206,11 +206,16 @@ class Dungeon
                     }
                 }
             }
-        } while ($targets === []);
+        } while (empty($targets) && ! empty($nextCellsToBeEvaluated));
+
+        if ($targets === []) {
+            return false;
+        }
 
         \usort($targets, function (DungeonCell $a, DungeonCell $b) {
             return $a->compareTo($b);
         });
+        
         $chosenTarget = $targets[0];
 
         while (null !== $chosenTarget->getPrevious() && $warrior->getCell() !== $chosenTarget->getPrevious()) {
@@ -257,7 +262,7 @@ class Dungeon
 
     private function removeWarrior(AbstractWarrior $tango): void
     {
-        $this->map[$tango->getY()][$tango->getX()] = self::SPACE;
+        $tango->die();
 
         switch (true) {
             case $tango instanceof Goblin:
