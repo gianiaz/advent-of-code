@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day16;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\AbstractWorkingOpcode;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Addition\Addi;
@@ -24,7 +25,7 @@ use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication\Muli;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication\Mulr;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Opcode;
 
-class Day16Solution implements SolutionInterface
+class Day16Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     /** @var Sample[] */
     private $input;
@@ -61,6 +62,13 @@ class Day16Solution implements SolutionInterface
         return $like3OrMore;
     }
 
+    public function solveSecondPart()
+    {
+        $opcodeTranslation = $this->getOpcodeTranslations();
+
+        return print_r($opcodeTranslation, true);
+    }
+
     public function opcodeMatches(Sample $sample, AbstractWorkingOpcode $opcode): bool
     {
         return $sample->getRegistersAfter() === $opcode->apply($sample->getOpcode(), $sample->getRegistersBefore());
@@ -72,22 +80,22 @@ class Day16Solution implements SolutionInterface
     public static function getDefaultWorkingOpcodes(): array
     {
         return [
-            new Addi(),
-            new Addr(),
-            new Seti(),
-            new Setr(),
-            new Bani(),
-            new Banr(),
-            new Bori(),
-            new Borr(),
-            new Eqir(),
-            new Eqri(),
-            new Eqrr(),
-            new Gtir(),
-            new Gtri(),
-            new Gtrr(),
-            new Mulr(),
-            new Muli(),
+            Addi::class => new Addi(),
+            Addr::class => new Addr(),
+            Seti::class => new Seti(),
+            Setr::class => new Setr(),
+            Bani::class => new Bani(),
+            Banr::class => new Banr(),
+            Bori::class => new Bori(),
+            Borr::class => new Borr(),
+            Eqir::class => new Eqir(),
+            Eqri::class => new Eqri(),
+            Eqrr::class => new Eqrr(),
+            Gtir::class => new Gtir(),
+            Gtri::class => new Gtri(),
+            Gtrr::class => new Gtrr(),
+            Mulr::class => new Mulr(),
+            Muli::class => new Muli(),
         ];
     }
 
@@ -888,5 +896,82 @@ class Day16Solution implements SolutionInterface
             new Sample([2, 3, 1, 2], new Opcode(9, 2, 1, 3), [2, 3, 1, 1]),
             new Sample([0, 3, 1, 1], new Opcode(6, 0, 0, 3), [0, 3, 1, 0]),
         ];
+    }
+
+    private function getOpcodeTranslations(): array
+    {
+        $operators = self::getDefaultWorkingOpcodes();
+        $opcodeTranslations = [];
+
+        foreach ($this->input as $sample) {
+            $number = $sample->getOpcode()->getCode();
+            if (\count($opcodeTranslations[$number] ?? []) === 1) {
+                // translation already found
+                continue;
+            }
+
+            $matches = [];
+            foreach ($operators as $opcode) {
+                if ($this->opcodeMatches($sample, $opcode)) {
+                    $matches[] = \get_class($opcode);
+                }
+            }
+
+            if (\array_key_exists($number, $opcodeTranslations)) {
+                $opcodeTranslations[$number] = \array_intersect(
+                    $opcodeTranslations[$number],
+                    $matches
+                );
+            } else {
+                $opcodeTranslations[$number] = $matches;
+            }
+
+            if ($this->translationMapIsComplete($opcodeTranslations)) {
+                return $opcodeTranslations;
+            }
+        }
+
+        return $this->refineTranslations($opcodeTranslations);
+    }
+
+    private function translationMapIsComplete(array $opcodeTranslations): bool
+    {
+        if (\count($opcodeTranslations) !== 16) {
+            return false;
+        }
+
+        foreach ($opcodeTranslations as $number => $translation) {
+            if (\count($translation) !== 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function refineTranslations(array $opcodeTranslations)
+    {
+        $exactTranslations = [];
+        
+        do {
+            foreach ($opcodeTranslations as $number => $translation) {
+                if (\count($translation) === 1) {
+                    $match = array_pop($translation);
+                    $exactTranslations[$number] = $match;
+                    
+                    break;
+                }
+            }
+
+            if (!isset($match)) {
+                throw new \RuntimeException('WTF');
+            }
+
+            foreach ($opcodeTranslations as $number => $translation) {
+                $opcodeTranslations[$number] = \array_diff($translation, [$match]);
+            }
+        } while(\count($exactTranslations) < 16);
+
+        return $exactTranslations;
     }
 }
