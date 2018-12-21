@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication;
 
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\AbstractOpcode;

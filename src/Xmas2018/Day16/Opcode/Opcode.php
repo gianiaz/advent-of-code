@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day16\Opcode;
 
 class Opcode extends AbstractOpcode
@@ -9,10 +11,6 @@ class Opcode extends AbstractOpcode
 
     /**
      * Opcode constructor.
-     * @param int $code
-     * @param int $a
-     * @param int $b
-     * @param int $c
      */
     public function __construct(int $code, int $a, int $b, int $c)
     {
@@ -20,12 +18,8 @@ class Opcode extends AbstractOpcode
         $this->code = $code;
     }
 
-    /**
-     * @return int
-     */
     public function getCode(): int
     {
         return $this->code;
     }
-
 }

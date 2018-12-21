@@ -1,15 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day16;
 
 use Jean85\AdventOfCode\SolutionInterface;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\AbstractWorkingOpcode;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Addition\Addi;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Addition\Addr;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Assignment\Seti;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Assignment\Setr;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\BitwiseAnd\Bani;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\BitwiseAnd\Banr;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\BitwiseOr\Bori;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\BitwiseOr\Borr;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Equality\Eqir;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Equality\Eqri;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Equality\Eqrr;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtir;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtri;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtrr;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Opcode;
 
 class Day16Solution implements SolutionInterface
 {
+    /** @var Sample[] */
+    private $input;
+
+    /**
+     * Day16Solution constructor.
+     *
+     * @param Sample[] $input
+     */
+    public function __construct(array $input = null)
+    {
+        $this->input = $input ?? $this->getDefaultInput();
+    }
+
     public function solve()
     {
-        // TODO: Implement solve() method.
+        /** @var AbstractWorkingOpcode[] $operators */
+        $operators = [
+            new Addi(),
+            new Addr(),
+            new Seti(),
+            new Setr(),
+            new Bani(),
+            new Banr(),
+            new Bori(),
+            new Borr(),
+            new Eqir(),
+            new Eqri(),
+            new Eqrr(),
+            new Gtir(),
+            new Gtri(),
+            new Gtrr(),
+        ];
+
+        $like3OrMore = 0;
+        foreach ($this->input as $sample) {
+            $matches = 0;
+            foreach ($operators as $opcode) {
+                if ($sample->getRegistersAfter() === $opcode->apply($sample->getOpcode(), $sample->getRegistersBefore())) {
+                    ++$matches;
+
+                    if ($matches >= 3) {
+                        ++$like3OrMore;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        return $like3OrMore;
     }
 
     private function getDefaultInput(): array
