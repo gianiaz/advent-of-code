@@ -44,4 +44,30 @@ class Day15SolutionTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider solveSecondPartProvider
+     */
+    public function testSolveSecondPart(string $input, int $outcome): void
+    {
+        $solution = new Day15Solution($input);
+
+        $this->assertSame($outcome, $solution->solveSecondPart());
+    }
+
+    public function solveSecondPartProvider(): array
+    {
+        return [
+            [
+                '#######
+#.G...#
+#...EG#
+#.#.#G#
+#..G#E#
+#.....#
+#######',
+                4988,
+            ],
+        ];
+    }
 }

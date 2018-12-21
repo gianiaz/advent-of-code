@@ -114,7 +114,7 @@ class Dungeon
                         $this->goblins[] = $warrior;
                         break;
                     case Elf::getSymbol():
-                        $warrior = new Elf($dungeonCell);
+                        $warrior = $this->createElf($dungeonCell);
                         $this->elves[] = $warrior;
                         break;
                     case self::SPACE:
@@ -255,7 +255,7 @@ class Dungeon
         return \array_shift($targetsInRange);
     }
 
-    private function removeWarrior(AbstractWarrior $tango): void
+    protected function removeWarrior(AbstractWarrior $tango): void
     {
         $tango->die();
 
@@ -297,5 +297,10 @@ class Dungeon
                 }
             }
         }
+    }
+
+    protected function createElf(DungeonCell $dungeonCell): Elf
+    {
+        return new Elf($dungeonCell);
     }
 }

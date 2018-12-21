@@ -7,7 +7,7 @@ namespace Jean85\AdventOfCode\Xmas2018\Day15;
 abstract class AbstractWarrior extends AbstractPosition
 {
     /** @var int */
-    private $health = 200;
+    protected $health = 200;
 
     /** @var DungeonCell */
     private $cell;
