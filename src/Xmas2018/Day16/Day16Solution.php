@@ -41,8 +41,37 @@ class Day16Solution implements SolutionInterface
 
     public function solve()
     {
-        /** @var AbstractWorkingOpcode[] $operators */
-        $operators = [
+        $operators = self::getDefaultWorkingOpcodes();
+        $like3OrMore = 0;
+
+        foreach ($this->input as $sample) {
+            $matches = 0;
+            foreach ($operators as $opcode) {
+                if ($this->opcodeMatches($sample, $opcode)) {
+                    ++$matches;
+
+                    if ($matches >= 3) {
+                        ++$like3OrMore;
+                        continue 2;
+                    }
+                }
+            }
+        }
+
+        return $like3OrMore;
+    }
+
+    public function opcodeMatches(Sample $sample, AbstractWorkingOpcode $opcode): bool
+    {
+        return $sample->getRegistersAfter() === $opcode->apply($sample->getOpcode(), $sample->getRegistersBefore());
+    }
+
+    /**
+     * @return AbstractWorkingOpcode[]
+     */
+    public static function getDefaultWorkingOpcodes(): array
+    {
+        return [
             new Addi(),
             new Addr(),
             new Seti(),
@@ -60,23 +89,6 @@ class Day16Solution implements SolutionInterface
             new Mulr(),
             new Muli(),
         ];
-
-        $like3OrMore = 0;
-        foreach ($this->input as $sample) {
-            $matches = 0;
-            foreach ($operators as $opcode) {
-                if ($sample->getRegistersAfter() === $opcode->apply($sample->getOpcode(), $sample->getRegistersBefore())) {
-                    ++$matches;
-
-                    if ($matches >= 3) {
-                        ++$like3OrMore;
-                        continue;
-                    }
-                }
-            }
-        }
-
-        return $like3OrMore;
     }
 
     private function getDefaultInput(): array
