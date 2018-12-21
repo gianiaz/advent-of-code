@@ -20,6 +20,8 @@ use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Equality\Eqrr;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtir;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtri;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtrr;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication\Muli;
+use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication\Mulr;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Opcode;
 
 class Day16Solution implements SolutionInterface
@@ -55,6 +57,8 @@ class Day16Solution implements SolutionInterface
             new Gtir(),
             new Gtri(),
             new Gtrr(),
+            new Mulr(),
+            new Muli(),
         ];
 
         $like3OrMore = 0;
