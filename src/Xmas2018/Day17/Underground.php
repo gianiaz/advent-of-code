@@ -40,7 +40,7 @@ class Underground
     {
         $situation = '';
         foreach (range($this->minY, $this->maxY) as $y) {
-            foreach (range($this->minX, $this->maxX) as $x) {
+            foreach (range($this->minX - 1, $this->maxX + 1) as $x) {
                 $situation .= $this->map[$y][$x] ?? self::SAND;
             }
             $situation .= PHP_EOL;
