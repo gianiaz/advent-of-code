@@ -36,6 +36,36 @@ class Underground
         $this->initMap($input);
     }
 
+    public function flow(): bool
+    {
+        $x = 500;
+        $y = 0;
+
+        // flow down
+        while ($this->contains($x, $y + 1, [self::SAND, self::FLOWED_WATER])) {
+            $y++;
+            if ($y > $this->maxY) {
+                return false;
+            }
+
+            $this->map[$y][$x] = self::FLOWED_WATER;
+        }
+        
+        $originalFlowX = $x;
+
+        if ($this->contains($x, $y + 1, [self::STILL_WATER])) {
+            $y++;
+            // flow left
+            while ($this->contains($x, $y, [self::STILL_WATER])) {
+                $x--;
+            }
+        }
+
+        $this->map[$y][$x] = self::STILL_WATER;
+
+        return true;
+    }
+
     public function getActualSituation(): string
     {
         $situation = '';
@@ -86,5 +116,18 @@ class Underground
         }
 
         throw new \InvalidArgumentException('Unrecognized coords');
+    }
+
+    private function contains(int $x, int $y, array $possibleSigns): bool
+    {
+        if (! \array_key_exists($y, $this->map)) {
+            return \in_array(self::SAND, $possibleSigns, true);
+        }
+
+        if (! \array_key_exists($x, $this->map[$y])) {
+            return \in_array(self::SAND, $possibleSigns, true);
+        }
+
+        return \in_array($this->map[$y][$x], $possibleSigns, true);
     }
 }
