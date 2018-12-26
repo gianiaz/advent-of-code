@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day17;
 
-use phpDocumentor\Reflection\Types\This;
-
 class Underground
 {
     public const CLAY = '#';
