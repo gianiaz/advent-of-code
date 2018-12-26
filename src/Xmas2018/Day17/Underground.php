@@ -80,12 +80,17 @@ class Underground
 
     private function fillToTheLeft(int $x, int $y): bool
     {
+        $startX = $x;
         if ($this->contains($x - 1, $y, [self::CLAY])) {
             return false;
         }
 
         while ($this->contains(--$x, $y, [self::SAND, self::FLOWING_WATER])) {
             $this->map[$y][$x] = self::FLOWING_WATER;
+        }
+
+        if ($startX === $x + 1) {
+            return false;
         }
 
         if ($this->contains($x, $y, [self::CLAY, self::STILL_WATER])) {
@@ -102,12 +107,17 @@ class Underground
 
     private function fillToTheRight(int $x, int $y): bool
     {
+        $startX = $x;
         if ($this->contains($x + 1, $y, [self::CLAY])) {
             return false;
         }
 
         while ($this->contains(++$x, $y, [self::SAND, self::FLOWING_WATER])) {
             $this->map[$y][$x] = self::FLOWING_WATER;
+        }
+
+        if ($startX === $x - 1) {
+            return false;
         }
 
         if ($this->contains($x, $y, [self::CLAY, self::STILL_WATER])) {
@@ -124,7 +134,7 @@ class Underground
 
     private function putTheFinalStillWater(int $x, int $y): bool
     {
-        if ($this->contains($x, $y, [self::STILL_WATER, self::CLAY])) {
+        if ($this->contains($x, $y, [self::FLOWING_WATER, self::SAND])) {
             $this->map[$y][$x] = self::STILL_WATER;
 
             return true;
