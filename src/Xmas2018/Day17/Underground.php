@@ -63,6 +63,10 @@ class Underground
         }
 
         if ($this->hasClayOnBothSides($x, $y)) {
+            if ($this->fillFullRow($x, $y)) {
+                return true;
+            }
+
             return $this->fillToTheLeft($x, $y) || $this->fillToTheRight($x, $y) || $this->putTheFinalStillWater($x, $y);
         }
 
@@ -241,14 +245,32 @@ class Underground
 
     private function contains(int $x, int $y, array $possibleSigns): bool
     {
-        if (! \array_key_exists($y, $this->map)) {
-            return \in_array(self::SAND, $possibleSigns, true);
+        return \in_array($this->map[$y][$x] ?? self::SAND, $possibleSigns, true);
+    }   
+
+    private function fillFullRow(int $x, int $y): bool
+    {
+        $leftClay = $x - 1;
+        while (! $this->contains($leftClay, $y, [self::CLAY])) {
+            --$leftClay;
         }
 
-        if (! \array_key_exists($x, $this->map[$y])) {
-            return \in_array(self::SAND, $possibleSigns, true);
+        $rightClay = $x + 1;
+        while (! $this->contains($rightClay, $y, [self::CLAY])) {
+            ++$rightClay;
         }
 
-        return \in_array($this->map[$y][$x], $possibleSigns, true);
+        $yBelow = $y + 1;
+        foreach (range($leftClay + 1, $rightClay - 1) as $xBelow) {
+            if ($this->contains($xBelow, $yBelow, [self::SAND, self::FLOWING_WATER])) {
+                return false;
+            }
+        }
+
+        foreach (range($leftClay + 1, $rightClay - 1) as $xToFill) {
+            $this->map[$y][$xToFill] = self::STILL_WATER;
+        }
+
+        return true;
     }
 }

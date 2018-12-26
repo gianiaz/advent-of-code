@@ -12,7 +12,15 @@ class Day17Solution implements SolutionInterface
     {
         $underground = new Underground(ClayInput::getInput());
 
+        $turn = 0;
         do {
+            if ($turn++ > 700) {
+                file_put_contents(__DIR__ . '/siterp.txt', $underground->getActualSituation());
+            }
+            
+            if ($turn % 100 === 0) {
+                echo  $turn . PHP_EOL;
+            }
         } while ($underground->flow());
 
         return $underground->countWetSpots();
