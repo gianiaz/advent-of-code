@@ -53,12 +53,7 @@ class LumberCollectionAreaTest extends TestCase
 
     public function testGetResourceValue(): void
     {
-        $lumber = new LumberCollectionArea($this->getTestInput());
-        $count = 10;
-
-        do {
-            $lumber->tick();
-        } while (--$count);
+        $lumber = $this->tickTimes(10);
 
         $expectedSituation = '.||##.....
 ||###.....
@@ -74,6 +69,14 @@ class LumberCollectionAreaTest extends TestCase
         $this->assertSame(1147, $lumber->getResourceValue());
     }
 
+    public function testLoop(): void
+    {
+        $lumber = $this->tickTimes(558);
+        $lumberLooped = $this->tickTimes(614);
+
+        $this->assertSame($lumber->getActualSituation(), $lumberLooped->getActualSituation());
+    }
+
     private function getTestInput(): string
     {
         return '.#.#...|#.
@@ -86,5 +89,16 @@ class LumberCollectionAreaTest extends TestCase
 ||...#|.#|
 |.||||..|.
 ...#.|..|.';
+    }
+
+    private function tickTimes(int $count): LumberCollectionArea
+    {
+        $lumber = new LumberCollectionArea($this->getTestInput());
+
+        do {
+            $lumber->tick();
+        } while (--$count);
+
+        return $lumber;
     }
 }

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day18;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day18Solution implements SolutionInterface
+class Day18Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
@@ -17,6 +18,40 @@ class Day18Solution implements SolutionInterface
         do {
             $lumber->tick();
         } while (--$count);
+
+        return $lumber->getResourceValue();
+    }
+
+    public function solveSecondPart()
+    {
+        $lumber = new LumberCollectionArea($this->getInput());
+        $count = 608;
+
+        do {
+            $lumber->tick();
+        } while (--$count);
+
+        return $lumber->getResourceValue();
+    }
+
+    public function searchTheLoop()
+    {
+        $lumber = new LumberCollectionArea($this->getInput());
+        $seen = [];
+        $count = 0;
+
+        do {
+            $actualSituation = $lumber->getActualSituation();
+            $found = \array_search($actualSituation, $seen, true);
+            if ($found) {
+                echo 'LOOP CLOSED AT COUNT ' . $count . PHP_EOL;
+                echo 'Loop started at ' . $found;
+                die();
+            }
+
+            $seen[] = $actualSituation;
+            $lumber->tick();
+        } while (++$count < 1000000000);
 
         return $lumber->getResourceValue();
     }
