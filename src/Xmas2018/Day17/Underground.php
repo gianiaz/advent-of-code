@@ -50,6 +50,20 @@ class Underground
         return $wetCells;
     }
 
+    public function countRetainedWaterSpots(): int
+    {
+        $wetCells = 0;
+        foreach (range($this->minY, $this->maxY) as $y) {
+            foreach (range($this->minX - 1, $this->maxX + 1) as $x) {
+                if ($this->contains($x, $y, [self::STILL_WATER])) {
+                    ++$wetCells;
+                }
+            }
+        }
+
+        return $wetCells;
+    }
+
     public function flow(int $x = 500, int $y = 0): bool
     {
         // flow down

@@ -251,4 +251,15 @@ class UndergroundTest extends TestCase
 
         $this->assertSame(57, $underground->countWetSpots());
     }
+
+    public function testCountRetainedWaterSpots(): void
+    {
+        $underground = new Underground(ClayInput::getTestInput());
+
+        $this->assertSame(0, $underground->countWetSpots());
+
+        $underground->flow();
+
+        $this->assertSame(29, $underground->countRetainedWaterSpots());
+    }
 }
