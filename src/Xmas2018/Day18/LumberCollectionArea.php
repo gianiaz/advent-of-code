@@ -30,6 +30,27 @@ class LumberCollectionArea
         return implode(PHP_EOL, $situation);
     }
 
+    public function getResourceValue(): int
+    {
+        $lumberyards = 0;
+        $trees = 0;
+
+        foreach ($this->map as $row) {
+            foreach ($row as $area) {
+                switch ($area) {
+                    case self::LUMBERYARD:
+                        $lumberyards++;
+                        break;
+                    case self::TREES:
+                        $trees++;
+                        break;
+                }
+            }
+        }
+
+        return $lumberyards * $trees;
+    }
+
     public function tick(): void
     {
         $newMap = [];
