@@ -239,4 +239,31 @@ class UndergroundTest extends TestCase
             ],
         ];
     }
+
+    public function testCountWetSpots(): void
+    {
+        $underground = new Underground(ClayInput::getTestInput());
+
+        $this->assertSame(0, $underground->countWetSpots());
+
+        $underground->flow();
+
+        $this->assertSame(10, $underground->countWetSpots());
+
+        $underground->flow();
+        $underground->flow();
+        $underground->flow();
+        $underground->flow();
+
+        $this->assertSame(10, $underground->countWetSpots());
+
+        $underground->flow();
+
+        $this->assertSame(14, $underground->countWetSpots());
+
+        do {
+        } while ($underground->flow());
+
+        $this->assertSame(57, $underground->countWetSpots());
+    }
 }

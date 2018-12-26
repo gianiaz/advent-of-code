@@ -36,6 +36,20 @@ class Underground
         $this->initMap($input);
     }
 
+    public function countWetSpots(): int
+    {
+        $wetCells = 0;
+        foreach (range($this->minY, $this->maxY) as $y) {
+            foreach (range($this->minX - 1, $this->maxX + 1) as $x) {
+                if ($this->contains($x, $y, [self::STILL_WATER, self::FLOWING_WATER])) {
+                    ++$wetCells;
+                }
+            }
+        }
+
+        return $wetCells;
+    }
+
     public function flow(int $x = 500, int $y = 0): bool
     {
         // flow down
