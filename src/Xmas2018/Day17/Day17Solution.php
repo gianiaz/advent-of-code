@@ -10,18 +10,12 @@ class Day17Solution implements SolutionInterface
 {
     public function solve()
     {
+        ini_set('xdebug.max_nesting_level', '102400');
         $underground = new Underground(ClayInput::getInput());
 
-        $turn = 0;
-        do {
-            if ($turn++ > 700) {
-                file_put_contents(__DIR__ . '/siterp.txt', $underground->getActualSituation());
-            }
-            
-            if ($turn % 100 === 0) {
-                echo  $turn . PHP_EOL;
-            }
-        } while ($underground->flow());
+        $underground->flow();
+
+        file_put_contents(__DIR__ . '/sitrep.txt', $underground->getActualSituation());
 
         return $underground->countWetSpots();
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day17;
 
+use phpDocumentor\Reflection\Types\This;
+
 class Underground
 {
     public const CLAY = '#';
@@ -53,7 +55,7 @@ class Underground
     public function flow(int $x = 500, int $y = 0): bool
     {
         // flow down
-        while ($this->contains($x, $y + 1, [self::SAND, self::FLOWING_WATER])) {
+        while ($this->contains($x, $y + 1, [self::SAND])) {
             ++$y;
             if ($y > $this->maxY) {
                 return false;
@@ -62,9 +64,13 @@ class Underground
             $this->map[$y][$x] = self::FLOWING_WATER;
         }
 
+        if ($this->contains($x, $y + 1, [self::FLOWING_WATER])) {
+            return false;
+        }
+
         if ($this->hasClayOnBothSides($x, $y)) {
             if ($this->fillFullRow($x, $y)) {
-                return true;
+                return $this->flow($x, $y - 1);
             }
 
             return $this->fillToTheLeft($x, $y) || $this->fillToTheRight($x, $y) || $this->putTheFinalStillWater($x, $y);
@@ -246,7 +252,7 @@ class Underground
     private function contains(int $x, int $y, array $possibleSigns): bool
     {
         return \in_array($this->map[$y][$x] ?? self::SAND, $possibleSigns, true);
-    }   
+    }
 
     private function fillFullRow(int $x, int $y): bool
     {
