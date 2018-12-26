@@ -18,7 +18,7 @@ class Underground
     private $minX = 500;
 
     /** @var int */
-    private $minY = 0;
+    private $minY = INF;
 
     /** @var int */
     private $maxX = 500;
