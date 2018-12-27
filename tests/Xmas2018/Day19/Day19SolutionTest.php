@@ -44,5 +44,7 @@ class Day19SolutionTest extends TestCase
         $this->assertTrue($solution->step());
 
         $this->assertSame([6, 5, 6, 0, 0, 9], $solution->getRegisters());
+
+        $this->assertFalse($solution->step());
     }
 }

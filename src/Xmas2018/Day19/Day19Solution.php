@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2018\Day19;
 
+use Jean85\AdventOfCode\SolutionInterface;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\AbstractWorkingOpcode;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Addition\Addi;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Addition\Addr;
@@ -22,7 +23,7 @@ use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\GreaterThan\Gtrr;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication\Muli;
 use Jean85\AdventOfCode\Xmas2018\Day16\Opcode\Multiplication\Mulr;
 
-class Day19Solution
+class Day19Solution implements SolutionInterface
 {
     /** @var Opcode[] */
     private $opcodes;
@@ -44,6 +45,15 @@ class Day19Solution
         $this->workers = $this->initWorkers();
     }
 
+    public function solve()
+    {
+        do {
+            echo $this->ip . ': ' . implode(' ', $this->registers) . PHP_EOL;
+        } while ($this->step());
+        
+        return $this->registers[0];
+    }
+
     /**
      * @return int[]
      */
@@ -52,16 +62,22 @@ class Day19Solution
         return $this->registers;
     }
 
-    private function getCurrentInstruction(): Opcode
+    private function getCurrentInstruction(): ?Opcode
     {
-        return $this->opcodes[$this->ip];
+        return $this->opcodes[$this->ip] ?? null;
     }
 
     public function step(): bool
     {
         $currentInstruction = $this->getCurrentInstruction();
+
+        if ($currentInstruction === null) {
+            return false;
+        }
+
         $this->registers[0] = $this->ip;
         $this->execute($currentInstruction);
+        $this->ip = $this->registers[0];
         ++$this->ip;
 
         return true;
