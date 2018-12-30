@@ -62,6 +62,26 @@ class ConstructionTest extends TestCase
 #.|.|.|.#
 #########',
             ],
+            'empty branches' => [
+                '^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$',
+                [
+                    'ENNWSWWSSSEENEENNN',
+                    'ENNWSWWNEWSSSSEENEENNN',
+                    'ENNWSWWNEWSSSSEENEESWENNNN',
+                    'ENNWSWWSSSEENWNSEEENNN',
+                ],
+                '###########
+#.|.#.|.#.#
+#-###-#-#-#
+#.|.|.#.#.#
+#-#####-#-#
+#.#.#X|.#.#
+#-#-#####-#
+#.#.|.|.|.#
+#-###-###-#
+#.|.|.#.|.#
+###########',
+            ],
         ];
     }
 }

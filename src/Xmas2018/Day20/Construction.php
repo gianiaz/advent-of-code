@@ -95,12 +95,13 @@ class Construction
                     $branchRoot = new PathNode($currentStep);
                     $currentNode->addBranch($branchRoot);
                     $this->extractPaths($branchRoot, $i);
+
                     return;
                 case ')':
                 case '$':
                     $currentNode->addBranch(new PathNode($currentStep));
-                    return;
 
+                    return;
             }
         }
     }

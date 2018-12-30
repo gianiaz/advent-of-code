@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2018\Day20;
 
 class PathNode
@@ -12,7 +14,6 @@ class PathNode
 
     /**
      * PathNode constructor.
-     * @param string $nodeSteps
      */
     public function __construct(string $nodeSteps)
     {
@@ -20,9 +21,6 @@ class PathNode
         $this->branches = [];
     }
 
-    /**
-     * @return string
-     */
     public function getNodeSteps(): string
     {
         return $this->nodeSteps;
