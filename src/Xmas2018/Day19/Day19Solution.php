@@ -93,29 +93,27 @@ class Day19Solution implements SolutionInterface, SecondPartSolutionInterface
         $count = 21;
         $this->registers = [0, 0, 919, 2, 1, 2];
         $this->instructionPointer = 3;
-        
+
         do {
             echo $count . ' -- ' . $this->instructionPointer . ': ' . implode("\t", $this->registers) . PHP_EOL;
             if ($this->registers[4] * $this->registers[5] === 919) {
-                $this->registers[0]++;
-                $this->registers[4]++;
+                ++$this->registers[0];
+                ++$this->registers[4];
                 $this->registers[5] = 1;
                 $count += 11;
-                
+
                 continue;
             }
 
             if ($this->registers[4] * $this->registers[5] !== 919) {
-                $this->registers[5]++;
+                ++$this->registers[5];
                 $count += 8;
                 continue;
             }
 
             $this->step();
-            $count++;
-        } while($count <= $upUntilSteps);
-        
-        
+            ++$count;
+        } while ($count <= $upUntilSteps);
     }
 
     /**
