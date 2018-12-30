@@ -12,27 +12,55 @@ class ConstructionTest extends TestCase
     /**
      * @dataProvider processPathsProvider
      */
-    public function testProcessPaths(array $instructions, array $possiblePaths, string $expectedMap): void
+    public function testProcessPaths(string $instructions, array $expectedPossiblePaths, string $expectedMap): void
     {
         $construction = new Construction($instructions);
 
         $construction->processPaths();
 
-        $this->assertArraySubset($possiblePaths, $construction->getPossiblePaths());
-        $this->assertSame($expectedMap, \trim($construction->getTextualMap()), $construction->getTextualMap());
+        $possiblePaths = $construction->getPossiblePaths();
+        foreach ($expectedPossiblePaths as $expected) {
+            $this->assertContains($expected, $possiblePaths, print_r($possiblePaths, true));
+        }
+//        $this->assertSame($expectedMap, \trim($construction->getTextualMap()), $construction->getTextualMap());
     }
 
     public function processPathsProvider(): array
     {
         return [
-            [
-                ['WNE'],
+            'linear' => [
+                '^WNE$',
                 ['WNE'],
                 '#####
 #.|.#
 #-###
 #.|X#
 #####',
+            ],
+            'simple branching' => [
+                '^W(N|E)$',
+                [
+                    'WN',
+                    'WE',
+                ],
+                '',
+            ],
+            'recursive branching' => [
+                '^ENWWW(NEEE|SSE(EE|N))$',
+                [
+                    'ENWWWNEEE',
+                    'ENWWWSSEEE',
+                    'ENWWWSSEN',
+                ],
+                '#########
+#.|.|.|.#
+#-#######
+#.|.|.|.#
+#-#####-#
+#.#.#X|.#
+#-#-#####
+#.|.|.|.#
+#########',
             ],
         ];
     }

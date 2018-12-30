@@ -12,22 +12,19 @@ class Construction
     private const DOOR_V = '|';
     private const ROOM = '.';
 
-    /** @var array */
+    /** @var string */
     private $instructions;
 
-    /** @var string[] */
-    private $possiblePaths;
+    /** @var PathNode */
+    private $rootNode;
 
     /** @var string[][] */
     private $map;
 
-    /**
-     * Construction constructor.
-     */
-    public function __construct(array $instructions)
+    public function __construct(string $instructions)
     {
-        $this->instructions = $instructions;
-        $this->possiblePaths = [];
+        $this->instructions = \ltrim($instructions, '^');
+        $this->rootNode = new PathNode('');
         $this->map[0][0] = self::CENTER;
     }
 
@@ -52,6 +49,11 @@ class Construction
         return $textualMap;
     }
 
+    public function getRootNode(): PathNode
+    {
+        return $this->rootNode;
+    }
+
     /**
      * @return string[][]
      */
@@ -65,31 +67,40 @@ class Construction
      */
     public function getPossiblePaths(): array
     {
-        return $this->possiblePaths;
+        return \iterator_to_array($this->getRootNode()->getPossiblePaths());
     }
 
     public function processPaths(): void
     {
-        foreach ($this->extractPaths($this->instructions) as $extractedPath) {
-            $this->possiblePaths[] = $extractedPath;
-        }
-
-        foreach ($this->possiblePaths as $path) {
-            $this->followPath($path);
-        }
+        $this->extractPaths($this->rootNode);
     }
 
-    /**
-     * @return \Generator|string[]
-     */
-    private function extractPaths(array $instructions, string $previousSteps = ''): \Generator
+    private function extractPaths(PathNode $currentNode, int $startFrom = 0): void
     {
-        $path = $previousSteps;
+        $i = $startFrom;
+        $currentStep = '';
+        while ($char = $this->instructions[$i++] ?? false) {
+            switch ($char) {
+                case 'N':
+                case 'S':
+                case 'E':
+                case 'W':
+                    $currentStep .= $char;
+                    break;
+                case '|':
+                    $currentNode->addBranch(new PathNode($currentStep));
+                    $currentStep = '';
+                    break;
+                case '(':
+                    $branchRoot = new PathNode($currentStep);
+                    $currentNode->addBranch($branchRoot);
+                    $this->extractPaths($branchRoot, $i);
+                    return;
+                case ')':
+                case '$':
+                    $currentNode->addBranch(new PathNode($currentStep));
+                    return;
 
-        foreach ($instructions as $instruction) {
-            if (\is_string($instruction)) {
-                yield $path . $instruction;
-                continue;
             }
         }
     }
