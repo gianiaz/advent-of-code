@@ -8,6 +8,9 @@ class PathNode
 {
     /** @var string */
     private $nodeSteps;
+    
+    /** @var self|null */
+    private $next;
 
     /** @var self[] */
     private $branches;
@@ -39,8 +42,18 @@ class PathNode
         $this->branches[] = $branch;
     }
 
+    public function getNext(): ?PathNode
+    {
+        return $this->next;
+    }
+
+    public function setNext(PathNode $nextNode): void
+    {
+        $this->next = $nextNode;
+    }
+
     /**
-     * @return string[]
+     * @return \Generator|string[]
      */
     public function getPossiblePaths(): \Generator
     {
@@ -52,7 +65,13 @@ class PathNode
 
         foreach ($this->branches as $branch) {
             foreach ($branch->getPossiblePaths() as $possibleBranchedPath) {
-                yield $this->nodeSteps . $possibleBranchedPath;
+                if ($this->next) {
+                    foreach ($this->next->getPossiblePaths() as $possibleNextPath) {
+                        yield $this->nodeSteps . $possibleBranchedPath . $possibleNextPath;
+                    }
+                } else {
+                    yield $this->nodeSteps . $possibleBranchedPath;
+                }
             }
         }
     }

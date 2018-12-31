@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 class ConstructionTest extends TestCase
 {
     /**
-     * @dataProvider processPathsProvider
+     * @dataProvider ProcessPathsProvider
      */
-    public function testProcessPaths(string $instructions, array $expectedPossiblePaths, string $expectedMap): void
+    public function testProcessPaths(string $instructions, array $expectedPossiblePaths): void
     {
         $construction = new Construction($instructions);
 
@@ -22,10 +22,59 @@ class ConstructionTest extends TestCase
         foreach ($expectedPossiblePaths as $expected) {
             $this->assertContains($expected, $possiblePaths, print_r($possiblePaths, true));
         }
-//        $this->assertSame($expectedMap, \trim($construction->getTextualMap()), $construction->getTextualMap());
     }
 
     public function processPathsProvider(): array
+    {
+        return [
+            'linear' => [
+                '^WNE$',
+                ['WNE'],
+            ],
+            'simple branching' => [
+                '^W(N|E)$',
+                [
+                    'WN',
+                    'WE',
+                ],
+            ],
+            'recursive branching' => [
+                '^A(B|C(D|E))F$',
+                [
+                    'ABF',
+                    'ACDF',
+                    'ACEF',
+                ],
+            ],
+            'empty branches' => [
+                '^A(B|)C(D|)E$',
+                [
+                    'ACE',
+                    'ACDE',
+                    'ABCE',
+                    'ABCDE',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider fullProcessPathsProvider
+     */
+    public function testFullProcessPaths(string $instructions, array $expectedPossiblePaths, string $expectedMap): void
+    {
+        $construction = new Construction($instructions);
+
+        $construction->processPaths();
+
+        $possiblePaths = $construction->getPossiblePaths();
+        foreach ($expectedPossiblePaths as $expected) {
+            $this->assertContains($expected, $possiblePaths, print_r($possiblePaths, true));
+        }
+        $this->assertSame($expectedMap, \trim($construction->getTextualMap()), $construction->getTextualMap());
+    }
+
+    public function fullProcessPathsProvider(): array
     {
         return [
             'linear' => [

@@ -23,7 +23,7 @@ class Construction
 
     public function __construct(string $instructions)
     {
-        $this->instructions = \ltrim($instructions, '^');
+        $this->instructions = $instructions;
         $this->rootNode = new PathNode('');
         $this->map[0][0] = self::CENTER;
     }
@@ -72,36 +72,44 @@ class Construction
 
     public function processPaths(): void
     {
-        $this->extractPaths($this->rootNode);
+        $this->rootNode = $this->extractPaths();
     }
 
-    private function extractPaths(PathNode $currentNode, int $startFrom = 0): void
+    private function extractPaths(int $startFrom = 0, PathNode $currentNode = null): PathNode
     {
         $i = $startFrom;
         $currentStep = '';
+
         while ($char = $this->instructions[$i++] ?? false) {
             switch ($char) {
-                case 'N':
-                case 'S':
-                case 'E':
-                case 'W':
-                    $currentStep .= $char;
+                case '^':
+                    $currentNode = new PathNode('');
                     break;
                 case '|':
                     $currentNode->addBranch(new PathNode($currentStep));
                     $currentStep = '';
                     break;
                 case '(':
-                    $branchRoot = new PathNode($currentStep);
-                    $currentNode->addBranch($branchRoot);
-                    $this->extractPaths($branchRoot, $i);
-
-                    return;
+                    $currentNode->addBranch(new PathNode($currentStep));
+                    $currentStep = '';
+                    $currentNode->setNext($this->extractPaths($i, $currentNode));
+                    break;
                 case ')':
-                case '$':
                     $currentNode->addBranch(new PathNode($currentStep));
 
-                    return;
+                    foreach ($currentNode->getBranches() as $branch) {
+                        $branch->setNext($this->extractPaths($i, $branch));
+                    }
+
+                    return $currentNode;
+                case '$':
+                    if ($currentStep) {
+                        $currentNode->addBranch(new PathNode($currentStep));
+                    }
+
+                    return $currentNode;
+                default:
+                    $currentStep .= $char;
             }
         }
     }
