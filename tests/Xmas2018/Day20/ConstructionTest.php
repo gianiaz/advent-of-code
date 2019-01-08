@@ -146,4 +146,59 @@ class ConstructionTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider getFurthestProvider
+     */
+    public function testGetFurthestRoom(string $instructions, string $expectedMap, int $expectedFurthest): void
+    {
+        $construction = new Construction($instructions);
+
+        $construction->processPaths();
+
+        $this->assertSame($expectedMap, \trim($construction->getTextualMap()), $construction->getTextualMap());
+    }
+
+    public function getFurthestProvider()
+    {
+        return [
+            'first example' => [
+                '^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$',
+                '#############
+#.|.|.|.|.|.#
+#-#####-###-#
+#.#.|.#.#.#.#
+#-#-###-#-#-#
+#.#.#.|.#.|.#
+#-#-#-#####-#
+#.#.#.#X|.#.#
+#-#-#-###-#-#
+#.|.#.|.#.#.#
+###-#-###-#-#
+#.|.#.|.|.#.#
+#############',
+                23,
+            ],
+            [
+                '^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$',
+                '###############
+#.|.|.|.#.|.|.#
+#-###-###-#-#-#
+#.|.#.|.|.#.#.#
+#-#########-#-#
+#.#.|.|.|.|.#.#
+#-#-#########-#
+#.#.#.|X#.|.#.#
+###-#-###-#-#-#
+#.|.#.#.|.#.|.#
+#-###-#####-###
+#.|.#.|.|.#.#.#
+#-#-#####-#-#-#
+#.#.|.|.|.#.|.#
+###############',
+                31,
+            ],
+        ];
+    }
+
 }
