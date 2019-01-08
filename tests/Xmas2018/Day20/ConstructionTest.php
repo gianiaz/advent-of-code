@@ -55,6 +55,15 @@ class ConstructionTest extends TestCase
                     'ABCDE',
                 ],
             ],
+            'complex empty branches from example' => [
+                '^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$',
+                [
+                    'ENNWSWWSSSEENEENNN',
+                    'ENNWSWWNEWSSSSEENEENNN',
+                    'ENNWSWWNEWSSSSEENEESWENNNN',
+                    'ENNWSWWSSSEENWNSEEENNN',
+                ],
+            ],
         ];
     }
 
