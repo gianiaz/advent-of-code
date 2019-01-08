@@ -157,6 +157,7 @@ class ConstructionTest extends TestCase
         $construction->processPaths();
 
         $this->assertSame($expectedMap, \trim($construction->getTextualMap()), $construction->getTextualMap());
+        $this->assertSame($expectedFurthest, $construction->getFurthestRoomDistance());
     }
 
     public function getFurthestProvider()
