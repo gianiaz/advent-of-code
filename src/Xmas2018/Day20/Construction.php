@@ -68,7 +68,7 @@ class Construction
         $possibleDistances = [
             $currentDistance,
         ];
-        
+
         if ($mapDistance[$y][$x + 1] ?? false) {
             // door open
             if ($mapDistance[$y][$x + 2] === self::ROOM || $mapDistance[$y][$x + 2] > ($currentDistance + 1)) {
@@ -76,7 +76,7 @@ class Construction
                 $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x + 2, $y);
             }
         }
-        
+
         if ($mapDistance[$y][$x - 1] ?? false) {
             // door open
             if ($mapDistance[$y][$x - 2] === self::ROOM || $mapDistance[$y][$x - 2] > ($currentDistance - 1)) {
@@ -84,7 +84,7 @@ class Construction
                 $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x - 2, $y);
             }
         }
-        
+
         if ($mapDistance[$y + 1][$x] ?? false) {
             // door open
             if ($mapDistance[$y + 2][$x] === self::ROOM || $mapDistance[$y + 2][$x] > ($currentDistance + 1)) {
@@ -92,7 +92,7 @@ class Construction
                 $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x, $y + 2);
             }
         }
-        
+
         if ($mapDistance[$y - 1][$x] ?? false) {
             // door open
             if ($mapDistance[$y - 2][$x] === self::ROOM || $mapDistance[$y - 2][$x] > ($currentDistance - 1)) {
@@ -126,8 +126,6 @@ class Construction
     }
 
     /**
-     * @param string $instructions
-     * @param string $previousPath
      * @return string[]
      */
     private function extractPaths(string $instructions, string $previousPath = ''): array
@@ -154,10 +152,11 @@ class Construction
                         if ($openParenthesis > 1) {
                             $currentStep .= $char;
                         }
-                        $openParenthesis--;
+                        --$openParenthesis;
                         break;
                     case '(':
                         $openParenthesis++;
+                        // no break
                     default:
                         $currentStep .= $char;
                 }
@@ -169,7 +168,7 @@ class Construction
                             $finalPaths[] = $branchedPath;
                         }
                     }
-                    
+
                     return $finalPaths;
                 }
 
@@ -183,7 +182,7 @@ class Construction
                     break;
                 case '(':
                     $path .= $currentStep;
-                    $openParenthesis++;
+                    ++$openParenthesis;
                     $currentStep = '';
                     break;
                 case ')':
@@ -195,7 +194,7 @@ class Construction
                     $currentStep .= $char;
             }
         }
-        
+
         $finalPaths[] = $path;
 
         return $finalPaths;

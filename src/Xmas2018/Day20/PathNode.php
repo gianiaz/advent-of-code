@@ -8,7 +8,7 @@ class PathNode
 {
     /** @var string */
     private $nodeSteps;
-    
+
     /** @var self|null */
     private $next;
 
