@@ -101,7 +101,11 @@ class ConstructionTest extends TestCase
                     'WN',
                     'WE',
                 ],
-                '',
+                '#####
+#.###
+#-###
+#.|X#
+#####',
             ],
             'recursive branching' => [
                 '^ENWWW(NEEE|SSE(EE|N))$',

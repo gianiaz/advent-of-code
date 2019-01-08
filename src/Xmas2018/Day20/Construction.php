@@ -23,11 +23,18 @@ class Construction
     public function __construct(string $instructions)
     {
         $this->instructions = $instructions;
-        $this->map[0][0] = self::CENTER;
     }
 
     public function getTextualMap(): string
     {
+        if (empty($this->map)) {
+            foreach ($this->possiblePaths as $path) {
+                $this->followPath($path);
+            }
+
+            $this->map[0][0] = self::CENTER;
+        }
+
         $minY = min(\array_keys($this->map));
         $maxY = max(\array_keys($this->map));
         $minX = $maxX = 0;
