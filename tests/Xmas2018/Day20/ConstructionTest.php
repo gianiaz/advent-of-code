@@ -39,20 +39,20 @@ class ConstructionTest extends TestCase
                 ],
             ],
             'recursive branching' => [
-                '^A(B|C(D|E))F$',
+                '^N(S|W(W|E))N$',
                 [
-                    'ABF',
-                    'ACDF',
-                    'ACEF',
+                    'NSN',
+                    'NWWN',
+                    'NWEN',
                 ],
             ],
             'empty branches' => [
-                '^A(B|)C(D|)E$',
+                '^N(S|)W(E|)N$',
                 [
-                    'ACE',
-                    'ACDE',
-                    'ABCE',
-                    'ABCDE',
+                    'NWN',
+                    'NSWN',
+                    'NWEN',
+                    'NSWEN',
                 ],
             ],
             'complex empty branches from example' => [

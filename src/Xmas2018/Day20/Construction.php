@@ -27,7 +27,7 @@ class Construction
 
     public function getTextualMap(): string
     {
-        $this->drawMap();
+        $this->map[0][0] = self::CENTER;
 
         $minY = min(\array_keys($this->map));
         $maxY = max(\array_keys($this->map));
@@ -50,8 +50,6 @@ class Construction
 
     public function getFurthestRoomDistance(): int
     {
-        $this->drawMap();
-
         $mapDistance = $this->map;
         $mapDistance[0][0] = 0;
 
@@ -138,7 +136,7 @@ class Construction
     /**
      * @return string[]
      */
-    private function extractPaths(string $instructions, string $previousPath = ''): array
+    private function extractPaths(string $instructions, string $previousPath = '', int $x = 0, int $y = 0): array
     {
         $finalPaths = [];
         $path = $previousPath;
@@ -147,6 +145,7 @@ class Construction
         $openParenthesis = 0;
         $openBranches = [];
 
+        /** @var string $char */
         while ($char = $instructions[$i++] ?? false) {
             if ($openParenthesis > 0) {
                 switch ($char) {
@@ -174,7 +173,7 @@ class Construction
                 if ($openParenthesis === 0) {
                     $openBranches[] = $currentStep;
                     foreach ($openBranches as $openBranch) {
-                        foreach ($this->extractPaths($openBranch . substr($instructions, $i), $path) as $branchedPath) {
+                        foreach ($this->extractPaths($openBranch . substr($instructions, $i), $path, $x, $y) as $branchedPath) {
                             $finalPaths[] = $branchedPath;
                         }
                     }
@@ -201,6 +200,7 @@ class Construction
                     $path .= $currentStep;
                     break;
                 default:
+                    $this->drawStep($char, $x, $y);
                     $currentStep .= $char;
             }
         }
@@ -210,42 +210,27 @@ class Construction
         return $finalPaths;
     }
 
-    private function followPath(string $path): void
+    private function drawStep(string $step, int &$x, int &$y): void
     {
-        $x = 0;
-        $y = 0;
-        foreach (str_split($path) as $step) {
-            switch ($step) {
-                case 'N':
-                    $this->map[++$y][$x] = self::DOOR_H;
-                    $this->map[++$y][$x] = self::ROOM;
-                    break;
-                case 'S':
-                    $this->map[--$y][$x] = self::DOOR_H;
-                    $this->map[--$y][$x] = self::ROOM;
-                    break;
-                case 'E':
-                    $this->map[$y][++$x] = self::DOOR_V;
-                    $this->map[$y][++$x] = self::ROOM;
-                    break;
-                case 'W':
-                    $this->map[$y][--$x] = self::DOOR_V;
-                    $this->map[$y][--$x] = self::ROOM;
-                    break;
-                default:
-                    throw new \InvalidArgumentException('Unrecognized step: ' . $step);
-            }
-        }
-    }
-
-    private function drawMap(): void
-    {
-        if (empty($this->map)) {
-            foreach ($this->possiblePaths as $path) {
-                $this->followPath($path);
-            }
-
-            $this->map[0][0] = self::CENTER;
+        switch ($step) {
+            case 'N':
+                $this->map[++$y][$x] = self::DOOR_H;
+                $this->map[++$y][$x] = self::ROOM;
+                break;
+            case 'S':
+                $this->map[--$y][$x] = self::DOOR_H;
+                $this->map[--$y][$x] = self::ROOM;
+                break;
+            case 'E':
+                $this->map[$y][++$x] = self::DOOR_V;
+                $this->map[$y][++$x] = self::ROOM;
+                break;
+            case 'W':
+                $this->map[$y][--$x] = self::DOOR_V;
+                $this->map[$y][--$x] = self::ROOM;
+                break;
+            default:
+                throw new \InvalidArgumentException('Unrecognized step: ' . $step);
         }
     }
 }
