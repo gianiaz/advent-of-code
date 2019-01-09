@@ -22,7 +22,7 @@ class Construction
 
     public function __construct(string $instructions)
     {
-        $this->instructions = $instructions;
+        $this->instructions = \trim($instructions, '^$');
     }
 
     public function getTextualMap(): string
@@ -130,85 +130,31 @@ class Construction
 
     public function processPaths(): void
     {
-        $this->possiblePaths = $this->extractPaths($this->instructions);
+        $this->possiblePaths = \iterator_to_array($this->extractPaths($this->instructions));
     }
 
-    /**
-     * @return string[]
-     */
-    private function extractPaths(string $instructions, string $previousPath = '', int $x = 0, int $y = 0): array
+    private function extractPaths(string $instructions, string $previousPath = ''): \Generator
     {
-        $finalPaths = [];
-        $path = $previousPath;
-        $i = 0;
-        $currentStep = '';
-        $openParenthesis = 0;
-        $openBranches = [];
+        $firstOpenParenthesis = \strpos($instructions, '(');
 
-        /** @var string $char */
-        while ($char = $instructions[$i++] ?? false) {
-            if ($openParenthesis > 0) {
-                switch ($char) {
-                    case '|':
-                        if ($openParenthesis === 1) {
-                            $openBranches[] = $currentStep;
-                            $currentStep = '';
-                        } else {
-                            $currentStep .= $char;
-                        }
-                        break;
-                    case ')':
-                        if ($openParenthesis > 1) {
-                            $currentStep .= $char;
-                        }
-                        --$openParenthesis;
-                        break;
-                    case '(':
-                        $openParenthesis++;
-                        // no break
-                    default:
-                        $currentStep .= $char;
-                }
-
-                if ($openParenthesis === 0) {
-                    $finalBranchedPaths = [];
-                    $openBranches[] = $currentStep;
-                    foreach ($openBranches as $openBranch) {
-                        foreach ($this->extractPaths($openBranch . substr($instructions, $i), $path, $x, $y) as $branchedPath) {
-                            $finalBranchedPaths[] = $branchedPath;
-                        }
-                    }
-
-                    return $finalBranchedPaths;
-                }
-
-                continue;
+        if (false === $firstOpenParenthesis) {
+            foreach (explode('|', $instructions) as $singleBranch) {
+                yield $previousPath . $singleBranch;
             }
 
-            switch ($char) {
-                case '^':
-                    break;
-                case '|':
-                    break;
-                case '(':
-                    $path .= $currentStep;
-                    ++$openParenthesis;
-                    $currentStep = '';
-                    break;
-                case ')':
-                    throw new \RuntimeException('WTF');
-                case '$':
-                    $path .= $currentStep;
-                    break;
-                default:
-                    $this->drawStep($char, $x, $y);
-                    $currentStep .= $char;
+            return;
+        }
+        $previousPath .= substr($instructions, 0, $firstOpenParenthesis);
+
+        $firstClosedParenthesis = \strpos($instructions, ')', $firstOpenParenthesis);
+        $branchesInstructions = \substr($instructions, $firstOpenParenthesis + 1, $firstClosedParenthesis - $firstOpenParenthesis - 1);
+        $remainderInstructions = \substr($instructions, $firstClosedParenthesis + 1);
+
+        foreach ($this->extractPaths($branchesInstructions, $previousPath) as $branch) {
+            foreach ($this->extractPaths($remainderInstructions, $branch) as $newBranchedPath) {
+                yield $newBranchedPath;
             }
         }
-
-        $finalPaths[] = $path;
-
-        return $finalPaths;
     }
 
     private function drawStep(string $step, int &$x, int &$y): void

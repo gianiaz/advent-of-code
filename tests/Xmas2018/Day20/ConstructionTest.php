@@ -32,6 +32,13 @@ class ConstructionTest extends TestCase
                 ['WNE'],
             ],
             'simple branching' => [
+                '^(N|E)$',
+                [
+                    'N',
+                    'E',
+                ],
+            ],
+            'simple2 branching' => [
                 '^W(N|E)$',
                 [
                     'WN',
