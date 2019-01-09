@@ -171,14 +171,15 @@ class Construction
                 }
 
                 if ($openParenthesis === 0) {
+                    $finalBranchedPaths = [];
                     $openBranches[] = $currentStep;
                     foreach ($openBranches as $openBranch) {
                         foreach ($this->extractPaths($openBranch . substr($instructions, $i), $path, $x, $y) as $branchedPath) {
-                            $finalPaths[] = $branchedPath;
+                            $finalBranchedPaths[] = $branchedPath;
                         }
                     }
 
-                    return $finalPaths;
+                    return $finalBranchedPaths;
                 }
 
                 continue;
@@ -214,20 +215,36 @@ class Construction
     {
         switch ($step) {
             case 'N':
-                $this->map[++$y][$x] = self::DOOR_H;
-                $this->map[++$y][$x] = self::ROOM;
+                if ($this->map[$y + 2][$x] ?? false) {
+                    $y += 2;
+                } else {
+                    $this->map[++$y][$x] = self::DOOR_H;
+                    $this->map[++$y][$x] = self::ROOM;
+                }
                 break;
             case 'S':
-                $this->map[--$y][$x] = self::DOOR_H;
-                $this->map[--$y][$x] = self::ROOM;
+                if ($this->map[$y - 2][$x] ?? false) {
+                    $y -= 2;
+                } else {
+                    $this->map[--$y][$x] = self::DOOR_H;
+                    $this->map[--$y][$x] = self::ROOM;
+                }
                 break;
             case 'E':
-                $this->map[$y][++$x] = self::DOOR_V;
-                $this->map[$y][++$x] = self::ROOM;
+                if ($this->map[$y][$x + 2] ?? false) {
+                    $x += 2;
+                } else {
+                    $this->map[$y][++$x] = self::DOOR_V;
+                    $this->map[$y][++$x] = self::ROOM;
+                }
                 break;
             case 'W':
-                $this->map[$y][--$x] = self::DOOR_V;
-                $this->map[$y][--$x] = self::ROOM;
+                if ($this->map[$y][$x - 2] ?? false) {
+                    $x -= 2;
+                } else {
+                    $this->map[$y][--$x] = self::DOOR_V;
+                    $this->map[$y][--$x] = self::ROOM;
+                }
                 break;
             default:
                 throw new \InvalidArgumentException('Unrecognized step: ' . $step);
