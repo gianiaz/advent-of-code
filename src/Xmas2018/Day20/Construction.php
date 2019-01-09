@@ -27,13 +27,7 @@ class Construction
 
     public function getTextualMap(): string
     {
-        if (empty($this->map)) {
-            foreach ($this->possiblePaths as $path) {
-                $this->followPath($path);
-            }
-
-            $this->map[0][0] = self::CENTER;
-        }
+        $this->drawMap();
 
         $minY = min(\array_keys($this->map));
         $maxY = max(\array_keys($this->map));
@@ -56,24 +50,35 @@ class Construction
 
     public function getFurthestRoomDistance(): int
     {
+        $this->drawMap();
+
         $mapDistance = $this->map;
         $mapDistance[0][0] = 0;
 
-        return $this->navigateMapAndGetMaxDistance($mapDistance);
+        $this->navigateMapAndGetMaxDistance($mapDistance);
+
+        $maxDistance = 0;
+        foreach ($mapDistance as $row) {
+            foreach ($row as $distance) {
+                if (\is_int($distance) && $distance > $maxDistance) {
+                    $maxDistance = $distance;
+                }
+            }
+        }
+
+        return $maxDistance;
     }
 
-    private function navigateMapAndGetMaxDistance(array &$mapDistance, int $x = 0, int $y = 0): int
+    private function navigateMapAndGetMaxDistance(array &$mapDistance, int $x = 0, int $y = 0): ?int
     {
         $currentDistance = $mapDistance[$y][$x];
-        $possibleDistances = [
-            $currentDistance,
-        ];
+        $possibleDistances = [];
 
         if ($mapDistance[$y][$x + 1] ?? false) {
             // door open
             if ($mapDistance[$y][$x + 2] === self::ROOM || $mapDistance[$y][$x + 2] > ($currentDistance + 1)) {
                 $mapDistance[$y][$x + 2] = $currentDistance + 1;
-                $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x + 2, $y);
+                $possibleDistances[] = [$x + 2, $y];
             }
         }
 
@@ -81,7 +86,7 @@ class Construction
             // door open
             if ($mapDistance[$y][$x - 2] === self::ROOM || $mapDistance[$y][$x - 2] > ($currentDistance - 1)) {
                 $mapDistance[$y][$x - 2] = $currentDistance + 1;
-                $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x - 2, $y);
+                $possibleDistances[] = [$x - 2, $y];
             }
         }
 
@@ -89,7 +94,7 @@ class Construction
             // door open
             if ($mapDistance[$y + 2][$x] === self::ROOM || $mapDistance[$y + 2][$x] > ($currentDistance + 1)) {
                 $mapDistance[$y + 2][$x] = $currentDistance + 1;
-                $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x, $y + 2);
+                $possibleDistances[] = [$x, $y + 2];
             }
         }
 
@@ -97,11 +102,15 @@ class Construction
             // door open
             if ($mapDistance[$y - 2][$x] === self::ROOM || $mapDistance[$y - 2][$x] > ($currentDistance - 1)) {
                 $mapDistance[$y - 2][$x] = $currentDistance + 1;
-                $possibleDistances[] = $this->navigateMapAndGetMaxDistance($mapDistance, $x, $y - 2);
+                $possibleDistances[] = [$x, $y - 2];
             }
         }
 
-        return max($possibleDistances);
+        foreach ($possibleDistances as $possibleDistance) {
+            $this->navigateMapAndGetMaxDistance($mapDistance, $possibleDistance[0], $possibleDistance[1]);
+        }
+
+        return $currentDistance;
     }
 
     /**
@@ -225,6 +234,17 @@ class Construction
                 default:
                     throw new \InvalidArgumentException('Unrecognized step: ' . $step);
             }
+        }
+    }
+
+    private function drawMap(): void
+    {
+        if (empty($this->map)) {
+            foreach ($this->possiblePaths as $path) {
+                $this->followPath($path);
+            }
+
+            $this->map[0][0] = self::CENTER;
         }
     }
 }
