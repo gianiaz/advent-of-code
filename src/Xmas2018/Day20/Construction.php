@@ -72,36 +72,37 @@ class Construction
     private function navigateMapAndGetMaxDistance(array &$mapDistance, int $x = 0, int $y = 0): ?int
     {
         $currentDistance = $mapDistance[$y][$x];
+        $nextDistance = $currentDistance + 1;
         $possibleDistances = [];
 
         if ($mapDistance[$y][$x + 1] ?? false) {
             // door open
-            if ($mapDistance[$y][$x + 2] === self::ROOM || $mapDistance[$y][$x + 2] > ($currentDistance + 1)) {
-                $mapDistance[$y][$x + 2] = $currentDistance + 1;
+            if ($mapDistance[$y][$x + 2] === self::ROOM || $mapDistance[$y][$x + 2] > $nextDistance) {
+                $mapDistance[$y][$x + 2] = $nextDistance;
                 $possibleDistances[] = [$x + 2, $y];
             }
         }
 
         if ($mapDistance[$y][$x - 1] ?? false) {
             // door open
-            if ($mapDistance[$y][$x - 2] === self::ROOM || $mapDistance[$y][$x - 2] > ($currentDistance - 1)) {
-                $mapDistance[$y][$x - 2] = $currentDistance + 1;
+            if ($mapDistance[$y][$x - 2] === self::ROOM || $mapDistance[$y][$x - 2] > $nextDistance) {
+                $mapDistance[$y][$x - 2] = $nextDistance;
                 $possibleDistances[] = [$x - 2, $y];
             }
         }
 
         if ($mapDistance[$y + 1][$x] ?? false) {
             // door open
-            if ($mapDistance[$y + 2][$x] === self::ROOM || $mapDistance[$y + 2][$x] > ($currentDistance + 1)) {
-                $mapDistance[$y + 2][$x] = $currentDistance + 1;
+            if ($mapDistance[$y + 2][$x] === self::ROOM || $mapDistance[$y + 2][$x] > $nextDistance) {
+                $mapDistance[$y + 2][$x] = $nextDistance;
                 $possibleDistances[] = [$x, $y + 2];
             }
         }
 
         if ($mapDistance[$y - 1][$x] ?? false) {
             // door open
-            if ($mapDistance[$y - 2][$x] === self::ROOM || $mapDistance[$y - 2][$x] > ($currentDistance - 1)) {
-                $mapDistance[$y - 2][$x] = $currentDistance + 1;
+            if ($mapDistance[$y - 2][$x] === self::ROOM || $mapDistance[$y - 2][$x] > $nextDistance) {
+                $mapDistance[$y - 2][$x] = $nextDistance;
                 $possibleDistances[] = [$x, $y - 2];
             }
         }
