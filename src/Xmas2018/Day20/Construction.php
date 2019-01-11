@@ -17,7 +17,7 @@ class Construction
     /** @var string[] */
     private $possiblePaths;
 
-    /** @var string[][] */
+    /** @var Room[][] */
     private $map;
 
     public function __construct(string $instructions)
@@ -27,8 +27,6 @@ class Construction
 
     public function getTextualMap(): string
     {
-        $this->map[0][0] = self::CENTER;
-
         $minY = min(\array_keys($this->map));
         $maxY = max(\array_keys($this->map));
         $minX = $maxX = 0;
@@ -39,10 +37,27 @@ class Construction
 
         $textualMap = '';
         foreach (range($maxY + 1, $minY - 1) as $y) {
+            $textualMap .= self::WALL;
             foreach (range($minX - 1, $maxX + 1) as $x) {
-                $textualMap .= $this->map[$y][$x] ?? self::WALL;
+                if ($currentRoom = $this->map[$y][$x] ?? false) {
+                    $textualMap .= $currentRoom->getWest() ? self::DOOR_V : self::ROOM;
+                    $textualMap .= self::ROOM;
+                } else {
+                    $textualMap .= self::WALL . self::WALL;
+                }
             }
-            $textualMap .= PHP_EOL;
+
+            $textualMap .= self::WALL . PHP_EOL . self::WALL;
+
+            foreach (range($minX - 1, $maxX + 1) as $x) {
+                if ($currentRoom = $this->map[$y][$x] ?? false) {
+                    $textualMap .= self::WALL;
+                    $textualMap .= $currentRoom->getSouth() ? self::DOOR_H : self::WALL;
+                } else {
+                    $textualMap .= self::WALL . self::WALL;
+                }
+            }
+            $textualMap .= self::WALL . PHP_EOL;
         }
 
         return $textualMap;
@@ -130,7 +145,39 @@ class Construction
 
     public function processPaths(): void
     {
-        $this->possiblePaths = \iterator_to_array($this->extractPaths($this->instructions));
+        $starting = $this->map[0][0] = new Room(0, 0);
+        /** @var Scout[] $startingRooms */
+        $startingRooms = [new Scout($starting)];
+        /** @var Scout[] $scoutPositions */
+        $scoutPositions = [new Scout($starting)];
+        $startingRoomStack = new \SplStack();
+        $scoutPositionStack = new \SplStack();
+        $i = 0;
+
+        while ($step = $this->instructions[$i++] ?? false) {
+            /* @var string $step */
+            switch ($step) {
+                case '(':
+                    $startingRoomStack->push($this->cloneScouts($startingRooms));
+                    $scoutPositionStack->push($this->cloneScouts($scoutPositions));
+                    $startingRooms = $this->cloneScouts($scoutPositions);
+                    break;
+                case '|':
+                    foreach ($scoutPositions as $scout) {
+                        $startingRooms[] = $scout;
+                    }
+                    $scoutPositions = $this->cloneScouts($startingRooms);
+                    break;
+                case ')':
+                    $startingRooms = $startingRoomStack->pop();
+                    $scoutPositions = $scoutPositionStack->pop();
+                    break;
+                default: // NSWE
+                    foreach ($scoutPositions as $currentScout) {
+                        $this->advanceScout($currentScout, $step);
+                    }
+            }
+        }
     }
 
     private function extractPaths(string $instructions, string $previousPath = ''): \Generator
@@ -144,10 +191,12 @@ class Construction
 
             return;
         }
+
         $previousPath .= substr($instructions, 0, $firstOpenParenthesis);
 
-        $firstClosedParenthesis = \strpos($instructions, ')', $firstOpenParenthesis);
-        $branchesInstructions = \substr($instructions, $firstOpenParenthesis + 1, $firstClosedParenthesis - $firstOpenParenthesis - 1);
+        $firstClosedParenthesis = $this->findClosedParenthesis($instructions, $firstOpenParenthesis);
+        $branchesInstructions = \substr($instructions, $firstOpenParenthesis + 1,
+            $firstClosedParenthesis - $firstOpenParenthesis - 1);
         $remainderInstructions = \substr($instructions, $firstClosedParenthesis + 1);
 
         foreach ($this->extractPaths($branchesInstructions, $previousPath) as $branch) {
@@ -157,43 +206,70 @@ class Construction
         }
     }
 
-    private function drawStep(string $step, int &$x, int &$y): void
+    private function advanceScout(Scout $scout, string $step): void
     {
+        $room = $scout->getRoom();
         switch ($step) {
             case 'N':
-                if ($this->map[$y + 2][$x] ?? false) {
-                    $y += 2;
-                } else {
-                    $this->map[++$y][$x] = self::DOOR_H;
-                    $this->map[++$y][$x] = self::ROOM;
-                }
+                $newRoom = $this->addRoom($room->getX(), $room->getY() + 1);
                 break;
             case 'S':
-                if ($this->map[$y - 2][$x] ?? false) {
-                    $y -= 2;
-                } else {
-                    $this->map[--$y][$x] = self::DOOR_H;
-                    $this->map[--$y][$x] = self::ROOM;
-                }
+                $newRoom = $this->addRoom($room->getX(), $room->getY() - 1);
                 break;
             case 'E':
-                if ($this->map[$y][$x + 2] ?? false) {
-                    $x += 2;
-                } else {
-                    $this->map[$y][++$x] = self::DOOR_V;
-                    $this->map[$y][++$x] = self::ROOM;
-                }
+                $newRoom = $this->addRoom($room->getX() + 1, $room->getY());
                 break;
             case 'W':
-                if ($this->map[$y][$x - 2] ?? false) {
-                    $x -= 2;
-                } else {
-                    $this->map[$y][--$x] = self::DOOR_V;
-                    $this->map[$y][--$x] = self::ROOM;
-                }
+                $newRoom = $this->addRoom($room->getX() - 1, $room->getY());
                 break;
             default:
                 throw new \InvalidArgumentException('Unrecognized step: ' . $step);
         }
+        
+        $scout->setRoom($newRoom);
+        $scout->addStepToPath($step);
+    }
+
+    private function addRoom(int $x, int $y): Room
+    {
+        if ($this->map[$y][$x] ?? false) {
+            return $this->map[$y][$x];
+        }
+
+        $this->map[$y][$x] = $room = new Room($x, $y);
+
+        $room->setNord($this->map[$y + 1][$x] ?? null);
+        $room->setSouth($this->map[$y - 1][$x] ?? null);
+        $room->setEast($this->map[$y][$x + 1] ?? null);
+        $room->setWest($this->map[$y][$x - 1] ?? null);
+        
+        return $room;
+    }
+
+    /**
+     * @return bool|int
+     */
+    private function findClosedParenthesis(string $instructions, int $startFrom)
+    {
+        $openParenthesisPosition = $closedParenthesis = $startFrom;
+        do {
+            $closedParenthesis = \strpos($instructions, ')', $closedParenthesis + 1);
+            $possibleMatch = substr($instructions, $openParenthesisPosition,
+                $closedParenthesis - $openParenthesisPosition);
+            $openParenthesisPosition = \strpos($possibleMatch, '(', $openParenthesisPosition);
+        } while (false !== $openParenthesisPosition);
+
+        return $closedParenthesis;
+    }
+
+    /**
+     * @param array $scoutPositions
+     * @return array
+     */
+    private function cloneScouts(array $scoutPositions): array
+    {
+        return array_map(function (Scout $scout) {
+            return clone $scout;
+        }, $scoutPositions);
     }
 }
