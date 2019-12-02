@@ -14,7 +14,7 @@ class Day1SolutionTest extends TestCase
     {
         $solution = new Day1Solution();
         
-        $this->assertSame($expectedFuel, $solution->calculateFuel($moduleWeight));
+        $this->assertEquals($expectedFuel, $solution->calculateFuel($moduleWeight));
     }
 
     public function fuelDataProvider(): array
@@ -24,6 +24,25 @@ class Day1SolutionTest extends TestCase
             [2, 14],
             [654, 1969],
             [33583, 100756],
+        ];
+    }
+
+    /**
+     * @dataProvider recursiveFuelDataProvider
+     */
+    public function testCalculateWithAdditionalFuel(int $expectedFuel, int $module): void 
+    {
+        $solution = new Day1Solution();
+
+        $this->assertEquals($expectedFuel, $solution->calculateWithAdditionalFuel($module));
+    }
+
+    public function recursiveFuelDataProvider(): array
+    {
+        return [
+            [2, 14],
+            [966, 1969],
+            [50346, 100756],
         ];
     }
 }
