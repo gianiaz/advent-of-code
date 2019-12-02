@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2019\Day2;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day2Solution implements SolutionInterface
+class Day2Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public const ADD = 1;
     public const MULTIPLY = 2;
@@ -20,6 +21,23 @@ class Day2Solution implements SolutionInterface
         $memory[2] = 2;
 
         return $this->run($memory);
+    }
+
+    public function solveSecondPart()
+    {
+        foreach (range(0, 99) as $noun) {
+            foreach (range(0, 99) as $verb) {
+                $memory = self::INPUT;
+                $memory[1] = $noun;
+                $memory[2] = $verb;
+
+                if (19690720 === $this->run($memory)) {
+                    return 100 * $noun + $verb;
+                }
+            }
+        }
+
+        throw new \RuntimeException('Cannot find the solution');
     }
 
     public function run(array &$memory)
