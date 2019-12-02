@@ -195,8 +195,11 @@ class Construction
         $previousPath .= substr($instructions, 0, $firstOpenParenthesis);
 
         $firstClosedParenthesis = $this->findClosedParenthesis($instructions, $firstOpenParenthesis);
-        $branchesInstructions = \substr($instructions, $firstOpenParenthesis + 1,
-            $firstClosedParenthesis - $firstOpenParenthesis - 1);
+        $branchesInstructions = \substr(
+            $instructions,
+            $firstOpenParenthesis + 1,
+            $firstClosedParenthesis - $firstOpenParenthesis - 1
+        );
         $remainderInstructions = \substr($instructions, $firstClosedParenthesis + 1);
 
         foreach ($this->extractPaths($branchesInstructions, $previousPath) as $branch) {
@@ -225,7 +228,7 @@ class Construction
             default:
                 throw new \InvalidArgumentException('Unrecognized step: ' . $step);
         }
-        
+
         $scout->setRoom($newRoom);
         $scout->addStepToPath($step);
     }
@@ -242,7 +245,7 @@ class Construction
         $room->setSouth($this->map[$y - 1][$x] ?? null);
         $room->setEast($this->map[$y][$x + 1] ?? null);
         $room->setWest($this->map[$y][$x - 1] ?? null);
-        
+
         return $room;
     }
 
@@ -254,18 +257,17 @@ class Construction
         $openParenthesisPosition = $closedParenthesis = $startFrom;
         do {
             $closedParenthesis = \strpos($instructions, ')', $closedParenthesis + 1);
-            $possibleMatch = substr($instructions, $openParenthesisPosition,
-                $closedParenthesis - $openParenthesisPosition);
+            $possibleMatch = substr(
+                $instructions,
+                $openParenthesisPosition,
+                $closedParenthesis - $openParenthesisPosition
+            );
             $openParenthesisPosition = \strpos($possibleMatch, '(', $openParenthesisPosition);
         } while (false !== $openParenthesisPosition);
 
         return $closedParenthesis;
     }
 
-    /**
-     * @param array $scoutPositions
-     * @return array
-     */
     private function cloneScouts(array $scoutPositions): array
     {
         return array_map(function (Scout $scout) {

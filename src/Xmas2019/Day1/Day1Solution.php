@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2019\Day1;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
@@ -11,6 +13,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * @param int[] $modules
+     *
      * @return int
      */
     public function solve(array $modules = self::INPUT)
@@ -27,7 +30,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
     public function calculateFuel(int $moduleWeight): int
     {
         $firstCalc = floor($moduleWeight / 3);
-        
+
         return $firstCalc - 2;
     }
 
@@ -48,9 +51,9 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $additionalFuel = $amountOfFuel;
         do {
-            $additionalFuel = (int)max(0, $this->calculateFuel($additionalFuel));
+            $additionalFuel = (int) max(0, $this->calculateFuel($additionalFuel));
             $amountOfFuel += $additionalFuel;
-        } while($additionalFuel > 0);
+        } while ($additionalFuel > 0);
 
         return $amountOfFuel;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Xmas2019\Day1;
 
 use Jean85\AdventOfCode\Xmas2019\Day1\Day1Solution;
@@ -13,7 +15,7 @@ class Day1SolutionTest extends TestCase
     public function testCalculateFuel(int $expectedFuel, int $moduleWeight): void
     {
         $solution = new Day1Solution();
-        
+
         $this->assertEquals($expectedFuel, $solution->calculateFuel($moduleWeight));
     }
 
@@ -30,7 +32,7 @@ class Day1SolutionTest extends TestCase
     /**
      * @dataProvider recursiveFuelDataProvider
      */
-    public function testCalculateWithAdditionalFuel(int $expectedFuel, int $module): void 
+    public function testCalculateWithAdditionalFuel(int $expectedFuel, int $module): void
     {
         $solution = new Day1Solution();
 
