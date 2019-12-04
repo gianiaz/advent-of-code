@@ -16,7 +16,7 @@ class Password
 
     public function next(): self
     {
-        return new self($this->password + 1);
+        return new static($this->password + 1);
     }
 
     public function getPassword(): int

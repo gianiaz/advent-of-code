@@ -4,19 +4,32 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2019\Day4;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day4Solution implements SolutionInterface
+class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 {
+    private const RANGE_MIN = 284639;
+    private const RANGE_MAX = 748759;
+
     public function solve()
     {
-        return $this->countValidPasswords(284639, 748759);
+        $password = new Password(self::RANGE_MIN);
+
+        return $this->countValidPasswords($password, self::RANGE_MAX);
     }
 
-    private function countValidPasswords(int $min, int $max): int
+    public function solveSecondPart()
+    {
+        $password = new StricterPassword(self::RANGE_MIN);
+
+        return $this->countValidPasswords($password, self::RANGE_MAX);
+    }
+
+    private function countValidPasswords(Password $start, int $max): int
     {
         $validCount = 0;
-        $password = new Password($min);
+        $password = $start;
 
         do {
             if ($password->isValid()) {
