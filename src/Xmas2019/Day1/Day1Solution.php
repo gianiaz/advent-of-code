@@ -29,7 +29,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function calculateFuel(int $moduleWeight): int
     {
-        $firstCalc = floor($moduleWeight / 3);
+        $firstCalc = (int) floor($moduleWeight / 3);
 
         return $firstCalc - 2;
     }
