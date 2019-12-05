@@ -10,6 +10,10 @@ use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\Halt;
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\Multiply;
 use Jean85\AdventOfCode\Xmas2019\Day2\IntcodeComputer;
 use Jean85\AdventOfCode\Xmas2019\Day2\Memory;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\Equals;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\JumpIfFalse;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\JumpIfTrue;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\LessThan;
 use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\PushInOutput;
 use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\SaveFromInput;
 
@@ -35,6 +39,10 @@ class Day5Solution implements SolutionInterface
             new Multiply(),
             new PushInOutput(),
             new SaveFromInput(),
+            new Equals(),
+            new JumpIfFalse(),
+            new JumpIfTrue(),
+            new LessThan(),
         ]);
 
         return $computer->run($memory);
