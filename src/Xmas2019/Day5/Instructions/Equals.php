@@ -16,7 +16,9 @@ class Equals implements InstructionInterface
 
     public function apply(Memory $memory, ParameterModes $modes): void
     {
-        // TODO: Implement apply() method.
+        $valueToStore = (int) ($memory->getAfterPointer(1, $modes) === $memory->getAfterPointer(2, $modes));
+
+        $memory->set($memory->getAfterPointer(3, $modes), $valueToStore);
     }
 
     public function getInstructionSize(): ?int

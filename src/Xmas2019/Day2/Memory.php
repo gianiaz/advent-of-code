@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jean85\AdventOfCode\Xmas2019\Day2;
 
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\AbstractJump;
 use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\ParameterModes;
 
 class Memory
@@ -51,7 +52,11 @@ class Memory
 
     public function increasePointer(InstructionInterface $instruction): void
     {
-        $this->pointer += $instruction->getInstructionSize() ?? 4;
+        if ($instruction instanceof AbstractJump) {
+            $this->pointer += $instruction->getJumpSize();
+        } else {
+            $this->pointer += $instruction->getInstructionSize() ?? 4;
+        }
     }
 
     public function getAsValue(int $position): int
