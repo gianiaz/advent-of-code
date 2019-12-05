@@ -13,8 +13,10 @@ class Multiply implements InstructionInterface
         return 2;
     }
 
-    public function apply(Memory $memory, int $position): void
+    public function apply(Memory $memory): void
     {
+        $position = $memory->getPointer();
+
         $resultPosition = $memory->get($position + 3);
         $input1 = $memory->getFromPosition($position + 1);
         $input2 = $memory->getFromPosition($position + 2);

@@ -13,7 +13,7 @@ class Halt implements InstructionInterface
         return 99;
     }
 
-    public function apply(Memory $memory, int $position): void
+    public function apply(Memory $memory): void
     {
         return;
     }

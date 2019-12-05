@@ -10,5 +10,5 @@ interface InstructionInterface
 {
     public function getOpcode(): int;
 
-    public function apply(Memory $memory, int $position): void;
+    public function apply(Memory $memory): void;
 }

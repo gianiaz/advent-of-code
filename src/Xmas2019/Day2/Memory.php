@@ -9,6 +9,9 @@ class Memory
     /** @var int[] */
     private $memory;
 
+    /** @var int */
+    private $pointer = 0;
+
     /**
      * Memory constructor.
      *
@@ -17,11 +20,17 @@ class Memory
     public function __construct(array $memory)
     {
         $this->memory = $memory;
+        $this->pointer = 0;
     }
 
     public function get(int $position): int
     {
         return $this->memory[$position];
+    }
+
+    public function getCurrent(): int
+    {
+        return $this->memory[$this->pointer];
     }
 
     /**
@@ -30,6 +39,16 @@ class Memory
     public function getMemory(): array
     {
         return $this->memory;
+    }
+
+    public function getPointer(): int
+    {
+        return $this->pointer;
+    }
+
+    public function increasePointer(): void
+    {
+        $this->pointer += 4;
     }
 
     public function getAsValue(int $position): int
