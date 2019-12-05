@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Xmas2019\Day2;
 
 use Jean85\AdventOfCode\Xmas2019\Day2\Day2Solution;
+use Jean85\AdventOfCode\Xmas2019\Day2\Memory;
 use PHPUnit\Framework\TestCase;
 
 class Day2SolutionTest extends TestCase
@@ -12,15 +13,17 @@ class Day2SolutionTest extends TestCase
     /**
      * @dataProvider stepDataProvider
      */
-    public function testStep(array $before, array $after): void
+    public function testComputer(array $before, array $after): void
     {
         $solution = new Day2Solution();
+        $memory = new Memory($before);
 
-        $this->assertTrue($solution->step($before, 0));
-        $this->assertEquals($after, $before);
+        $solution->run($memory);
+
+        $this->assertEquals($after, $memory->getMemory());
     }
 
-    public function stepDataProvider()
+    public function stepDataProvider(): array
     {
         return [
             [
@@ -35,24 +38,6 @@ class Day2SolutionTest extends TestCase
                 [2, 4, 4, 5, 99, 0],
                 [2, 4, 4, 5, 99, 9801],
             ],
-        ];
-    }
-
-    /**
-     * @dataProvider runDataProvider
-     */
-    public function testRun(array $memory, array $expected)
-    {
-        $solution = new Day2Solution();
-
-        $solution->run($memory);
-
-        $this->assertEquals($expected, $memory);
-    }
-
-    public function runDataProvider(): array
-    {
-        return [
             [
                 [1, 1, 1, 4, 99, 5, 6, 0, 99],
                 [30, 1, 1, 4, 2, 5, 6, 0, 99],
