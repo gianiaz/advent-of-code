@@ -18,7 +18,7 @@ class JumpIfFalse extends AbstractJump
         $this->jumpSize = null;
 
         if (0 === $memory->getAfterPointer(1, $modes)) {
-            $this->jumpSize = $memory->getAfterPointer(2, $modes);
+            $this->jumpSize = $memory->getAfterPointer(2, $modes) - $memory->getPointer();
         }
     }
 }

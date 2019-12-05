@@ -13,9 +13,6 @@ class IntcodeComputer
     /** @var InstructionInterface[] */
     private $instructions;
 
-    /** @var int */
-    private $pointer;
-
     /**
      * @param InstructionInterface[] $instructions
      */
@@ -26,8 +23,6 @@ class IntcodeComputer
 
     public function run(Memory $memory): int
     {
-        $this->pointer = 0;
-
         while ($instruction = $this->step($memory)) {
             if ($instruction instanceof Halt) {
                 break;
