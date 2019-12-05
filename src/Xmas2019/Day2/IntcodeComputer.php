@@ -27,7 +27,7 @@ class IntcodeComputer
     {
         $this->pointer = 0;
 
-        while ($instruction = $this->step($memory) ) {
+        while ($instruction = $this->step($memory)) {
             if ($instruction instanceof Halt) {
                 break;
             }
