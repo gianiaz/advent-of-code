@@ -21,4 +21,24 @@ class Day5SolutionTest extends TestCase
 
         $this->assertSame($input, $memory->getOutput());
     }
+
+    public function testParameterModes(): void
+    {
+        $memory = new MemoryWithIO([1002, 4, 3, 4, 33]);
+        $solution = new Day5Solution();
+
+        $solution->run($memory);
+
+        $this->assertSame([1002, 4, 3, 4, 99], $memory->getMemory());
+    }
+
+    public function testWithNegatives(): void
+    {
+        $memory = new MemoryWithIO([1101, 100, -1, 4, 0]);
+        $solution = new Day5Solution();
+
+        $solution->run($memory);
+
+        $this->assertSame([1101, 100, -1, 4, 99], $memory->getMemory());
+    }
 }

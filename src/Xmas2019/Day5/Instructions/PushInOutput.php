@@ -15,13 +15,13 @@ class PushInOutput implements InstructionInterface
         return 4;
     }
 
-    public function apply(Memory $memory): void
+    public function apply(Memory $memory, ParameterModes $modes): void
     {
         if (! $memory instanceof MemoryWithIO) {
             throw new \InvalidArgumentException('Expecting ' . MemoryWithIO::class . ', got ' . get_class($memory));
         }
 
-        $value = $memory->getFromPosition($memory->getPointer() + 1);
+        $value = $memory->getAfterPointer(1, $modes);
 
         $memory->setOutput($value);
     }

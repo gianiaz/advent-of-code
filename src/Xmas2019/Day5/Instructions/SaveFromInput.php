@@ -15,7 +15,7 @@ class SaveFromInput implements InstructionInterface
         return 3;
     }
 
-    public function apply(Memory $memory): void
+    public function apply(Memory $memory, ParameterModes $modes): void
     {
         if (! $memory instanceof MemoryWithIO) {
             throw new \InvalidArgumentException('Expecting ' . MemoryWithIO::class . ', got ' . get_class($memory));

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jean85\AdventOfCode\Xmas2019\Day2;
 
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\ParameterModes;
 
 class Memory
 {
@@ -61,9 +62,13 @@ class Memory
         return $this->memory[$positionToExtractFrom];
     }
 
-    public function getFromPosition(int $position): int
+    public function getAfterPointer(int $ahead, ParameterModes $mode): int
     {
-        $positionToExtractFrom = $this->memory[$position];
+        if ($mode->isImmediate($ahead)) {
+            return $this->memory[$this->getPointer() + $ahead];
+        }
+
+        $positionToExtractFrom = $this->memory[$this->getPointer() + $ahead];
 
         return $this->memory[$positionToExtractFrom];
     }

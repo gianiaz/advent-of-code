@@ -6,6 +6,7 @@ namespace Jean85\AdventOfCode\Xmas2019\Day2;
 
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\Halt;
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
+use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\ParameterModes;
 
 class IntcodeComputer
 {
@@ -42,14 +43,14 @@ class IntcodeComputer
     {
         $opcode = $this->getInstruction($memory);
 
-        $opcode->apply($memory);
+        $opcode->apply($memory, new ParameterModes($memory));
 
         return $opcode;
     }
 
     private function getInstruction(Memory $memory): InstructionInterface
     {
-        $opcode = $memory->getCurrent();
+        $opcode = (int) substr((string) $memory->getCurrent(), -2);
 
         foreach ($this->instructions as $instruction) {
             if ($opcode === $instruction->getOpcode()) {
