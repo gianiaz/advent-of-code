@@ -45,17 +45,20 @@ class Day5SolutionTest extends TestCase
     /**
      * @dataProvider jumpsMemoryDataProvider
      */
-    public function testReturnsTrueWithJumps(array $memory): void
+    public function testReturnsTrueWithJumps(array $memory, int $correctValue): void
     {
         $memory = new MemoryWithIO($memory);
         $solution = new Day5Solution();
-        $memory->setInput(8);
+        $memory->setInput($correctValue);
 
         $solution->run($memory);
 
         $this->assertSame(1, $memory->getOutput());
     }
 
+    /**
+     * @dataProvider jumpsMemoryDataProvider
+     */
     public function testReturnsFalseWithJumps(array $memory): void
     {
         $memory = new MemoryWithIO($memory);
@@ -70,10 +73,10 @@ class Day5SolutionTest extends TestCase
     public function jumpsMemoryDataProvider(): array
     {
         return [
-            [[3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8]],
-            [[3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8]],
-            [[3, 3, 1108, -1, 8, 3, 4, 3, 99]],
-            [[3, 3, 1107, -1, 8, 3, 4, 3, 99]],
+            [[3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8], 8],
+            [[3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8], 7],
+            [[3, 3, 1108, -1, 8, 3, 4, 3, 99], 8],
+            [[3, 3, 1107, -1, 8, 3, 4, 3, 99], 7],
         ];
     }
 }
