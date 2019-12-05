@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2019\Day2;
 
+use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
+
 class Memory
 {
     /** @var int[] */
@@ -46,9 +48,9 @@ class Memory
         return $this->pointer;
     }
 
-    public function increasePointer(): void
+    public function increasePointer(InstructionInterface $instruction): void
     {
-        $this->pointer += 4;
+        $this->pointer += $instruction->getInstructionSize() ?? 4;
     }
 
     public function getAsValue(int $position): int

@@ -12,6 +12,9 @@ class IntcodeComputer
     /** @var InstructionInterface[] */
     private $instructions;
 
+    /** @var int */
+    private $pointer;
+
     /**
      * @param InstructionInterface[] $instructions
      */
@@ -24,20 +27,24 @@ class IntcodeComputer
     {
         $this->pointer = 0;
 
-        while ($this->step($memory)) {
-            $memory->increasePointer();
+        while ($instruction = $this->step($memory) ) {
+            if ($instruction instanceof Halt) {
+                break;
+            }
+
+            $memory->increasePointer($instruction);
         }
 
         return $memory->get(0);
     }
 
-    private function step(Memory $memory): bool
+    private function step(Memory $memory): InstructionInterface
     {
         $opcode = $this->getInstruction($memory);
 
         $opcode->apply($memory);
 
-        return ! $opcode instanceof Halt;
+        return $opcode;
     }
 
     private function getInstruction(Memory $memory): InstructionInterface

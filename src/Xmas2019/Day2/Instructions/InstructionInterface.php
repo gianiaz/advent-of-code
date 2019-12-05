@@ -11,4 +11,6 @@ interface InstructionInterface
     public function getOpcode(): int;
 
     public function apply(Memory $memory): void;
+
+    public function getInstructionSize(): ?int;
 }

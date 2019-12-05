@@ -17,4 +17,9 @@ class Halt implements InstructionInterface
     {
         return;
     }
+
+    public function getInstructionSize(): ?int
+    {
+        return 0;
+    }
 }

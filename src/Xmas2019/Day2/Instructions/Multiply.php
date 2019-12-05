@@ -23,4 +23,9 @@ class Multiply implements InstructionInterface
 
         $memory->set($resultPosition, $input1 * $input2);
     }
+
+    public function getInstructionSize(): ?int
+    {
+        return 4;
+    }
 }
