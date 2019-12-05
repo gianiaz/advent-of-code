@@ -7,7 +7,7 @@ namespace Jean85\AdventOfCode\Xmas2019\Day5\Instructions;
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
 use Jean85\AdventOfCode\Xmas2019\Day2\Memory;
 
-class JumpIfTrue implements InstructionInterface
+class JumpIfTrue extends AbstractJump
 {
     public function getOpcode(): int
     {
@@ -17,10 +17,5 @@ class JumpIfTrue implements InstructionInterface
     public function apply(Memory $memory, ParameterModes $modes): void
     {
         // TODO: Implement apply() method.
-    }
-
-    public function getInstructionSize(): ?int
-    {
-        return 3;
     }
 }

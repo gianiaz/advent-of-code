@@ -41,4 +41,39 @@ class Day5SolutionTest extends TestCase
 
         $this->assertSame([1101, 100, -1, 4, 99], $memory->getMemory());
     }
+
+    /**
+     * @dataProvider jumpsMemoryDataProvider
+     */
+    public function testReturnsTrueWithJumps(array $memory): void
+    {
+        $memory = new MemoryWithIO($memory);
+        $solution = new Day5Solution();
+        $memory->setInput(8);
+
+        $solution->run($memory);
+
+        $this->assertSame(1, $memory->getOutput());
+    }
+
+    public function testReturnsFalseWithJumps(array $memory): void
+    {
+        $memory = new MemoryWithIO($memory);
+        $solution = new Day5Solution();
+        $memory->setInput(9);
+
+        $solution->run($memory);
+
+        $this->assertSame(0, $memory->getOutput());
+    }
+
+    public function jumpsMemoryDataProvider(): array
+    {
+        return [
+            [3,9,8,9,10,9,4,9,99,-1,8],
+            [3,9,7,9,10,9,4,9,99,-1,8],
+            [3,3,1108,-1,8,3,4,3,99],
+            [3,3,1107,-1,8,3,4,3,99],
+        ];
+    }
 }
