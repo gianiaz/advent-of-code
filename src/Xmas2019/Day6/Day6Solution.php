@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2019\Day6;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day6Solution implements SolutionInterface
+class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
@@ -14,6 +15,14 @@ class Day6Solution implements SolutionInterface
         $counter = new OrbitCounter();
 
         return $counter->count($objectGraph);
+    }
+
+    public function solveSecondPart()
+    {
+        $objectGraph = OrbitGraphFactory::create($this->getInput(), 'YOU');
+        $counter = new OrbitCounter();
+
+        return $counter->findSanta($objectGraph->getOrbits());
     }
 
     private function getInput(): string

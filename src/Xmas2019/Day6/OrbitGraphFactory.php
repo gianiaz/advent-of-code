@@ -6,7 +6,7 @@ namespace Jean85\AdventOfCode\Xmas2019\Day6;
 
 class OrbitGraphFactory
 {
-    public static function create(string $input): ObjectInSpace
+    public static function create(string $input, string $return = 'COM'): ObjectInSpace
     {
         $objectMap = [];
         $instructionList = explode(PHP_EOL, $input);
@@ -19,15 +19,15 @@ class OrbitGraphFactory
             $object1->addOrbitant($object2);
         }
 
-        return $objectMap['COM'];
+        return $objectMap[$return];
     }
 
-    private static function getObject(array &$objectMap, $name1): ObjectInSpace
+    private static function getObject(array &$objectMap, $name): ObjectInSpace
     {
-        if (! isset($objectMap[$name1])) {
-            $objectMap[$name1] = new ObjectInSpace();
+        if (! isset($objectMap[$name])) {
+            $objectMap[$name] = new ObjectInSpace($name);
         }
 
-        return $objectMap[$name1];
+        return $objectMap[$name];
     }
 }
