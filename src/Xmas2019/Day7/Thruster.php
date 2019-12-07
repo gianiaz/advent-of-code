@@ -14,7 +14,6 @@ use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\JumpIfTrue;
 use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\LessThan;
 use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\PushInOutput;
 use Jean85\AdventOfCode\Xmas2019\Day5\Instructions\SaveFromInput;
-use Jean85\AdventOfCode\Xmas2019\Day5\MemoryWithIO;
 
 class Thruster
 {
@@ -40,8 +39,7 @@ class Thruster
             $memory = $this->recreateMemory();
             $amplifier = new Amplifier($computer, $memory);
 
-            $amplifier->execute($initSequence[$i]);
-            $output = $amplifier->execute($output);
+            $output = $amplifier->execute($initSequence[$i], $output);
         }
 
         return $output;
@@ -62,8 +60,8 @@ class Thruster
         ]);
     }
 
-    private function recreateMemory(): MemoryWithIO
+    private function recreateMemory(): MemoryWithSequentialIO
     {
-        return new MemoryWithIO($this->program);
+        return new MemoryWithSequentialIO($this->program);
     }
 }
