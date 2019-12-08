@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Jean85\AdventOfCode\Xmas2019\Day7;
 
 use Jean85\AdventOfCode\Xmas2019\Day2\IntcodeComputer;
+use Jean85\AdventOfCode\Xmas2019\Day5\MemoryWithIO;
 
 class Amplifier
 {
     /** @var IntcodeComputer */
     private $computer;
 
-    /** @var MemoryWithSequentialIO */
+    /** @var MemoryWithIO */
     private $memory;
 
-    public function __construct(IntcodeComputer $computer, MemoryWithSequentialIO $memory)
+    public function __construct(IntcodeComputer $computer, MemoryWithIO $memory)
     {
         $this->computer = $computer;
         $this->memory = $memory;
@@ -25,7 +26,7 @@ class Amplifier
         return $this->computer;
     }
 
-    public function getMemory(): MemoryWithSequentialIO
+    public function getMemory(): MemoryWithIO
     {
         return $this->memory;
     }

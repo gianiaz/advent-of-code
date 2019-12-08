@@ -45,6 +45,34 @@ class Thruster
         return $output;
     }
 
+    public function trySequenceWithLoop(array $initSequence): int
+    {
+        $output = 0;
+        $computer = $this->creatComputer();
+        /** @var Amplifier[] $amplifiers */
+        $amplifiers = [];
+
+        for ($i = 0; $i < 5; ++$i) {
+            $memory = $this->recreateYieldedMemory();
+            $amplifier = new Amplifier($computer, $memory);
+            $amplifiers[$i] = $amplifier;
+
+            $memory->setInput($initSequence[$i]);
+            if ($i > 0) {
+                $this->chainAmplifiers($amplifiers[$i - 1], $amplifier);
+            }
+        }
+
+        $this->chainAmplifiers($amplifiers[4], $amplifiers[0]);
+
+        for ($i = 0; $i < 5; ++$i) {
+            $amplifier = $amplifiers[$i];
+            $amplifier->getComputer()->run($amplifier->getMemory());
+        }
+
+        return $output;
+    }
+
     private function creatComputer(): IntcodeComputer
     {
         return new IntcodeComputer([
@@ -63,5 +91,20 @@ class Thruster
     private function recreateMemory(): MemoryWithSequentialIO
     {
         return new MemoryWithSequentialIO($this->program);
+    }
+
+    private function recreateYieldedMemory(): MemoryWithYieldedIO
+    {
+        return new MemoryWithYieldedIO($this->program);
+    }
+
+    private function chainAmplifiers(Amplifier $amplifier1, Amplifier $amplifier2): void
+    {
+        /** @var MemoryWithYieldedIO $memory1 */
+        $memory1 = $amplifier1->getMemory();
+        /** @var MemoryWithYieldedIO $memory2 */
+        $memory2 = $amplifier2->getMemory();
+
+        $memory1->setOutputGenerator($memory2->getInputGenerator());
     }
 }
