@@ -38,4 +38,11 @@ class ImageTest extends TestCase
             ['211111111110', 5],
         ];
     }
+
+    public function testFinalImage(): void
+    {
+        $image = new Image('0222112222120000', 2, 2);
+
+        $this->assertSame('0110', $image->getFinalImage());
+    }
 }

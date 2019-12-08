@@ -46,6 +46,17 @@ class Image
         return $this->countChars($layer, '1') * $this->countChars($layer, '2');
     }
 
+    public function getFinalImage(): string
+    {
+        $image = '';
+
+        for ($i = 0; $i < $this->width * $this->height; ++$i) {
+            $image .= $this->getPixel($i);
+        }
+
+        return $image;
+    }
+
     /**
      * @return string[]
      */
@@ -86,5 +97,15 @@ class Image
         }
 
         return $charCount;
+    }
+
+    private function getPixel(int $i): string
+    {
+        foreach ($this->layers as $layer) {
+            $pixel = $layer[$i];
+            if ($pixel !== '2') {
+                return $pixel;
+            }
+        }
     }
 }
