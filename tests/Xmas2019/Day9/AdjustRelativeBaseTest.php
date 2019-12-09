@@ -48,11 +48,42 @@ class AdjustRelativeBaseTest extends TestCase
     {
         $memory = new MemoryWithRelativeMode([104, 1125899906842624, 99]);
 
-        $computer = (new Day9Solution())->creatComputer();
-        $computer->run($memory);
+        $this->runWithDay9Computer($memory);
 
         $output = $memory->getOutput();
         $this->assertSame(1125899906842624, $output);
         $this->assertSame('1125899906842624', (string) $output);
+    }
+
+    public function testMultiplyRelativeMode(): void
+    {
+        $input = [1202, 11, 12, 13, 99];
+        $input[99] = 10;
+        $memory = new MemoryWithRelativeMode($input);
+        $memory->alterRelative(88);
+
+        $this->runWithDay9Computer($memory);
+
+        $this->assertSame(10 * 12, $memory->get(13));
+    }
+
+    public function testAddRelativeMode(): void
+    {
+        $input = [21001, 11, 12, 13, 99];
+        $input[11] = 10;
+        $memory = new MemoryWithRelativeMode($input);
+        $memory->alterRelative(10);
+
+        $this->runWithDay9Computer($memory);
+
+        $this->assertSame(10 + 12, $memory->get(23));
+    }
+
+    private function runWithDay9Computer(MemoryWithRelativeMode $memory): void
+    {
+        $solution = new Day9Solution();
+        $computer = $solution->creatComputer();
+
+        $computer->run($memory);
     }
 }

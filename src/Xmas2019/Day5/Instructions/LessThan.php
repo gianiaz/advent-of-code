@@ -20,7 +20,6 @@ class LessThan implements InstructionInterface
             $modes->isRelative(1)
             || $modes->isRelative(2)
             || $modes->isRelative(3)
-
         ) {
             throw new \InvalidArgumentException();
         }

@@ -19,7 +19,6 @@ class JumpIfFalse extends AbstractJump
             $modes->isRelative(1)
             || $modes->isRelative(2)
             || $modes->isRelative(3)
-
         ) {
             throw new \InvalidArgumentException();
         }

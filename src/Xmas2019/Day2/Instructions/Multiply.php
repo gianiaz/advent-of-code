@@ -16,13 +16,8 @@ class Multiply implements InstructionInterface
 
     public function apply(Memory $memory, ParameterModes $modes): void
     {
-        if (
-            $modes->isRelative(1)
-            || $modes->isRelative(2)
-            || $modes->isRelative(3)
-
-        ) {
-            throw new \InvalidArgumentException();
+        if ($modes->isRelative(3)) {
+            throw new \InvalidArgumentException('Unsupported relative mode');
         }
 
         $resultPosition = $memory->get($memory->getPointer() + 3);
