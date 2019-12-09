@@ -25,12 +25,13 @@ class AdjustRelativeBaseTest extends TestCase
 
     public function testQuineWithVoidOffsets(): void
     {
-        $memory = new MemoryWithRelativeMode([109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]);
+        $quine = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99];
+        $memory = new MemoryWithRelativeMode($quine);
 
         $computer = (new Day9Solution())->creatComputer();
         $computer->run($memory);
 
-        $this->assertSame(99, $memory->getOutput());
+        $this->assertSame($quine, $memory->getAllOutput());
     }
 
     public function testWithLongOutput(): void

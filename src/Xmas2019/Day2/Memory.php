@@ -59,14 +59,6 @@ class Memory
         }
     }
 
-    public function getAsValue(int $position): int
-    {
-        throw new \RuntimeException('Incomplete');
-        $positionToExtractFrom = $this->memory[$position];
-
-        return $this->memory[$positionToExtractFrom];
-    }
-
     public function getAfterPointer(int $ahead, ParameterModes $mode): int
     {
         if ($mode->isImmediate($ahead)) {
