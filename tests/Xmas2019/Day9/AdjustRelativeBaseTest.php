@@ -79,6 +79,48 @@ class AdjustRelativeBaseTest extends TestCase
         $this->assertSame(10 + 12, $memory->get(23));
     }
 
+    public function testEqualsRelativeMode(): void
+    {
+        $input = [22208, 11, 12, 13, 99];
+        $input[21] = 10;
+        $input[22] = 10;
+        $memory = new MemoryWithRelativeMode($input);
+        $memory->alterRelative(10);
+
+        $this->runWithDay9Computer($memory);
+
+        $this->assertSame(1, $memory->get(23));
+
+        $memory = new MemoryWithRelativeMode($input);
+        $memory->alterRelative(10);
+        $memory->set(22, 0);
+
+        $this->runWithDay9Computer($memory);
+
+        $this->assertSame(0, $memory->get(23));
+    }
+
+    public function testLessThanRelativeMode(): void
+    {
+        $input = [22207, 11, 12, 13, 99];
+        $input[21] = 10;
+        $input[22] = 11;
+        $memory = new MemoryWithRelativeMode($input);
+        $memory->alterRelative(10);
+
+        $this->runWithDay9Computer($memory);
+
+        $this->assertSame(1, $memory->get(23));
+
+        $memory = new MemoryWithRelativeMode($input);
+        $memory->alterRelative(10);
+        $memory->set(22, 0);
+
+        $this->runWithDay9Computer($memory);
+
+        $this->assertSame(0, $memory->get(23));
+    }
+
     private function runWithDay9Computer(MemoryWithRelativeMode $memory): void
     {
         $solution = new Day9Solution();

@@ -7,30 +7,15 @@ namespace Jean85\AdventOfCode\Xmas2019\Day5\Instructions;
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
 use Jean85\AdventOfCode\Xmas2019\Day2\Memory;
 
-class LessThan implements InstructionInterface
+class LessThan extends Equals implements InstructionInterface
 {
     public function getOpcode(): int
     {
         return 7;
     }
 
-    public function apply(Memory $memory, ParameterModes $modes): void
+    protected function getValueToStore(Memory $memory, ParameterModes $modes): int
     {
-        if (
-            $modes->isRelative(1)
-            || $modes->isRelative(2)
-            || $modes->isRelative(3)
-        ) {
-            throw new \InvalidArgumentException();
-        }
-
-        $valueToStore = (int) ($memory->getAfterPointer(1, $modes) < $memory->getAfterPointer(2, $modes));
-
-        $memory->set($memory->get($memory->getPointer() + 3), $valueToStore);
-    }
-
-    public function getInstructionSize(): ?int
-    {
-        return 4;
+        return (int) ($memory->getAfterPointer(1, $modes) < $memory->getAfterPointer(2, $modes));
     }
 }

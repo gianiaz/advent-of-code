@@ -6,6 +6,7 @@ namespace Jean85\AdventOfCode\Xmas2019\Day5\Instructions;
 
 use Jean85\AdventOfCode\Xmas2019\Day2\Instructions\InstructionInterface;
 use Jean85\AdventOfCode\Xmas2019\Day2\Memory;
+use Jean85\AdventOfCode\Xmas2019\Day9\MemoryWithRelativeMode;
 
 class Equals implements InstructionInterface
 {
@@ -16,21 +17,26 @@ class Equals implements InstructionInterface
 
     public function apply(Memory $memory, ParameterModes $modes): void
     {
-        if (
-            $modes->isRelative(1)
-            || $modes->isRelative(2)
-            || $modes->isRelative(3)
-        ) {
-            throw new \InvalidArgumentException();
+        $valueToStore = $this->getValueToStore($memory, $modes);
+
+        if ($modes->isRelative(3)) {
+            if (! $memory instanceof MemoryWithRelativeMode) {
+                throw new \InvalidArgumentException('Expecting ' . MemoryWithRelativeMode::class . ', got ' . get_class($memory));
+            }
+
+            $memory->set($memory->get($memory->getPointer() + 3) + $memory->getRelative(), $valueToStore);
+        } else {
+            $memory->set($memory->get($memory->getPointer() + 3), $valueToStore);
         }
-
-        $valueToStore = (int) ($memory->getAfterPointer(1, $modes) === $memory->getAfterPointer(2, $modes));
-
-        $memory->set($memory->get($memory->getPointer() + 3), $valueToStore);
     }
 
     public function getInstructionSize(): ?int
     {
         return 4;
+    }
+
+    protected function getValueToStore(Memory $memory, ParameterModes $modes): int
+    {
+        return (int) ($memory->getAfterPointer(1, $modes) === $memory->getAfterPointer(2, $modes));
     }
 }
