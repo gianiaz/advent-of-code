@@ -20,20 +20,26 @@ class Add implements InstructionInterface
         $resultPosition = $memory->get($memory->getPointer() + 3);
         $input1 = $memory->getAfterPointer(1, $modes);
         $input2 = $memory->getAfterPointer(2, $modes);
+        $valueToBeSaved = $this->getValueToBeSaved($input1, $input2);
 
         if ($modes->isRelative(3)) {
             if (! $memory instanceof MemoryWithRelativeMode) {
                 throw new \InvalidArgumentException('Expecting ' . MemoryWithRelativeMode::class . ', got ' . get_class($memory));
             }
 
-            $memory->set($resultPosition + $memory->getRelative(), $input1 + $input2);
+            $memory->set($resultPosition + $memory->getRelative(), $valueToBeSaved);
         } else {
-            $memory->set($resultPosition, $input1 + $input2);
+            $memory->set($resultPosition, $valueToBeSaved);
         }
     }
 
     public function getInstructionSize(): ?int
     {
         return 4;
+    }
+
+    protected function getValueToBeSaved(int $input1, int $input2): int
+    {
+        return $input1 + $input2;
     }
 }

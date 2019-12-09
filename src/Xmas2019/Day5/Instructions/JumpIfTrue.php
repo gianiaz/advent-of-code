@@ -15,14 +15,6 @@ class JumpIfTrue extends AbstractJump
 
     public function apply(Memory $memory, ParameterModes $modes): void
     {
-        if (
-            $modes->isRelative(1)
-            || $modes->isRelative(2)
-            || $modes->isRelative(3)
-        ) {
-            throw new \InvalidArgumentException();
-        }
-
         $this->jumpSize = null;
 
         if (0 !== $memory->getAfterPointer(1, $modes)) {
