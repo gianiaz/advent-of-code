@@ -16,7 +16,7 @@ class MemoryWithRelativeMode extends MemoryWithSequentialIO
 
     public function setOutput(int $output): void
     {
-        array_unshift($this->output, $output);
+        $this->output[] = $output;
     }
 
     public function getOutput(): int
@@ -43,7 +43,8 @@ class MemoryWithRelativeMode extends MemoryWithSequentialIO
     {
         if ($mode->isRelative($ahead)) {
             $parameter = $this->getMemory()[$this->getPointer() + $ahead];
-            $positionToExtractFrom = $this->getMemory()[$this->relative + $parameter] ?? 0;
+
+            return $this->getMemory()[$this->relative + $parameter] ?? 0;
 
             return $this->getMemory()[$positionToExtractFrom] ?? 0;
         }

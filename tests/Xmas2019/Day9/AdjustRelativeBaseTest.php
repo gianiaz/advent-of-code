@@ -51,7 +51,8 @@ class AdjustRelativeBaseTest extends TestCase
         $computer = (new Day9Solution())->creatComputer();
         $computer->run($memory);
 
-        $this->assertSame(1125899906842624, $memory->getOutput());
-        $this->assertSame('1125899906842624', (string) $memory->getOutput());
+        $output = $memory->getOutput();
+        $this->assertSame(1125899906842624, $output);
+        $this->assertSame('1125899906842624', (string) $output);
     }
 }
