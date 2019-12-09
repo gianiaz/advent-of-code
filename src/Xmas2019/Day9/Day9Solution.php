@@ -24,6 +24,7 @@ class Day9Solution implements SolutionInterface
     public function solve()
     {
         $memory = new MemoryWithRelativeMode(self::INPUT);
+        $memory->setInput(1);
 
         $computer = $this->creatComputer();
         $computer->run($memory);

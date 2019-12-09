@@ -21,7 +21,7 @@ class MemoryWithRelativeMode extends MemoryWithSequentialIO
 
     public function getOutput(): int
     {
-        return array_pop($this->output);
+        return array_shift($this->output);
     }
 
     public function getAllOutput(): array
