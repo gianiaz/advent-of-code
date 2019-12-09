@@ -10,6 +10,7 @@ class ParameterModes
 {
     public const MODE_POSITION = 0;
     public const MODE_IMMEDIATE = 1;
+    public const MODE_RELATIVE = 2;
 
     /** @var string */
     private $modes;
@@ -23,6 +24,11 @@ class ParameterModes
     public function isImmediate(int $parameter): bool
     {
         return $this->getMode($parameter) === self::MODE_IMMEDIATE;
+    }
+
+    public function isRelative(int $parameter): bool
+    {
+        return $this->getMode($parameter) === self::MODE_RELATIVE;
     }
 
     public function getMode(int $parameter): int

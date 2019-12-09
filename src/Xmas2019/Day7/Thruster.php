@@ -65,7 +65,7 @@ class Thruster
 
         $this->chainAmplifiers($amplifiers[4], $amplifiers[0]);
 
-        for ($i = 0; $i < 5; ++$i) {
+        for ($i = 4; $i >= 0; --$i) {
             $amplifier = $amplifiers[$i];
             $amplifier->getComputer()->run($amplifier->getMemory());
         }
