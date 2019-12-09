@@ -16,6 +16,15 @@ class Equals implements InstructionInterface
 
     public function apply(Memory $memory, ParameterModes $modes): void
     {
+        if (
+            $modes->isRelative(1)
+            || $modes->isRelative(2)
+            || $modes->isRelative(3)
+
+        ) {
+            throw new \InvalidArgumentException();
+        }
+
         $valueToStore = (int) ($memory->getAfterPointer(1, $modes) === $memory->getAfterPointer(2, $modes));
 
         $memory->set($memory->get($memory->getPointer() + 3), $valueToStore);

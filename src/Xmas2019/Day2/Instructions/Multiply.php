@@ -16,6 +16,15 @@ class Multiply implements InstructionInterface
 
     public function apply(Memory $memory, ParameterModes $modes): void
     {
+        if (
+            $modes->isRelative(1)
+            || $modes->isRelative(2)
+            || $modes->isRelative(3)
+
+        ) {
+            throw new \InvalidArgumentException();
+        }
+
         $resultPosition = $memory->get($memory->getPointer() + 3);
         $input1 = $memory->getAfterPointer(1, $modes);
         $input2 = $memory->getAfterPointer(2, $modes);
