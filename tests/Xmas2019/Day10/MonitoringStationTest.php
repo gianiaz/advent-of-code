@@ -68,7 +68,7 @@ class MonitoringStationTest extends TestCase
 ....#
 ...##',
             ],
-            [
+            'this' => [
                 33,
                 5, 8,
                 '

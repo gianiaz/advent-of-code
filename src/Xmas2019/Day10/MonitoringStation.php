@@ -64,9 +64,16 @@ class MonitoringStation
         $xRange = $this->createRange($x1, $x2);
         $yRange = $this->createRange($y1, $y2);
 
+        $blocksLineOfSight = function (int $x, int $y) use ($x1, $x2, $y1, $y2) {
+            $leftHandEquation = ($x - $x1) / ($x2 - $x1);
+            $rightHandEquation = ($y - $y1) / ($y2 - $y1);
+
+            return $leftHandEquation === $rightHandEquation;
+        };
+
         foreach ($xRange as $x) {
             foreach ($yRange as $y) {
-                if ($this->map->isAsteroid($x, $y)) {
+                if ($this->map->isAsteroid($x, $y) && $blocksLineOfSight($x, $y)) {
                     return false;
                 }
             }
