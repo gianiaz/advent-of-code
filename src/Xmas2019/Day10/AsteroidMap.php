@@ -6,8 +6,11 @@ namespace Jean85\AdventOfCode\Xmas2019\Day10;
 
 class AsteroidMap
 {
-    /** @var bool[][] */
+    /** @var Asteroid[] */
     private $asteroids = [];
+
+    /** @var array<int, array<int,Asteroid>> */
+    private $asteroidsHashMap;
 
     /** @var int */
     private $maxX = 0;
@@ -24,7 +27,9 @@ class AsteroidMap
             $this->maxX = max($this->maxX, strlen($row));
             foreach (str_split($row) as $x => $position) {
                 if ($position === '#') {
-                    $this->asteroids[$y][$x] = true;
+                    $asteroid = new Asteroid($x, $y);
+                    $this->asteroids[] = $asteroid;
+                    $this->asteroidsHashMap[$y][$x] = $asteroid;
                 }
             }
         }
@@ -44,7 +49,7 @@ class AsteroidMap
     }
 
     /**
-     * @return bool[][]
+     * @return Asteroid[]
      */
     public function getAsteroids(): array
     {
@@ -53,7 +58,7 @@ class AsteroidMap
 
     public function isAsteroid(int $x, int $y): bool
     {
-        return $this->asteroids[$y][$x] ?? false;
+        return isset($this->asteroidsHashMap[$y][$x]);
     }
 
     public function printMap(): string
@@ -68,29 +73,5 @@ class AsteroidMap
         }
 
         return $map;
-    }
-
-    /**
-     * @return \Generator<int[]>
-     */
-    public function getAsteroidsCoordinates(): \Generator
-    {
-        foreach ($this->asteroids as $y => $rows) {
-            foreach ($rows as $x => $asteroid) {
-                yield [$x, $y];
-            }
-        }
-    }
-
-    /**
-     * @return \Generator<int[]>
-     */
-    public function getMapCoordinates(): \Generator
-    {
-        foreach (range(0, $this->maxY) as $y) {
-            foreach (range(0, $this->maxX) as $x) {
-                yield [$x, $y];
-            }
-        }
     }
 }

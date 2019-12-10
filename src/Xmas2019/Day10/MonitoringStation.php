@@ -18,8 +18,8 @@ class MonitoringStation
     {
         $visibleCount = 0;
 
-        foreach ($this->map->getAsteroidsCoordinates() as [$x, $y]) {
-            if ($this->isVisible($stationX, $stationY, $x, $y)) {
+        foreach ($this->map->getAsteroids() as $asteroid) {
+            if ($this->isVisible($stationX, $stationY, $asteroid)) {
                 ++$visibleCount;
             }
         }
@@ -27,15 +27,15 @@ class MonitoringStation
         return $visibleCount;
     }
 
-    public function isVisible(int $x1, int $y1, int $x2, int $y2): bool
+    public function isVisible(int $x1, int $y1, Asteroid $asteroid): bool
     {
-        if ($x1 === $x2 && $y1 === $y2) {
+        if ($x1 === $asteroid->getX() && $y1 === $asteroid->getY()) {
             return false; // himself
         }
 
-        if ($x1 === $x2) {
+        if ($x1 === $asteroid->getX()) {
             // same column
-            foreach ($this->createRange($y1, $y2) as $y) {
+            foreach ($this->createRange($y1, $asteroid->getY()) as $y) {
                 if ($this->map->isAsteroid($x1, $y)) {
                     return false;
                 }
@@ -44,9 +44,9 @@ class MonitoringStation
             return true;
         }
 
-        if ($y1 === $y2) {
+        if ($y1 === $asteroid->getY()) {
             // same row
-            foreach ($this->createRange($x1, $x2) as $x) {
+            foreach ($this->createRange($x1, $asteroid->getX()) as $x) {
                 if ($this->map->isAsteroid($x, $y1)) {
                     return false;
                 }
@@ -55,12 +55,12 @@ class MonitoringStation
             return true;
         }
 
-        $xRange = $this->createRange($x1, $x2);
-        $yRange = $this->createRange($y1, $y2);
+        $xRange = $this->createRange($x1, $asteroid->getX());
+        $yRange = $this->createRange($y1, $asteroid->getY());
 
-        $blocksLineOfSight = function (int $x, int $y) use ($x1, $x2, $y1, $y2) {
-            $leftHandEquation = ($x - $x1) / ($x2 - $x1);
-            $rightHandEquation = ($y - $y1) / ($y2 - $y1);
+        $blocksLineOfSight = function (int $x, int $y) use ($x1, $y1, $asteroid) {
+            $leftHandEquation = ($x - $x1) / ($asteroid->getX() - $x1);
+            $rightHandEquation = ($y - $y1) / ($asteroid->getY() - $y1);
 
             return $leftHandEquation === $rightHandEquation;
         };
@@ -76,6 +76,9 @@ class MonitoringStation
         return true;
     }
 
+    /**
+     * @return int[]
+     */
     private function createRange(int $x1, int $x2): array
     {
         $range = range($x1, $x2);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2019\Day10;
 
+use Jean85\AdventOfCode\Xmas2019\Day10\Asteroid;
 use Jean85\AdventOfCode\Xmas2019\Day10\AsteroidMap;
 use Jean85\AdventOfCode\Xmas2019\Day10\Day10Solution;
 use Jean85\AdventOfCode\Xmas2019\Day10\MonitoringStation;
@@ -26,8 +27,9 @@ class MonitoringStationTest extends TestCase
 
         $map = new AsteroidMap($input);
         $station = new MonitoringStation($map);
+        $asteroid = new Asteroid($x, $y);
 
-        $this->assertSame($isVisible, $station->isVisible(3, 4, $x, $y));
+        $this->assertSame($isVisible, $station->isVisible(3, 4, $asteroid));
     }
 
     public function firstSolutionProvider(): array

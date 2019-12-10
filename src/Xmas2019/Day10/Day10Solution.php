@@ -15,8 +15,8 @@ class Day10Solution implements SolutionInterface
 
         $bestVisibility = 0;
 
-        foreach ($map->getAsteroidsCoordinates() as [$x, $y]) {
-            $visibleAsteroidCount = $station->getVisibleAsteroidCount($x, $y);
+        foreach ($map->getAsteroids() as $asteroid) {
+            $visibleAsteroidCount = $station->getVisibleAsteroidCount($asteroid->getX(), $asteroid->getY());
 
             if ($bestVisibility < $visibleAsteroidCount) {
                 $bestVisibility = max($bestVisibility, $visibleAsteroidCount);
