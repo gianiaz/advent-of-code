@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Xmas2019\Day10;
 
 use Jean85\AdventOfCode\Xmas2019\Day10\AsteroidMap;
+use Jean85\AdventOfCode\Xmas2019\Day10\Day10Solution;
 use Jean85\AdventOfCode\Xmas2019\Day10\MonitoringStation;
 use PHPUnit\Framework\TestCase;
 
@@ -53,6 +54,16 @@ class MonitoringStationTest extends TestCase
         $station = new MonitoringStation($map);
 
         $this->assertSame($expectedCount, $station->getVisibleAsteroidCount($x, $y));
+    }
+
+    /**
+     * @dataProvider inputProvider
+     */
+    public function testSolution(int $expectedCount, int $x, int $y, string $input): void
+    {
+        $solution = new Day10Solution();
+
+        $this->assertSame($expectedCount, $solution->solve($input));
     }
 
     public function inputProvider(): array

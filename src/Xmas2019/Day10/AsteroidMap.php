@@ -33,6 +33,16 @@ class AsteroidMap
         --$this->maxY;
     }
 
+    public function getMaxX(): int
+    {
+        return $this->maxX;
+    }
+
+    public function getMaxY(): int
+    {
+        return $this->maxY;
+    }
+
     /**
      * @return bool[][]
      */

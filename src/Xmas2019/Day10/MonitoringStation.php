@@ -35,10 +35,6 @@ class MonitoringStation
             return false; // himself
         }
 
-        if (abs($x1 - $x2) === 1 || abs($y1 - $y2) === 1) {
-            return true; // slight disalignment, no possible blockers
-        }
-
         if ($x1 === $x2) {
             // same column
             foreach ($this->createRange($y1, $y2) as $y) {
