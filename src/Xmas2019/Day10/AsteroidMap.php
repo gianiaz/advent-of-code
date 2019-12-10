@@ -69,4 +69,28 @@ class AsteroidMap
 
         return $map;
     }
+
+    /**
+     * @return \Generator<int[]>
+     */
+    public function getAsteroidsCoordinates(): \Generator
+    {
+        foreach ($this->asteroids as $y => $rows) {
+            foreach ($rows as $x => $asteroid) {
+                yield [$x, $y];
+            }
+        }
+    }
+
+    /**
+     * @return \Generator<int[]>
+     */
+    public function getMapCoordinates(): \Generator
+    {
+        foreach (range(0, $this->maxY) as $y) {
+            foreach (range(0, $this->maxX) as $x) {
+                yield [$x, $y];
+            }
+        }
+    }
 }

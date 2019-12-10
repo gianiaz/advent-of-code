@@ -18,11 +18,9 @@ class MonitoringStation
     {
         $visibleCount = 0;
 
-        foreach ($this->map->getAsteroids() as $y => $row) {
-            foreach ($row as $x => $asteroid) {
-                if ($this->isVisible($stationX, $stationY, $x, $y)) {
-                    ++$visibleCount;
-                }
+        foreach ($this->map->getAsteroidsCoordinates() as [$x, $y]) {
+            if ($this->isVisible($stationX, $stationY, $x, $y)) {
+                ++$visibleCount;
             }
         }
 
