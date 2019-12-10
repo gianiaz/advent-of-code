@@ -9,9 +9,33 @@ class MonitoringStation
     /** @var AsteroidMap */
     private $map;
 
+    /** @var Asteroid */
+    private $bestPosition;
+
     public function __construct(AsteroidMap $map)
     {
         $this->map = $map;
+    }
+
+    public function getBestPosition(): Asteroid
+    {
+        return $this->bestPosition;
+    }
+
+    public function calculateBestPosition(): int
+    {
+        $bestVisibility = 0;
+
+        foreach ($this->map->getAsteroids() as $asteroid) {
+            $visibleAsteroidCount = $this->getVisibleAsteroidCount($asteroid->getX(), $asteroid->getY());
+
+            if ($bestVisibility < $visibleAsteroidCount) {
+                $bestVisibility = max($bestVisibility, $visibleAsteroidCount);
+                $this->bestPosition = $asteroid;
+            }
+        }
+
+        return $bestVisibility;
     }
 
     public function getVisibleAsteroidCount(int $stationX, int $stationY): int

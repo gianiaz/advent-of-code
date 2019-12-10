@@ -13,17 +13,7 @@ class Day10Solution implements SolutionInterface
         $map = new AsteroidMap($input ?? $this->getInput());
         $station = new MonitoringStation($map);
 
-        $bestVisibility = 0;
-
-        foreach ($map->getAsteroids() as $asteroid) {
-            $visibleAsteroidCount = $station->getVisibleAsteroidCount($asteroid->getX(), $asteroid->getY());
-
-            if ($bestVisibility < $visibleAsteroidCount) {
-                $bestVisibility = max($bestVisibility, $visibleAsteroidCount);
-            }
-        }
-
-        return $bestVisibility;
+        return $station->calculateBestPosition();
     }
 
     private function getInput(): string
