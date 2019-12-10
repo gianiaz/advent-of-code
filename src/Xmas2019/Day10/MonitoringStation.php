@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2019\Day10;
 
-class LineOfSight
+class MonitoringStation
 {
     /** @var AsteroidMap */
     private $map;
@@ -12,6 +12,21 @@ class LineOfSight
     public function __construct(AsteroidMap $map)
     {
         $this->map = $map;
+    }
+
+    public function getVisibleAsteroidCount(int $stationX, int $stationY): int
+    {
+        $visibleCount = 0;
+
+        foreach ($this->map->getAsteroids() as $y => $row) {
+            foreach ($row as $x => $asteroid) {
+                if ($this->isVisible($stationX, $stationY, $x, $y)) {
+                    ++$visibleCount;
+                }
+            }
+        }
+
+        return $visibleCount;
     }
 
     public function isVisible(int $x1, int $y1, int $x2, int $y2): bool
