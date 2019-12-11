@@ -25,14 +25,31 @@ class RotatingLaserTest extends TestCase
         $laser = new RotatingLaser($station, $map->getAsteroids());
 
         $this->assertEquals(new Asteroid(8, 3), $station->getBestPosition());
-        $expected = [
-            new Asteroid(8, 1),
+        $expectedSweeps = [
+            [
+                // first quadrant
+                new Asteroid(8, 1),
+                new Asteroid(9, 0),
+                new Asteroid(9, 1),
+                new Asteroid(10, 0),
+                new Asteroid(9, 2),
+                new Asteroid(11, 1),
+                new Asteroid(12, 1),
+                new Asteroid(11, 2),
+                new Asteroid(15, 1),
+                // second quadrant
+                new Asteroid(12, 2),
+                new Asteroid(13, 2),
+                new Asteroid(14, 2),
+                new Asteroid(15, 2),
+            ],
         ];
 
-        $firstRow = $laser->getAsteroidsDestructionSweep();
-
-        foreach ($expected as $i => $destroyed) {
-            $this->assertEquals($destroyed, $firstRow[$i]);
+        foreach ($expectedSweeps as $sweep) {
+            $firstRow = $laser->getAsteroidsDestructionSweep();
+            foreach ($sweep as $i => $destroyed) {
+                $this->assertEquals($destroyed, $firstRow[$i]);
+            }
         }
     }
 }

@@ -46,7 +46,7 @@ class RotatingLaser
             $this->asteroids->detach($asteroid);
         }
 
-        return $destroyedAsteroids;
+        return array_values($destroyedAsteroids);
     }
 
     /**
@@ -57,17 +57,25 @@ class RotatingLaser
         $asteroids = iterator_to_array($this->asteroids);
 
         usort($asteroids, function (Asteroid $a, Asteroid $b) {
+            if ($a->getX() === $this->laserPosition->getX()) {
+                return -1;
+            }
+
+            if ($b->getX() === $this->laserPosition->getX()) {
+                return 1;
+            }
+
             return $this->getAngle($a) <=> $this->getAngle($b);
         });
 
         return $asteroids;
     }
 
-    private function getAngle(Asteroid $asteroid): float
+    public function getAngle(Asteroid $asteroid): float
     {
         $x = $this->laserPosition->getX() - $asteroid->getX();
         $y = $this->laserPosition->getY() - $asteroid->getY();
 
-        return atan2($y, $x);
+        return atan2($x, -$y);
     }
 }
