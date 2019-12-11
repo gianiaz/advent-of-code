@@ -42,6 +42,9 @@ class Day10SolutionTest extends TestCase
         $solution = new Day10Solution();
         $map = new AsteroidMap($input);
         $station = new MonitoringStation($map);
+        $station->calculateBestPosition();
+
+        $this->assertEquals(new Asteroid(11, 13), $station->getBestPosition());
 
         $this->assertEquals($expected, $solution->getNthDestroyedAsteroid($station, $map, $number));
     }

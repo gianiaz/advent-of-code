@@ -62,11 +62,11 @@ class RotatingLaser
         $asteroids = iterator_to_array($this->asteroids);
 
         usort($asteroids, function (Asteroid $a, Asteroid $b) {
-            if ($a->getX() === $this->laserPosition->getX()) {
+            if ($a->getY() < $this->laserPosition->getY() && $a->getX() === $this->laserPosition->getX()) {
                 return -1;
             }
 
-            if ($b->getX() === $this->laserPosition->getX()) {
+            if ($b->getY() < $this->laserPosition->getY() && $b->getX() === $this->laserPosition->getX()) {
                 return 1;
             }
 
