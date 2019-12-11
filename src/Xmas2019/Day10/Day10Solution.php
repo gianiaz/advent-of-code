@@ -16,6 +16,22 @@ class Day10Solution implements SolutionInterface
         return $station->calculateBestPosition();
     }
 
+    public function getNthDestroyedAsteroid(MonitoringStation $station, AsteroidMap $map, int $number): Asteroid
+    {
+        $laser = new RotatingLaser($station, $map->getAsteroids());
+        $count = 0;
+
+        while ($sweep = $laser->getAsteroidsDestructionSweep()) {
+            foreach ($sweep as $asteroid) {
+                if (++$count === $number) {
+                    return $asteroid;
+                }
+            }
+        }
+
+        throw new \RuntimeException('Count too high, stopped at ' . $count);
+    }
+
     private function getInput(): string
     {
         return '##.#..#..###.####...######

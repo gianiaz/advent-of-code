@@ -15,6 +15,11 @@ class RotatingLaser
     /** @var \SplObjectStorage<Asteroid> */
     private $asteroids;
 
+    /**
+     * RotatingLaser constructor.
+     *
+     * @param Asteroid[] $asteroids
+     */
     public function __construct(MonitoringStation $monitoringStation, array $asteroids)
     {
         $this->asteroids = new \SplObjectStorage();
