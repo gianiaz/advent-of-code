@@ -47,6 +47,7 @@ class RotatingLaser
             );
         });
 
+        $this->monitoringStation->getMap()->removeAsteroidsFromHashMap($destroyedAsteroids);
         foreach ($destroyedAsteroids as $asteroid) {
             $this->asteroids->detach($asteroid);
         }

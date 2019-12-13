@@ -17,6 +17,11 @@ class MonitoringStation
         $this->map = $map;
     }
 
+    public function getMap(): AsteroidMap
+    {
+        return $this->map;
+    }
+
     public function getBestPosition(): Asteroid
     {
         return $this->bestPosition;

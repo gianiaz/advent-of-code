@@ -38,14 +38,14 @@ class AsteroidMap
         --$this->maxY;
     }
 
-    public function getMaxX(): int
+    /**
+     * @param Asteroid[] $asteroids
+     */
+    public function removeAsteroidsFromHashMap(array $asteroids): void
     {
-        return $this->maxX;
-    }
-
-    public function getMaxY(): int
-    {
-        return $this->maxY;
+        foreach ($asteroids as $asteroid) {
+            unset($this->asteroidsHashMap[$asteroid->getY()][$asteroid->getX()]);
+        }
     }
 
     /**
