@@ -18,20 +18,22 @@ class IntcodeComputer
      */
     public function __construct(array $instructions)
     {
-        $this->instructions = $instructions;
+        foreach ($instructions as $instruction) {
+            $this->instructions[$instruction->getOpcode()] = $instruction;
+        }
     }
 
-    public function run(Memory $memory): int
+    public function run(Memory $memory): bool
     {
         while ($instruction = $this->step($memory)) {
             if ($instruction instanceof Halt) {
-                break;
+                return false;
             }
 
             $memory->increasePointer($instruction);
         }
 
-        return $memory->get(0);
+        return true;
     }
 
     private function step(Memory $memory): InstructionInterface
@@ -47,12 +49,10 @@ class IntcodeComputer
     {
         $opcode = (int) substr((string) $memory->getCurrent(), -2);
 
-        foreach ($this->instructions as $instruction) {
-            if ($opcode === $instruction->getOpcode()) {
-                return $instruction;
-            }
+        if (! isset($this->instructions[$opcode])) {
+            throw new \InvalidArgumentException(sprintf('Invalid opcode %d at position %d', $opcode, $memory->getPointer()));
         }
 
-        throw new \InvalidArgumentException(sprintf('Invalid opcode %d at position %d', $opcode, $memory->getPointer()));
+        return $this->instructions[$opcode];
     }
 }

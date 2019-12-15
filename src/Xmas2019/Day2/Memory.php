@@ -67,7 +67,7 @@ class Memory
 
         $positionToExtractFrom = $this->memory[$this->getPointer() + $ahead];
 
-        return $this->memory[$positionToExtractFrom];
+        return $this->memory[$positionToExtractFrom] ?? 0;
     }
 
     public function set(int $position, int $value): void
