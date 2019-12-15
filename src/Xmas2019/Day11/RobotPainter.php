@@ -61,10 +61,6 @@ class RobotPainter
         );
     }
 
-    /**
-     * @param MemoryWithSequentialIO $memory
-     * @return bool
-     */
     private function execute(MemoryWithSequentialIO $memory): bool
     {
         try {

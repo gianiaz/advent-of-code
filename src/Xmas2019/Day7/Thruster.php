@@ -47,30 +47,42 @@ class Thruster
 
     public function trySequenceWithLoop(array $initSequence): int
     {
-        $output = 0;
         $computer = $this->creatComputer();
         /** @var Amplifier[] $amplifiers */
         $amplifiers = [];
 
         for ($i = 0; $i < 5; ++$i) {
-            $memory = $this->recreateYieldedMemory();
+            $memory = $this->recreateMemory();
             $amplifier = new Amplifier($computer, $memory);
             $amplifiers[$i] = $amplifier;
 
             $memory->setInput($initSequence[$i]);
-            if ($i > 0) {
-                $this->chainAmplifiers($amplifiers[$i - 1], $amplifier);
+        }
+
+        $nextInput = 0;
+
+        do {
+            foreach ($amplifiers as $amplifier) {
+                $continue = true;
+
+                $memory = $amplifier->getMemory();
+                $memory->setInput($nextInput);
+
+                try {
+                    if (! $amplifier->getComputer()->run($memory)) {
+                        $continue = false;
+                    }
+                } catch (\TypeError $error) {
+                    if ($error->getMessage() !== 'Return value of Jean85\AdventOfCode\Xmas2019\Day7\MemoryWithSequentialIO::getInput() must be of the type integer, null returned') {
+                        throw $error;
+                    }
+                }
+
+                $nextInput = $memory->getOutput();
             }
-        }
+        } while ($continue);
 
-        $this->chainAmplifiers($amplifiers[4], $amplifiers[0]);
-
-        for ($i = 4; $i >= 0; --$i) {
-            $amplifier = $amplifiers[$i];
-            $amplifier->getComputer()->run($amplifier->getMemory());
-        }
-
-        return $output;
+        return $amplifiers[4]->getMemory()->getOutput();
     }
 
     private function creatComputer(): IntcodeComputer
