@@ -50,4 +50,15 @@ class JupiterSimulator
             $moon->applyVelocity();
         }
     }
+
+    public function getTotalEnergy(): int
+    {
+        $total = 0;
+
+        foreach ($this->moons as $moon) {
+            $total += $moon->getTotalEnergy();
+        }
+
+        return $total;
+    }
 }

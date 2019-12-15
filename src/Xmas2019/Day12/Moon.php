@@ -51,4 +51,25 @@ class Moon
         $this->position->y += $this->velocity->y;
         $this->position->z += $this->velocity->z;
     }
+
+    public function getPotentialEnergy(): int
+    {
+        return abs($this->position->x)
+            + abs($this->position->y)
+            + abs($this->position->z)
+        ;
+    }
+
+    public function getKineticEnergy(): int
+    {
+        return abs($this->velocity->x)
+            + abs($this->velocity->y)
+            + abs($this->velocity->z)
+            ;
+    }
+
+    public function getTotalEnergy(): int
+    {
+        return $this->getPotentialEnergy() * $this->getKineticEnergy();
+    }
 }

@@ -17,8 +17,8 @@ class MoonTest extends TestCase
 
         $moon1->applyGravity($moon2);
 
-        $this->assertEquals(new Coordinates(-1, 0, 0), $moon1->getVelocity());
-        $this->assertEquals(new Coordinates(1, 0, 0), $moon2->getVelocity());
+        $this->assertEquals(new Coordinates(1, 0, 0), $moon1->getVelocity());
+        $this->assertEquals(new Coordinates(-1, 0, 0), $moon2->getVelocity());
     }
 
     public function testApplyGravityIsCommutative(): void
@@ -28,8 +28,8 @@ class MoonTest extends TestCase
 
         $moon2->applyGravity($moon1);
 
-        $this->assertEquals(new Coordinates(-1, 0, 0), $moon1->getVelocity());
-        $this->assertEquals(new Coordinates(1, 0, 0), $moon2->getVelocity());
+        $this->assertEquals(new Coordinates(1, 0, 0), $moon1->getVelocity());
+        $this->assertEquals(new Coordinates(-1, 0, 0), $moon2->getVelocity());
     }
 
     public function testApplyGravityWorksOnAllAxys(): void
@@ -39,8 +39,8 @@ class MoonTest extends TestCase
 
         $moon2->applyGravity($moon1);
 
-        $this->assertEquals(new Coordinates(-1, 0, 1), $moon1->getVelocity());
-        $this->assertEquals(new Coordinates(1, 0, -1), $moon2->getVelocity());
+        $this->assertEquals(new Coordinates(1, 0, -1), $moon1->getVelocity());
+        $this->assertEquals(new Coordinates(-1, 0, 1), $moon2->getVelocity());
     }
 
     public function testApplyVelocity(): void
@@ -58,5 +58,17 @@ class MoonTest extends TestCase
         $moon->applyVelocity();
 
         $this->assertEquals(new Coordinates(5, -2, 6), $moon->getPosition());
+    }
+
+    public function testGetTotalEnergy(): void
+    {
+        $moon = new Moon(2, 1, 3);
+        $moon->getVelocity()->x = 3;
+        $moon->getVelocity()->y = 2;
+        $moon->getVelocity()->z = 1;
+
+        $this->assertSame(6, $moon->getPotentialEnergy());
+        $this->assertSame(6, $moon->getKineticEnergy());
+        $this->assertSame(36, $moon->getTotalEnergy());
     }
 }

@@ -111,4 +111,26 @@ pos=<x=2, y=0, z=4>, vel=<x=1, y=-1, z=-1>',
             ],
         ];
     }
+
+    public function testGetTotalEnergy(): void
+    {
+        $simulator = new JupiterSimulator(
+            new Moon(-8, -10, 0),
+            new Moon(5, 5, 10),
+            new Moon(2, -7, 3),
+            new Moon(9, -8, -3)
+        );
+
+        $iterations = 100;
+        while ($iterations--) {
+            $simulator->tick();
+        }
+
+        $expectedSituation = 'pos=<x=8, y=-12, z=-9>, vel=<x=-7, y=3, z=0>
+pos=<x=13, y=16, z=-3>, vel=<x=3, y=-11, z=-5>
+pos=<x=-29, y=-11, z=-1>, vel=<x=-3, y=7, z=4>
+pos=<x=16, y=-13, z=23>, vel=<x=7, y=1, z=1>';
+        $this->assertSame($expectedSituation, $simulator->getSituation());
+        $this->assertSame(1940, $simulator->getTotalEnergy());
+    }
 }
