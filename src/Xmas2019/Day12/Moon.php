@@ -33,12 +33,12 @@ class Moon
         $axys = ['x', 'y', 'z'];
 
         foreach ($axys as $a) {
-            if ($this->position->$a > $moon2->position->$a) {
+            if ($this->position->$a < $moon2->position->$a) {
                 ++$this->velocity->$a;
                 --$moon2->velocity->$a;
             }
 
-            if ($this->position->$a < $moon2->position->$a) {
+            if ($this->position->$a > $moon2->position->$a) {
                 --$this->velocity->$a;
                 ++$moon2->velocity->$a;
             }
