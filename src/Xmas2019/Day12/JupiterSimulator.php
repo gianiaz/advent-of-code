@@ -61,4 +61,37 @@ class JupiterSimulator
 
         return $total;
     }
+
+    public function findRepetition(string $axis): int
+    {
+        $iterations = 0;
+
+        do {
+            $currentHash = $this->getSituationForAxis($axis);
+            if ($lastStep[$currentHash] ?? false) {
+                return $iterations;
+            }
+
+            $lastStep[$currentHash] = true;
+
+            ++$iterations;
+            $this->tick();
+        } while (true);
+    }
+
+    private function getSituationForAxis(string $axis): string
+    {
+        $situation = '';
+
+        foreach ($this->moons as $i => $moon) {
+            $situation .= sprintf(
+                '%d,%d,%d-',
+                $i,
+                $moon->getPosition()->$axis,
+                $moon->getVelocity()->$axis
+            );
+        }
+
+        return $situation;
+    }
 }

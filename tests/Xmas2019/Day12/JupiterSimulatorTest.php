@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2019\Day12;
 
+use Jean85\AdventOfCode\Xmas2019\Day12\Day12Solution;
 use Jean85\AdventOfCode\Xmas2019\Day12\JupiterSimulator;
 use Jean85\AdventOfCode\Xmas2019\Day12\Moon;
 use PHPUnit\Framework\TestCase;
@@ -15,12 +16,7 @@ class JupiterSimulatorTest extends TestCase
      */
     public function testGetSituation(int $iterations, string $expected): void
     {
-        $simulator = new JupiterSimulator(
-            new Moon(-1, 0, 2),
-            new Moon(2, -10, -7),
-            new Moon(4, -8, 8),
-            new Moon(3, 5, -1)
-        );
+        $simulator = $this->createSimulator1();
 
         while ($iterations--) {
             $simulator->tick();
@@ -114,12 +110,7 @@ pos=<x=2, y=0, z=4>, vel=<x=1, y=-1, z=-1>',
 
     public function testGetTotalEnergy(): void
     {
-        $simulator = new JupiterSimulator(
-            new Moon(-8, -10, 0),
-            new Moon(5, 5, 10),
-            new Moon(2, -7, 3),
-            new Moon(9, -8, -3)
-        );
+        $simulator = $this->createSimulator2();
 
         $iterations = 100;
         while ($iterations--) {
@@ -132,5 +123,43 @@ pos=<x=-29, y=-11, z=-1>, vel=<x=-3, y=7, z=4>
 pos=<x=16, y=-13, z=23>, vel=<x=7, y=1, z=1>';
         $this->assertSame($expectedSituation, $simulator->getSituation());
         $this->assertSame(1940, $simulator->getTotalEnergy());
+    }
+
+    /**
+     * @dataProvider repetitionDataProvider
+     */
+    public function testFindRepetitions(JupiterSimulator $simulator, int $expected): void
+    {
+        $solution = new Day12Solution();
+
+        $this->assertSame($expected, $solution->solveSecondPart($simulator));
+    }
+
+    public function repetitionDataProvider(): array
+    {
+        return [
+            [$this->createSimulator1(), 2772],
+            [$this->createSimulator2(), 4686774924],
+        ];
+    }
+
+    private function createSimulator1(): JupiterSimulator
+    {
+        return new JupiterSimulator(
+            new Moon(-1, 0, 2),
+            new Moon(2, -10, -7),
+            new Moon(4, -8, 8),
+            new Moon(3, 5, -1)
+        );
+    }
+
+    private function createSimulator2(): JupiterSimulator
+    {
+        return new JupiterSimulator(
+            new Moon(-8, -10, 0),
+            new Moon(5, 5, 10),
+            new Moon(2, -7, 3),
+            new Moon(9, -8, -3)
+        );
     }
 }
