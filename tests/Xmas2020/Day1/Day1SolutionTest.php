@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Xmas2020\Day1;
 
 use Jean85\AdventOfCode\Xmas2020\Day1\Day1Solution;

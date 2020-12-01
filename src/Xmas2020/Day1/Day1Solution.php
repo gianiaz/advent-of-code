@@ -209,7 +209,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
         1043,
         1737,
         1704,
-        1515
+        1515,
     ];
 
     /**
