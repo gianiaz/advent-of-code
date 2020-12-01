@@ -1,9 +1,8 @@
-FROM php:7.2.12-cli-alpine
+FROM php:7.4.12-cli-alpine
 
 RUN docker-php-ext-install -j5 \
         opcache
 RUN echo "opcache.enable_cli=1" > /usr/local/etc/php/conf.d/opcache.ini
-
 
 RUN mkdir -p /tmp/blackfire \
     && curl -A "Docker" -L https://blackfire.io/api/v1/releases/client/linux_static/amd64 | tar zxp -C /tmp/blackfire \
