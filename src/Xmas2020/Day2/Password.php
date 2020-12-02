@@ -31,4 +31,10 @@ class Password
 
         return $charCount >= $this->policy->getMin();
     }
+
+    public function isValidWithTheNewPolicy(): bool
+    {
+        return $this->policy->getChar() === ($this->password[$this->policy->getMin() - 1] ?? '')
+            xor $this->policy->getChar() === ($this->password[$this->policy->getMax() - 1] ?? '');
+    }
 }

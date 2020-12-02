@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day2;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day2Solution implements SolutionInterface
+class Day2Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     /**
      * @param Password[] $input
@@ -21,6 +22,21 @@ class Day2Solution implements SolutionInterface
 
         foreach ($input as $password) {
             if ($password->isValid()) {
+                ++$validCount;
+            }
+        }
+
+        return $validCount;
+    }
+
+    public function solveSecondPart(array $input = null)
+    {
+        $input ??= $this->getInput();
+
+        $validCount = 0;
+
+        foreach ($input as $password) {
+            if ($password->isValidWithTheNewPolicy()) {
                 ++$validCount;
             }
         }
