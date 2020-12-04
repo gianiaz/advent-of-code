@@ -4,23 +4,45 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day4;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day4Solution implements SolutionInterface
+class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null)
     {
-        $input ??= $this->getInput();
         $validCount = 0;
-        $passportFactory = new PassportFactory(new InputParser());
 
-        foreach ($passportFactory->create($input) as $passport) {
-            if ($passport->isValid()) {
+        foreach ($this->getPassports($input ?? $this->getInput()) as $passport) {
+            if ($passport->hasAllRequiredField()) {
                 ++$validCount;
             }
         }
 
         return $validCount;
+    }
+
+    public function solveSecondPart(string $input = null)
+    {
+        $validCount = 0;
+
+        foreach ($this->getPassports($input ?? $this->getInput()) as $passport) {
+            if ($passport->hasValidData()) {
+                ++$validCount;
+            }
+        }
+
+        return $validCount;
+    }
+
+    /**
+     * @return \Generator<Passport>
+     */
+    protected function getPassports(string $input): \Generator
+    {
+        $passportFactory = new PassportFactory(new InputParser());
+
+        return $passportFactory->create($input);
     }
 
     private function getInput(): string
