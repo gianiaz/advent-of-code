@@ -9,10 +9,25 @@ use PHPUnit\Framework\TestCase;
 
 class Day3SolutionTest extends TestCase
 {
-    public function test(): void
+    public function testFirstSolution(): void
     {
         $solution = new Day3Solution();
-        $input = '..##.......
+        $input = $this->getTestInput();
+
+        $this->assertSame(7, $solution->solve($input));
+    }
+
+    public function testSecondSolution(): void
+    {
+        $solution = new Day3Solution();
+        $input = $this->getTestInput();
+
+        $this->assertSame(336, $solution->solveSecondPart($input));
+    }
+
+    private function getTestInput(): string
+    {
+        return '..##.......
 #...#...#..
 .#....#..#.
 ..#.#...#.#
@@ -24,7 +39,5 @@ class Day3SolutionTest extends TestCase
 #...##....#
 .#..#...#.#
 ';
-
-        $this->assertSame(7, $solution->solve($input));
     }
 }

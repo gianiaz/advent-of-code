@@ -4,16 +4,41 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day3;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day3Solution implements SolutionInterface
+class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null)
     {
         $map = new Map($input ?? $this->getInput());
+
+        return $this->countTrees($map);
+    }
+
+    public function solveSecondPart(string $input = null)
+    {
+        $map = new Map($input ?? $this->getInput());
+        $slopes = [
+            ['x' => 1, 'y' => 1],
+            ['x' => 3, 'y' => 1],
+            ['x' => 5, 'y' => 1],
+            ['x' => 7, 'y' => 1],
+            ['x' => 1, 'y' => 2],
+        ];
+
+        $total = 1;
+
+        foreach ($slopes as $slope) {
+            $total *= $this->countTrees($map, $slope['x'], $slope['y']);
+        }
+
+        return $total;
+    }
+
+    protected function countTrees(Map $map, int $slopeX = 3, $slopeY = 1): int
+    {
         $x = $y = 1;
-        $stepX = 3;
-        $stepY = 1;
         $treeCount = 0;
 
         do {
@@ -21,8 +46,8 @@ class Day3Solution implements SolutionInterface
                 ++$treeCount;
             }
 
-            $x += $stepX;
-            $y += $stepY;
+            $x += $slopeX;
+            $y += $slopeY;
         } while ($y < $map->getMaxY());
 
         return $treeCount;
