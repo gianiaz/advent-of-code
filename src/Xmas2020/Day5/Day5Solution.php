@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day5;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day5Solution implements SolutionInterface
+class Day5Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
@@ -19,6 +20,25 @@ class Day5Solution implements SolutionInterface
         }
 
         return $maxId;
+    }
+
+    public function solveSecondPart()
+    {
+        $allPasses = [];
+
+        foreach (explode("\n", $this->getInput()) as $input) {
+            $pass = new BoardingPass($input);
+
+            $allPasses[$pass->getId()] = true;
+        }
+
+        foreach ($allPasses as $id => $pass) {
+            if (! isset($allPasses[$id + 1]) && isset($allPasses[$id + 2])) {
+                return $id + 1;
+            }
+        }
+
+        throw new \RuntimeException('No solution found!');
     }
 
     private function getInput(): string
