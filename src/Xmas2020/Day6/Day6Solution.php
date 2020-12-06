@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day6;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day6Solution implements SolutionInterface
+class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null)
     {
@@ -21,6 +22,27 @@ class Day6Solution implements SolutionInterface
 
             if (count($groupAnswers) > 1) {
                 $totalCounts += count(array_unique(array_merge(...$groupAnswers)));
+            } else {
+                $totalCounts += count($groupAnswers[0]);
+            }
+        }
+
+        return $totalCounts;
+    }
+
+    public function solveSecondPart(string $input = null)
+    {
+        $input ??= $this->getInput();
+        $totalCounts = 0;
+
+        foreach (explode("\n\n", $input) as $i => $group) {
+            $groupAnswers = [];
+            foreach (explode("\n", $group) as $answers) {
+                $groupAnswers[] = str_split($answers);
+            }
+
+            if (count($groupAnswers) > 1) {
+                $totalCounts += count(array_intersect(...$groupAnswers));
             } else {
                 $totalCounts += count($groupAnswers[0]);
             }

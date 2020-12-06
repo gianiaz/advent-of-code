@@ -27,6 +27,8 @@ a
 
 b';
 
-        $this->assertEquals(11, (new Day6Solution())->solve($input));
+        $solution = new Day6Solution();
+        $this->assertEquals(11, $solution->solve($input));
+        $this->assertEquals(6, $solution->solveSecondPart($input));
     }
 }
