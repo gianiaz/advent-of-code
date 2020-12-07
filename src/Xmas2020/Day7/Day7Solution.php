@@ -4,15 +4,23 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day7;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day7Solution implements SolutionInterface
+class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
         $ruleHandler = new RuleHandler($this->getInput());
 
         return count($ruleHandler->whichColorsMayContain('shiny gold'));
+    }
+
+    public function solveSecondPart()
+    {
+        $ruleHandler = new RuleHandler($this->getInput());
+
+        return $ruleHandler->countColorsContainedInto('shiny gold');
     }
 
     private function getInput(): string

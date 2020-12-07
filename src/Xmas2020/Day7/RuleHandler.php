@@ -7,13 +7,16 @@ namespace Jean85\AdventOfCode\Xmas2020\Day7;
 class RuleHandler
 {
     /** @var array<string, Rule[]> */
-    private array $rules = [];
+    private array $rulesMayContain = [];
+    /** @var array<string, Rule[]> */
+    private array $rulesByColor = [];
 
     public function __construct(string $input)
     {
         foreach (explode("\n", $input) as $writtenRule) {
             foreach ($this->createRules($writtenRule) as $rule) {
-                $this->rules[$rule->getMayContain()][] = $rule;
+                $this->rulesMayContain[$rule->getMayContain()][] = $rule;
+                $this->rulesByColor[$rule->getColor()][] = $rule;
             }
         }
     }
@@ -43,7 +46,7 @@ class RuleHandler
      */
     public function whichColorsMayContain(string $color): array
     {
-        $startRules = $this->rules[$color] ?? [];
+        $startRules = $this->rulesMayContain[$color] ?? [];
         if (empty($startRules)) {
             return [];
         }
@@ -55,5 +58,20 @@ class RuleHandler
         }
 
         return array_unique($holdBy);
+    }
+
+    public function countColorsContainedInto(string $color): int
+    {
+        $startRules = $this->rulesByColor[$color] ?? [];
+        $total = 0;
+
+        foreach ($startRules as $rule) {
+            if ($rule->getCount()) {
+                $total += $rule->getCount();
+                $total += $rule->getCount() * $this->countColorsContainedInto($rule->getMayContain());
+            }
+        }
+
+        return $total;
     }
 }
