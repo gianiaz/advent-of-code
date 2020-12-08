@@ -15,6 +15,14 @@ class Instruction
         $this->argument = $argument;
     }
 
+    public function withCommand(string $command): self
+    {
+        $clone = clone $this;
+        $clone->command = $command;
+
+        return $clone;
+    }
+
     public function getCommand(): string
     {
         return $this->command;

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class GameConsoleTest extends TestCase
 {
-    public function test(): void
+    public function testRun(): void
     {
         $input = 'nop +0
 acc +1
@@ -28,5 +28,43 @@ acc +6';
         $gameConsole->run();
 
         $this->assertSame(5, $gameConsole->getAccumulator());
+    }
+
+    public function testRunToTermination(): void
+    {
+        $input = 'nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+nop -4
+acc +6';
+
+        $program = ProgramParser::parse($input);
+        $gameConsole = new GameConsole($program);
+
+        $this->assertTrue($gameConsole->runToTermination($program));
+
+        $this->assertSame(8, $gameConsole->getAccumulator());
+    }
+
+    public function testRunToTerminationFails(): void
+    {
+        $input = 'nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6';
+
+        $program = ProgramParser::parse($input);
+        $gameConsole = new GameConsole($program);
+
+        $this->assertFalse($gameConsole->runToTermination($program));
     }
 }

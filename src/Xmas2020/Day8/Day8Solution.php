@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day8;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day8Solution implements SolutionInterface
+class Day8Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
@@ -16,6 +17,31 @@ class Day8Solution implements SolutionInterface
         $gameConsole->run();
 
         return $gameConsole->getAccumulator();
+    }
+
+    public function solveSecondPart(string $input = null)
+    {
+        $program = ProgramParser::parse($input ?? $this->getInput());
+        $gameConsole = new GameConsole($program);
+
+        foreach ($program as $i => $instruction) {
+            if ($instruction->getCommand() === 'jmp') {
+                $instruction = $instruction->withCommand('nop');
+            } elseif ($instruction->getCommand() === 'nop') {
+                $instruction = $instruction->withCommand('jmp');
+            } else {
+                continue;
+            }
+
+            $newProgram = $program;
+            $newProgram[$i] = $instruction;
+
+            if ($gameConsole->runToTermination($newProgram)) {
+                return $gameConsole->getAccumulator();
+            }
+        }
+
+        throw new \RuntimeException('No solution found');
     }
 
     private function getInput(): string
