@@ -16,7 +16,7 @@ class XMASDecoder
         }
     }
 
-    public function findFirstNumberOutsideRule(int $preambleLength): ?int
+    public function findFirstNumberOutsideRule(int $preambleLength): int
     {
         $preamble = array_slice($this->numbers, 0, $preambleLength);
         $i = $preambleLength;
@@ -32,7 +32,15 @@ class XMASDecoder
             ++$i;
         }
 
-        return null;
+        throw new \RuntimeException('No solution found');
+    }
+
+    public function findEncryptionWeakness(int $preambleLength): int
+    {
+        $numberOutsideRule = $this->findFirstNumberOutsideRule($preambleLength);
+        $list = $this->findContiguousListThatSumsUpTo($numberOutsideRule);
+
+        return min($list) + max($list);
     }
 
     private function isValidNumber(int $currentNumber, array $preamble): bool
@@ -50,5 +58,28 @@ class XMASDecoder
         }
 
         return false;
+    }
+
+    private function findContiguousListThatSumsUpTo(int $numberOutsideRule): array
+    {
+        $list = [];
+        foreach ($this->numbers as $number) {
+            $list[] = $number;
+            $sum = array_sum($list);
+            if ($sum === $numberOutsideRule) {
+                return $list;
+            }
+
+            while ($sum > $numberOutsideRule) {
+                array_shift($list);
+                $sum = array_sum($list);
+            }
+
+            if ($sum === $numberOutsideRule) {
+                return $list;
+            }
+        }
+
+        throw new \RuntimeException('No solution found');
     }
 }

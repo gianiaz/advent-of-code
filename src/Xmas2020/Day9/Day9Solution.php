@@ -4,15 +4,23 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day9;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day9Solution implements SolutionInterface
+class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve()
     {
         $decoder = new XMASDecoder($this->getInput());
 
         return $decoder->findFirstNumberOutsideRule(25);
+    }
+
+    public function solveSecondPart()
+    {
+        $decoder = new XMASDecoder($this->getInput());
+
+        return $decoder->findEncryptionWeakness(25);
     }
 
     private function getInput(): string

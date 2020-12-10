@@ -9,9 +9,25 @@ use PHPUnit\Framework\TestCase;
 
 class XMASDecoderTest extends TestCase
 {
-    public function test(): void
+    public function testFindFirstNumberOutsideRule(): void
     {
-        $input = '35
+        $input = $this->getInput();
+        $decoder = new XMASDecoder($input);
+
+        $this->assertSame(127, $decoder->findFirstNumberOutsideRule(5));
+    }
+
+    public function testFindEncryptionWeakness(): void
+    {
+        $input = $this->getInput();
+        $decoder = new XMASDecoder($input);
+
+        $this->assertSame(62, $decoder->findEncryptionWeakness(5));
+    }
+
+    private function getInput(): string
+    {
+        return '35
 20
 15
 25
@@ -31,8 +47,5 @@ class XMASDecoderTest extends TestCase
 277
 309
 576';
-        $decoder = new XMASDecoder($input);
-
-        $this->assertSame(127, $decoder->findFirstNumberOutsideRule(5));
     }
 }
