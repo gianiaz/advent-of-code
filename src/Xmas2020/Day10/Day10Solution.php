@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day10;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day10Solution implements SolutionInterface
+class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null)
     {
-        $adapters = [];
-        foreach (explode("\n", $input ?? $this->getInput()) as $adapter) {
-            $adapters[] = (int)$adapter;
-        }
-
-        sort($adapters);
-        $adapters[] = max($adapters) + 3;
+        $adapters = $this->getAdaptersList($input ?? $this->getInput());
 
         $jumpOf1 = 0;
         $jumpOf3 = 0;
@@ -35,9 +30,54 @@ class Day10Solution implements SolutionInterface
             $previousAdapter = $adapter;
         }
 
-        var_dump($jumpOf1, $jumpOf3);
-
         return $jumpOf1 * $jumpOf3;
+    }
+
+    public function solveSecondPart(string $input = null)
+    {
+        $adapters = $this->getAdaptersList($input ?? $this->getInput());
+        $adapters[] = 0;
+        sort($adapters);
+
+        return $this->countPossiblePaths($adapters);
+    }
+
+    private function countPossiblePaths(array $adapters): int
+    {
+        $previousValue = array_shift($adapters);
+        $total = 1;
+
+        do {
+            array_shift($adapters); // first one is always connectable
+
+            while (null !== $nextValue = array_shift($adapters)) {
+                if (3 >= ($nextValue - $previousValue)) {
+                    $total += $this->countPossiblePaths($adapters);
+                } else {
+                    break;
+                }
+            }
+
+            $previousValue = $nextValue;
+        } while (null !== $nextValue);
+
+        return $total;
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getAdaptersList(string $input): array
+    {
+        $adapters = [];
+        foreach (explode("\n", $input) as $adapter) {
+            $adapters[] = (int) $adapter;
+        }
+
+        sort($adapters);
+        $adapters[] = max($adapters) + 3;
+
+        return $adapters;
     }
 
     private function getInput(): string

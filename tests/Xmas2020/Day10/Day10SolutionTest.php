@@ -9,12 +9,20 @@ use PHPUnit\Framework\TestCase;
 
 class Day10SolutionTest extends TestCase
 {
-    public function test(): void
+    public function testFirstSolution(): void
     {
         $input = $this->getInput();
         $solution = new Day10Solution();
 
         $this->assertSame(220, $solution->solve($input));
+    }
+
+    public function testSecondSolution(): void
+    {
+        $input = $this->getInput();
+        $solution = new Day10Solution();
+
+        $this->assertSame(8, $solution->solveSecondPart($input));
     }
 
     private function getInput(): string
