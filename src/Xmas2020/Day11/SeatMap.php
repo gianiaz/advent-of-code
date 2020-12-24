@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day11;
 
-class SeatMap
+abstract class SeatMap
 {
     public const EMPTY = 'L';
     public const OCCUPIED = '#';
     public const FLOOR = '.';
 
     /** @var string[][] */
-    private array $seatMap = [];
-    private int $maxRows = 0;
-    private int $maxSeats = 0;
+    protected array $seatMap = [];
+    protected int $maxRows = 0;
+    protected int $maxSeats = 0;
 
     public static function init(string $input): self
     {
-        $new = new self();
+        $new = new static();
 
         $row = 0;
         foreach (explode("\n", $input) as $rows) {
@@ -84,7 +84,7 @@ class SeatMap
                 if ($currentSeatStatus === self::EMPTY && $surroundingOccupiedSeats === 0) {
                     $newArrangement[$row][$seat] = self::OCCUPIED;
                     $changed = true;
-                } elseif ($currentSeatStatus === self::OCCUPIED && $surroundingOccupiedSeats >= 4) {
+                } elseif ($currentSeatStatus === self::OCCUPIED && $surroundingOccupiedSeats >= static::getSurroundingOccupiedLimit()) {
                     $newArrangement[$row][$seat] = self::EMPTY;
                     $changed = true;
                 }
@@ -96,23 +96,7 @@ class SeatMap
         return $changed;
     }
 
-    private function countSurroundingOccupiedSeats(int $row, int $seat): int
-    {
-        return $this->countAsOccupied($row - 1, $seat - 1)
-             + $this->countAsOccupied($row - 1, $seat)
-             + $this->countAsOccupied($row - 1, $seat + 1)
-             + $this->countAsOccupied($row, $seat - 1)
-             + $this->countAsOccupied($row, $seat + 1)
-             + $this->countAsOccupied($row + 1, $seat - 1)
-             + $this->countAsOccupied($row + 1, $seat)
-             + $this->countAsOccupied($row + 1, $seat + 1)
-         ;
-    }
+    abstract protected function countSurroundingOccupiedSeats(int $row, int $seat): int;
 
-    private function countAsOccupied(int $row, int $seat): int
-    {
-        return (($this->seatMap[$row][$seat] ?? self::EMPTY) === self::OCCUPIED)
-            ? 1
-            : 0;
-    }
+    abstract protected static function getSurroundingOccupiedLimit(): int;
 }

@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2020\Day11;
 
-use Jean85\AdventOfCode\Xmas2020\Day11\SeatMap;
+use Jean85\AdventOfCode\Xmas2020\Day11\SeatMapV1;
 use PHPUnit\Framework\TestCase;
 
-class SeatMapTest extends TestCase
+class SeatMapV1Test extends TestCase
 {
     public function testPrint(): void
     {
-        $seatMap = SeatMap::init($this->getInput());
+        $seatMap = SeatMapV1::init($this->getInput());
 
         $this->assertSame($this->getInput(), $seatMap->print());
     }
 
     public function testTick(): void
     {
-        $seatMap = SeatMap::init($this->getInput());
+        $seatMap = SeatMapV1::init($this->getInput());
 
         $this->assertSame($this->getInput(), $seatMap->print());
         $this->assertTrue($seatMap->tick());

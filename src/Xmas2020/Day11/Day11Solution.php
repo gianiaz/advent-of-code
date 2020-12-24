@@ -4,13 +4,24 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2020\Day11;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day11Solution implements SolutionInterface
+class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null)
     {
-        $seatMap = SeatMap::init($input ?? $this->getInput());
+        $seatMap = SeatMapV1::init($input ?? $this->getInput());
+
+        while ($seatMap->tick()) {
+        }
+
+        return $seatMap->countOccupiedSeats();
+    }
+
+    public function solveSecondPart(string $input = null)
+    {
+        $seatMap = SeatMapV2::init($input ?? $this->getInput());
 
         while ($seatMap->tick()) {
         }
