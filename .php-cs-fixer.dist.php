@@ -12,7 +12,8 @@ $rulesProvider = new Facile\CodingStandards\Rules\CompositeRulesProvider([
     new Facile\CodingStandards\Rules\ArrayRulesProvider($additionalRules),
 ]);
 
-$config = PhpCsFixer\Config::create()->setRiskyAllowed(true);
+$config = new PhpCsFixer\Config();
+$config->setRiskyAllowed(true);
 
 $config->setRules($rulesProvider->getRules());
 
