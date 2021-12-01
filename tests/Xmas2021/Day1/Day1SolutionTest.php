@@ -9,22 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class Day1SolutionTest extends TestCase
 {
-    /**
-     * @dataProvider inputProvider
-     */
-    public function test(int $expected, array $input): void
+    private const TEST_INPUT = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
+
+    public function test(): void
     {
         $day1Solution = new Day1Solution();
 
-        $this->assertSame($expected, $day1Solution->solve($input));
+        $this->assertSame(7, $day1Solution->solve(self::TEST_INPUT));
     }
 
-    public function inputProvider(): array
+    public function testSecondPart(): void
     {
-        return [
-            [
-                7, [199, 200, 208, 210, 200, 207, 240, 269, 260, 263],
-            ],
-        ];
+        $day1Solution = new Day1Solution();
+
+        $this->assertSame(5, $day1Solution->solveSecondPart(self::TEST_INPUT));
     }
 }

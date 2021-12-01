@@ -2034,16 +2034,21 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(array $input = self::INPUT)
     {
-        foreach ($input as $a) {
-            foreach ($input as $b) {
-                foreach ($input as $c) {
-                    if (($a + $b + $c) === 2020) {
-                        return $a * $b * $c;
-                    }
-                }
+        $previousSum = null;
+        $increases = 0;
+        $i = 1;
+        $count = count($input);
+
+        while (++$i < $count) {
+            $newSum = $input[$i] + $input[$i - 1] + $input[$i - 2];
+
+            if ($previousSum !== null && $newSum > $previousSum) {
+                ++$increases;
             }
+
+            $previousSum = $newSum;
         }
 
-        throw new \RuntimeException('Solution not found');
+        return $increases;
     }
 }
