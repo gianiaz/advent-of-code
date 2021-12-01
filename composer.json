@@ -3,8 +3,8 @@
     "description": "Advent of code playground",
     "type": "project",
     "require-dev": {
-        "phpunit/phpunit": "^9.3.4",
-        "facile-it/facile-coding-standard": "^0.4"
+        "phpunit/phpunit": "^9.5",
+        "facile-it/facile-coding-standard": "^0.5.1"
     },
     "license": "MIT",
     "authors": [
