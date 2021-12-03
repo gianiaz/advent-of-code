@@ -1014,20 +1014,11 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solve(array $input = self::INPUT)
     {
-        $totalSum = [];
-        $count = 0;
-
-        foreach ($input as $value) {
-            foreach (str_split((string) $value) as $i => $singleBit) {
-                $totalSum[$i] ??= 0;
-                $totalSum[$i] += $singleBit;
-            }
-            ++$count;
-        }
+        $totalSum = $this->getTotalSummedBits($input);
 
         $gamma = '';
         $epsilon = '';
-        $mean = $count / 2.0;
+        $mean = $this->getMeanValue($input);
 
         foreach ($totalSum as $summedBits) {
             if ($summedBits > $mean) {
@@ -1044,5 +1035,55 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(array $input = self::INPUT)
     {
+        $oxygen = $this->calculateValue($input, fn ($a, $b) => $a >= $b);
+        $co2 = $this->calculateValue($input, fn ($a, $b) => $a < $b);
+
+        return bindec($oxygen) * bindec($co2);
+    }
+
+    /**
+     * @param list<string> $input
+     *
+     * @return list<string>
+     */
+    public function getTotalSummedBits(array $input): array
+    {
+        $totalSum = [];
+
+        foreach ($input as $value) {
+            foreach (str_split((string) $value) as $i => $singleBit) {
+                $totalSum[$i] ??= 0;
+                $totalSum[$i] += $singleBit;
+            }
+        }
+
+        return $totalSum;
+    }
+
+    private function getMeanValue(array $input): float
+    {
+        return count($input) / 2.0;
+    }
+
+    private function calculateValue(array $input, callable $compare): string
+    {
+        $oxygenValues = $input;
+
+        foreach (range(0, count($input) - 1) as $i) {
+            $totalSum = $this->getTotalSummedBits($oxygenValues);
+            $mean = $this->getMeanValue($oxygenValues);
+
+            if ($compare($totalSum[$i], $mean)) {
+                $oxygenValues = array_filter($oxygenValues, fn (string $value) => $value[$i] === '1');
+            } else {
+                $oxygenValues = array_filter($oxygenValues, fn (string $value) => $value[$i] === '0');
+            }
+
+            if (count($oxygenValues) === 1) {
+                return array_pop($oxygenValues);
+            }
+        }
+
+        throw new \RuntimeException('Cannot find value');
     }
 }

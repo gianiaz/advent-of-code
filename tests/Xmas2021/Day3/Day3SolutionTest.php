@@ -34,8 +34,7 @@ class Day3SolutionTest extends TestCase
     public function testSecondPart(): void
     {
         $day3Solution = new Day3Solution();
-        $this->markTestIncomplete();
 
-        $this->assertSame(900, $day3Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame(230, $day3Solution->solveSecondPart(self::TEST_INPUT));
     }
 }
