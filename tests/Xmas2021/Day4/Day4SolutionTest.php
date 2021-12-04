@@ -40,8 +40,6 @@ class Day4SolutionTest extends TestCase
     {
         $day4Solution = new Day4Solution();
 
-        $this->markTestIncomplete();
-
-        $this->assertSame(230, $day4Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame(1924, $day4Solution->solveSecondPart(self::TEST_INPUT));
     }
 }

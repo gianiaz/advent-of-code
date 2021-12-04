@@ -613,10 +613,7 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solve(string $input = self::INPUT)
     {
-        $boards = explode(PHP_EOL . PHP_EOL, $input);
-        $numbers = explode(',', array_shift($boards));
-        array_walk($numbers, fn (string & $input) => $input = (int) $input);
-        array_walk($boards, fn (string & $input) => $input = new Board($input));
+        list($boards, $numbers) = $this->prepare($input);
 
         foreach ($numbers as $number) {
             /** @var Board $board */
@@ -633,5 +630,35 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = self::INPUT)
     {
+        [$boards, $numbers] = $this->prepare($input);
+
+        foreach ($numbers as $number) {
+            /** @var Board $board */
+            foreach ($boards as $board) {
+                if ($board->isWinning()) {
+                    continue;
+                }
+
+                $board->extract($number);
+                if ($board->isWinning()) {
+                    $result = $number * $board->sumAllRemainingNumbers();
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array{int[], Board[]}
+     */
+    private function prepare(string $input): array
+    {
+        $boards = explode(PHP_EOL . PHP_EOL, $input);
+        $numbers = explode(',', array_shift($boards));
+        array_walk($numbers, fn (string & $input) => $input = (int) $input);
+        array_walk($boards, fn (string & $input) => $input = new Board($input));
+
+        return [$boards, $numbers];
     }
 }
