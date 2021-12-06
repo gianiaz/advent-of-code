@@ -31,8 +31,6 @@ class Day5SolutionTest extends TestCase
     {
         $day5Solution = new Day5Solution();
 
-        $this->markTestIncomplete();
-
-        $this->assertSame(1924, $day5Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame(12, $day5Solution->solveSecondPart(self::TEST_INPUT));
     }
 }

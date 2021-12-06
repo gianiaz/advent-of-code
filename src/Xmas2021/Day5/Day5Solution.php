@@ -42,8 +42,25 @@ class Day5Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = null)
     {
-        $input ??= file_get_contents(__DIR__ . '/input.txt');
+        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        throw new \RuntimeException('Unable to find solution');
+        foreach (explode(PHP_EOL, $input) as $coordinates) {
+            $line = new Line($coordinates);
+            foreach ($line->getLine() as [$x, $y]) {
+                $this->map[$x][$y] ??= 0;
+                $this->map[$x][$y] += 1;
+            }
+        }
+
+        $count = 0;
+        foreach ($this->map as $row) {
+            foreach ($row as $value) {
+                if ($value > 1) {
+                    ++$count;
+                }
+            }
+        }
+
+        return $count;
     }
 }

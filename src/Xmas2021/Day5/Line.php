@@ -33,17 +33,30 @@ class Line
      */
     public function getLine(): \Generator
     {
-        foreach (range($this->x1, $this->x2) as $x) {
-            foreach (range($this->y1, $this->y2) as $y) {
-                yield [$x, $y];
+        if ($this->isDiagonal()) {
+            $rangeX = range($this->x1, $this->x2);
+            $rangeY = range($this->y1, $this->y2);
+
+            if (count($rangeX) !== count($rangeY)) {
+                throw new \LogicException('Something is wrong here');
+            }
+
+            while (count($rangeX) && count($rangeY)) {
+                yield [array_shift($rangeX), array_shift($rangeY)];
+            }
+        } else {
+            foreach (range($this->x1, $this->x2) as $x) {
+                foreach (range($this->y1, $this->y2) as $y) {
+                    yield [$x, $y];
+                }
             }
         }
     }
 
     public function isDiagonal(): bool
     {
-        return ! ($this->x1 === $this->x2
-            || $this->y1 === $this->y2)
+        return $this->x1 !== $this->x2
+            && $this->y1 !== $this->y2
         ;
     }
 }
