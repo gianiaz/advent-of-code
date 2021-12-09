@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2021\Day6;
 
-use Jean85\AdventOfCode\Xmas2021\Day6\Day6Solution;
+use Jean85\AdventOfCode\Xmas2021\Day6\Day7Solution;
 use PHPUnit\Framework\TestCase;
 
 class Day6SolutionTest extends TestCase
@@ -16,9 +16,9 @@ class Day6SolutionTest extends TestCase
      */
     public function testProjectionInALimitedSet(int $expected, int $start, int $days): void
     {
-        $day6Solution = new Day6Solution();
+        $day6Solution = new Day7Solution();
 
-        $this->assertSame($expected, $day6Solution->projectFishes((string)$start, $days));
+        $this->assertSame($expected, $day6Solution->projectFishes((string) $start, $days));
     }
 
     /**
@@ -43,7 +43,7 @@ class Day6SolutionTest extends TestCase
      */
     public function testProjection(int $days, int $expectedProjection): void
     {
-        $day6Solution = new Day6Solution();
+        $day6Solution = new Day7Solution();
 
         $this->assertSame($expectedProjection, $day6Solution->projectFishes(self::TEST_INPUT, $days));
     }
@@ -60,14 +60,14 @@ class Day6SolutionTest extends TestCase
 
     public function test(): void
     {
-        $day6Solution = new Day6Solution();
+        $day6Solution = new Day7Solution();
 
         $this->assertSame(5934, $day6Solution->solve(self::TEST_INPUT));
     }
 
     public function testSecondPart(): void
     {
-        $day6Solution = new Day6Solution();
+        $day6Solution = new Day7Solution();
 
         $this->assertSame(26984457539, $day6Solution->solveSecondPart(self::TEST_INPUT));
     }
