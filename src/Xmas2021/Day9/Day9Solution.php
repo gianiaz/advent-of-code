@@ -13,6 +13,8 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
     private array $map;
     /** @var array<int, array<int, int>> */
     private array $usedForBasin;
+    private int $maxX = 0;
+    private int $maxY = 0;
 
     public function solve(string $input = null)
     {
@@ -32,6 +34,11 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $basinSizes = [];
         foreach ($this->findLowPointsCoordinates() as $coordinates) {
+            $basinSizes[] = $this->getBasinSize(
+                $coordinates['x'],
+                $coordinates['y'],
+                $this->getValue($coordinates['x'], $coordinates['y']) - 1
+            );
         }
 
         sort($basinSizes);
@@ -42,7 +49,7 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
         ;
     }
 
-    private function prepareMap(string $input): void
+    private function prepareMap(string $input = null): void
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
@@ -51,6 +58,9 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
                 $this->map[$y][$x] = (int) $value;
             }
         }
+
+        $this->maxX = $x;
+        $this->maxY = $y;
     }
 
     private function getValue(int $x, int $y): int
@@ -75,5 +85,31 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
                 }
             }
         }
+    }
+
+    private function getBasinSize(int $x, int $y, int $prevValue): int
+    {
+        if ($x < 0 || $y < 0 || $x > $this->maxX || $y > $this->maxY) {
+            return 0;
+        }
+
+        if ($this->usedForBasin[$x][$y] ?? false) {
+            return 0;
+        }
+
+        $value = $this->getValue($x, $y);
+
+        if ($value === 9 || $value <= $prevValue) {
+            return 0;
+        }
+
+        $this->usedForBasin[$x][$y] = true;
+
+        return 1
+            + $this->getBasinSize($x + 1, $y, $value)
+            + $this->getBasinSize($x - 1, $y, $value)
+            + $this->getBasinSize($x, $y + 1, $value)
+            + $this->getBasinSize($x, $y - 1, $value)
+        ;
     }
 }
