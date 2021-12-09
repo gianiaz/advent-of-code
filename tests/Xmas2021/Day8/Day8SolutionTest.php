@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class Day8SolutionTest extends TestCase
 {
+    private const TEST_REDUCED_INPUT = 'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf';
     private const TEST_INPUT = 'be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
 fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
@@ -27,11 +28,21 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
         $this->assertSame(26, $day8Solution->solve(self::TEST_INPUT));
     }
 
-    public function testSecondPart(): void
+    /**
+     * @dataProvider secondPartProvider
+     */
+    public function testSecondPart(string $input, int $expected): void
     {
         $day8Solution = new Day8Solution();
 
-        $this->markTestIncomplete();
-        $this->assertSame(168, $day8Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame($expected, $day8Solution->solveSecondPart($input));
+    }
+
+    public function secondPartProvider(): array
+    {
+        return [
+            [self::TEST_REDUCED_INPUT, 5353],
+            [self::TEST_INPUT, 61229],
+        ];
     }
 }
