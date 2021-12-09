@@ -41,11 +41,11 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $min = min($positions);
         $max = max($positions);
-        
+
         foreach (range($min, $max) as $targetPosition) {
             $fuelCosts[$targetPosition] ??= $this->calculateTotalFuelCost($positions, $targetPosition);
         }
-        
+
         return min($fuelCosts);
     }
 
