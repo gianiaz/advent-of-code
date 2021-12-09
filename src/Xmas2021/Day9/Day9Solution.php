@@ -11,29 +11,16 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     /** @var array<int, array<int, int>> */
     private array $map;
+    /** @var array<int, array<int, int>> */
+    private array $usedForBasin;
 
     public function solve(string $input = null)
     {
-        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
-
-        foreach (explode(PHP_EOL, $input) as $y => $row) {
-            foreach (str_split($row) as $x => $value) {
-                $this->map[$x][$y] = (int) $value;
-            }
-        }
+        $this->prepareMap($input);
 
         $totalRisk = 0;
-        foreach (explode(PHP_EOL, $input) as $y => $row) {
-            foreach (str_split($row) as $x => $value) {
-                if (
-                    $value < $this->getValue($x - 1, $y)
-                    && $value < $this->getValue($x + 1, $y)
-                    && $value < $this->getValue($x, $y - 1)
-                    && $value < $this->getValue($x, $y + 1)
-                ) {
-                    $totalRisk += 1 + $value;
-                }
-            }
+        foreach ($this->findLowPointsCoordinates() as $coordinates) {
+            $totalRisk += 1 + $this->getValue($coordinates['x'], $coordinates['y']);
         }
 
         return $totalRisk;
@@ -41,11 +28,52 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = null)
     {
+        $this->prepareMap($input);
+
+        $basinSizes = [];
+        foreach ($this->findLowPointsCoordinates() as $coordinates) {
+        }
+
+        sort($basinSizes);
+
+        return array_pop($basinSizes)
+            * array_pop($basinSizes)
+            * array_pop($basinSizes)
+        ;
+    }
+
+    private function prepareMap(string $input): void
+    {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+
+        foreach (explode(PHP_EOL, $input) as $y => $row) {
+            foreach (str_split($row) as $x => $value) {
+                $this->map[$y][$x] = (int) $value;
+            }
+        }
     }
 
     private function getValue(int $x, int $y): int
     {
-        return $this->map[$x][$y] ?? 10;
+        return $this->map[$y][$x] ?? 10;
+    }
+
+    /**
+     * @return \Generator<array{x: int, y: int}>
+     */
+    private function findLowPointsCoordinates(): \Generator
+    {
+        foreach ($this->map as $y => $row) {
+            foreach ($row as $x => $value) {
+                if (
+                    $value < $this->getValue($x - 1, $y)
+                    && $value < $this->getValue($x + 1, $y)
+                    && $value < $this->getValue($x, $y - 1)
+                    && $value < $this->getValue($x, $y + 1)
+                ) {
+                    yield ['x' => $x, 'y' => $y];
+                }
+            }
+        }
     }
 }
