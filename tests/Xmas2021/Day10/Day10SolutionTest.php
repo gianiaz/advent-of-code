@@ -29,10 +29,14 @@ class Day10SolutionTest extends TestCase
 
         $result = $day10Solution->getFirstIllegalCharacter($line);
 
+        $this->assertArrayHasKey('char', $result);
+        $this->assertArrayHasKey('position', $result);
         if ($isCorrupted) {
-            $this->assertNotNull($result);
+            $this->assertNotNull($result['char']);
+            $this->assertNotNull($result['position']);
         } else {
-            $this->assertNull($result);
+            $this->assertNull($result['char']);
+            $this->assertNull($result['position']);
         }
     }
 
@@ -52,6 +56,33 @@ class Day10SolutionTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider incompleteLinesProvider
+     */
+    public function testGetExpected(string $line, string $expected): void
+    {
+        $day10Solution = new Day10Solution();
+
+        $result = $day10Solution->getFirstIllegalCharacter($line);
+
+        $this->assertArrayHasKey('expected', $result);
+        $this->assertEquals($expected, $result['expected']);
+    }
+
+    /**
+     * @return array{string, string}[]
+     */
+    public function incompleteLinesProvider(): array
+    {
+        return [
+            ['[({(<(())[]>[[{[]{<()<>>', '}}]])})]'],
+            ['[(()[<>])]({[<{<<[]>>(', ')}>]})'],
+            ['(((({<>}<{<{<>}{[]{[]{}', '}}>}>))))'],
+            ['{<[[]]>}<{[{[{[]{()[[[]', ']]}}]}]}>'],
+            ['<{([{{}}[<[[[<>{}]]]>[]]', '])}>'],
+        ];
+    }
+
     public function test(): void
     {
         $day10Solution = new Day10Solution();
@@ -63,7 +94,6 @@ class Day10SolutionTest extends TestCase
     {
         $day10Solution = new Day10Solution();
 
-        $this->markTestIncomplete();
-        $this->assertSame(1134, $day10Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame(288957, $day10Solution->solveSecondPart(self::TEST_INPUT));
     }
 }

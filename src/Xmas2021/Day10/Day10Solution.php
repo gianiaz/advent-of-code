@@ -13,8 +13,9 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $errorPoints = 0;
         foreach ($this->getLines($input) as $line) {
-            if (null !== $invalidChar = $this->getFirstIllegalCharacter($line)) {
-                $errorPoints += $this->getIllegalCharacterPoints($invalidChar);
+            $invalidChar = $this->getFirstIllegalCharacter($line);
+            if (null !== $invalidChar['char']) {
+                $errorPoints += $this->getIllegalCharacterPoints($invalidChar['char']);
             }
         }
 
@@ -23,7 +24,17 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = null)
     {
-        $this->getLines($input);
+        $autocompletePoints = [];
+        foreach ($this->getLines($input) as $line) {
+            $invalidChar = $this->getFirstIllegalCharacter($line);
+            if (null !== $invalidChar['expected']) {
+                $autocompletePoints[] = $this->getAutocompletePoints($invalidChar['expected']);
+            }
+        }
+
+        sort($autocompletePoints);
+
+        return $autocompletePoints[count($autocompletePoints) / 2];
     }
 
     /**
@@ -36,11 +47,14 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
         yield from explode(PHP_EOL, $input);
     }
 
-    public function getFirstIllegalCharacter(string $line): ?string
+    /**
+     * @return array{char: string|null, position: positive-int, expected: string|null}
+     */
+    public function getFirstIllegalCharacter(string $line): array
     {
         $expectedClosingStack = [];
 
-        foreach (str_split($line) as $char) {
+        foreach (str_split($line) as $i => $char) {
             switch ($char) {
                 case '(':
                     $expectedClosingStack[] = ')';
@@ -60,7 +74,7 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
                 case '>':
                     $prevFromStack = array_pop($expectedClosingStack);
                     if ($prevFromStack !== $char) {
-                        return $char;
+                        return ['char' => $char, 'position' => $i, 'expected' => null];
                     }
                     break;
                 default:
@@ -68,7 +82,11 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
             }
         }
 
-        return null;
+        if (! empty($expectedClosingStack)) {
+            return ['char' => null, 'position' => null, 'expected' => implode(array_reverse($expectedClosingStack))];
+        }
+
+        return ['char' => null, 'position' => null, 'expected' => null];
     }
 
     private function getIllegalCharacterPoints(string $invalidChar): int
@@ -85,5 +103,23 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
             default:
                 throw new \InvalidArgumentException($invalidChar);
         }
+    }
+
+    private function getAutocompletePoints(string $expected): int
+    {
+        $total = 0;
+        $points = [
+            ')' => 1,
+            ']' => 2,
+            '}' => 3,
+            '>' => 4,
+        ];
+
+        foreach (str_split($expected) as $char) {
+            $total *= 5;
+            $total += $points[$char];
+        }
+
+        return $total;
     }
 }
