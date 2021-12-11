@@ -27,4 +27,36 @@ class OctopusMap
 
         return trim($string);
     }
+
+    public function step(): void
+    {
+        array_walk_recursive($this->map, static fn (&$value) => is_int($value) ? $value++ : null);
+
+        foreach ($this->map as $y => $row) {
+            foreach ($row as $x => $value) {
+                if ($value === 10) {
+                    $this->flash($x, $y);
+                }
+            }
+        }
+
+        array_walk_recursive($this->map, static fn (int & $value) => $value >= 11 ? $value = 0 : null);
+    }
+
+    private function flash(int $startX, int $startY): void
+    {
+        $this->map[$startY][$startX] = 11;
+
+        foreach (range($startY - 1, $startY + 1) as $y) {
+            foreach (range($startX - 1, $startX + 1) as $x) {
+                if (! isset($this->map[$y][$x])) {
+                    continue;
+                }
+
+                if (++$this->map[$y][$x] === 10) {
+                    $this->flash($x, $y);
+                }
+            }
+        }
+    }
 }
