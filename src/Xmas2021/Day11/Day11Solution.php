@@ -26,5 +26,16 @@ class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
     public function solveSecondPart(string $input = null)
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+
+        $map = new OctopusMap($input);
+        $octopusCount = strlen(str_replace(PHP_EOL, '', $map->getMapAsString()));
+        $steps = 1;
+        do {
+            if ($octopusCount === $map->step()) {
+                return $steps;
+            }
+        } while (++$steps < 100000);
+
+        throw new \RuntimeException('No sync detected');
     }
 }
