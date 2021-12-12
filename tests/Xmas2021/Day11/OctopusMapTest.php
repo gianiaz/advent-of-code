@@ -36,6 +36,39 @@ class OctopusMapTest extends TestCase
         } while ($stepCount <= $maxStep);
     }
 
+    public function testFlashCount(): void
+    {
+        $octopusMap = new OctopusMap('5483143223
+2745854711
+5264556173
+6141336146
+6357385478
+4167524645
+2176841721
+6882881134
+4846848554
+5283751526');
+        $maxStep = 100;
+        $flashCounter = 0;
+
+        do {
+            $flashCounter += $octopusMap->step();
+        } while (--$maxStep);
+
+        $lastExpectedMap = '0397666866
+0749766918
+0053976933
+0004297822
+0004229892
+0053222877
+0532222966
+9322228966
+7922286866
+6789998766';
+        $this->assertEquals($lastExpectedMap, $octopusMap->getMapAsString());
+        $this->assertSame(1656, $flashCounter);
+    }
+
     /**
      * @return array{array<int, string>}[]
      */

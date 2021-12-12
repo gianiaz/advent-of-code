@@ -28,7 +28,7 @@ class OctopusMap
         return trim($string);
     }
 
-    public function step(): void
+    public function step(): int
     {
         array_walk_recursive($this->map, static fn (&$value) => is_int($value) ? $value++ : null);
 
@@ -40,7 +40,17 @@ class OctopusMap
             }
         }
 
-        array_walk_recursive($this->map, static fn (int & $value) => $value >= 11 ? $value = 0 : null);
+        $flashCounter = 0;
+        foreach ($this->map as $y => $row) {
+            foreach ($row as $x => $value) {
+                if ($this->map[$y][$x] >= 11) {
+                    $this->map[$y][$x] = 0;
+                    ++$flashCounter;
+                }
+            }
+        }
+
+        return $flashCounter;
     }
 
     private function flash(int $startX, int $startY): void
