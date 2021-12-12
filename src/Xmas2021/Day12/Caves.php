@@ -43,4 +43,37 @@ class Caves
 
         return $possiblePaths;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getAllPathsWithTwiceSmallCaves(array $previousSteps = ['start'], bool $doubleVisitAllowed = true): array
+    {
+        $possiblePaths = [];
+        $lastStep = end($previousSteps);
+
+        foreach ($this->links[$lastStep] as $link) {
+            if ($link === 'start') {
+                continue;
+            }
+
+            if ($link === 'end') {
+                $possiblePaths[] = [...$previousSteps, $link];
+                continue;
+            }
+
+            if ($link === strtolower($link) && in_array($link, $previousSteps, true)) {
+                $lowerCaseVisited = array_filter($previousSteps, static fn (string $value) => $value === strtolower($value));
+                if (count($lowerCaseVisited) !== count(array_unique($lowerCaseVisited))) {
+                    continue;
+                }
+            }
+
+            foreach ($this->getAllPathsWithTwiceSmallCaves([...$previousSteps, $link], $doubleVisitAllowed) as $subPath) {
+                $possiblePaths[] = $subPath;
+            }
+        }
+
+        return $possiblePaths;
+    }
 }

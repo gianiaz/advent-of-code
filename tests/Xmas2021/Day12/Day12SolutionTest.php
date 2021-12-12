@@ -24,11 +24,34 @@ b-end';
         $this->assertSame(10, $day12Solution->solve(self::TEST_INPUT));
     }
 
+    public function testBis(): void
+    {
+        $day12Solution = new Day12Solution();
+
+        $this->assertSame(226, $day12Solution->solve('fs-end
+he-DX
+fs-he
+start-DX
+pj-DX
+end-zg
+zg-sl
+zg-pj
+pj-he
+RW-he
+fs-DX
+pj-RW
+zg-RW
+start-pj
+he-WI
+zg-he
+pj-fs
+start-RW'));
+    }
+
     public function testSecondPart(): void
     {
         $day12Solution = new Day12Solution();
 
-        $this->markTestIncomplete();
-        $this->assertSame(195, $day12Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame(36, $day12Solution->solveSecondPart(self::TEST_INPUT));
     }
 }
