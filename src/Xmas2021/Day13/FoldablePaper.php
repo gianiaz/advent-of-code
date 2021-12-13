@@ -7,7 +7,7 @@ namespace Jean85\AdventOfCode\Xmas2021\Day13;
 class FoldablePaper
 {
     /** @var array<int, array<int, true>> */
-    private array $dots;
+    private array $dots = [];
     private int $maxX = 0;
     private int $maxY = 0;
 
@@ -18,9 +18,10 @@ class FoldablePaper
             $x = (int) $x;
             $y = (int) $y;
             $this->dots[$y][$x] = true;
+            $this->maxX = max($this->maxX, $x);
         }
 
-        $this->recalculateMax();
+        $this->maxY = max(array_keys($this->dots));
     }
 
     public function getPaper(): string
@@ -48,15 +49,21 @@ class FoldablePaper
             unset($this->dots[$y]);
         }
 
-        $this->recalculateMax();
         $this->maxY = $foldY - 1;
     }
 
-    private function recalculateMax(): void
+    public function foldX(int $foldX): void
     {
-        $this->maxY = max(array_keys($this->dots));
-        foreach ($this->dots as $rows) {
-            $this->maxX = max($this->maxX, ...array_keys($rows));
+        foreach ($this->dots as $y => $row) {
+            unset($this->dots[$y][$foldX]);
+            foreach (range($foldX + 1, $this->maxX) as $x) {
+                if (isset($this->dots[$y][$x])) {
+                    $this->dots[$y][$foldX - ($x - $foldX)] = true;
+                    unset($this->dots[$y][$x]);
+                }
+            }
         }
+
+        $this->maxX = $foldX - 1;
     }
 }

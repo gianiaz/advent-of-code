@@ -57,5 +57,15 @@ class FoldablePaperTest extends TestCase
 .#.#..#.###
 ...........
 ...........', $page->getPaper());
+
+        $page->foldX(5);
+
+        $this->assertSame('#####
+#...#
+#...#
+#...#
+#####
+.....
+.....', $page->getPaper());
     }
 }
