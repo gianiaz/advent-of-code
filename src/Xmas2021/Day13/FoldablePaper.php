@@ -66,4 +66,17 @@ class FoldablePaper
 
         $this->maxX = $foldX - 1;
     }
+
+    public function countDots(): int
+    {
+        $total = 0;
+
+        foreach ($this->dots as $row) {
+            foreach ($row as $item) {
+                ++$total;
+            }
+        }
+
+        return $total;
+    }
 }

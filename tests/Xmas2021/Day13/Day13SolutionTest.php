@@ -34,15 +34,8 @@ fold along x=5';
     public function test(): void
     {
         $day13Solution = new Day13Solution();
-        $this->markTestIncomplete();
 
-        $this->assertSame('#####
-#...#
-#...#
-#...#
-#####
-.....
-.....', $day13Solution->solve(self::TEST_INPUT));
+        $this->assertSame(17, $day13Solution->solve(self::TEST_INPUT));
     }
 
     public function testSecondPart(): void
