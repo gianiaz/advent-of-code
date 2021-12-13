@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class FoldablePaperTest extends TestCase
 {
-    public function testGetMap(): void
+    public function testGetMapAndFold(): void
     {
         $page = new FoldablePaper(
             '6,10
@@ -47,5 +47,15 @@ class FoldablePaperTest extends TestCase
 ......#...#
 #..........
 #.#........', $page->getPaper());
+
+        $page->foldY(7);
+
+        $this->assertSame('#.##..#..#.
+#...#......
+......#...#
+#...#......
+.#.#..#.###
+...........
+...........', $page->getPaper());
     }
 }
