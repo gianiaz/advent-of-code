@@ -36,8 +36,20 @@ class FoldablePaper
         return trim($map);
     }
 
-    public function foldY(int $x): void
+    public function foldY(int $foldY): void
     {
+        unset($this->dots[$foldY]);
+
+        foreach (range($foldY + 1, $this->maxY) as $y) {
+            foreach ($this->dots[$y] ?? [] as $x => $value) {
+                $this->dots[$foldY - ($y - $foldY)][$x] = true;
+            }
+
+            unset($this->dots[$y]);
+        }
+
+        $this->recalculateMax();
+        $this->maxY = $foldY - 1;
     }
 
     private function recalculateMax(): void
