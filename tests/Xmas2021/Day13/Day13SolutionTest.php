@@ -42,7 +42,12 @@ fold along x=5';
     {
         $day13Solution = new Day13Solution();
 
-        $this->markTestIncomplete();
-        $this->assertSame(36, $day13Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('#####
+#   #
+#   #
+#   #
+#####
+     
+     ', $day13Solution->solveSecondPart(self::TEST_INPUT));
     }
 }
