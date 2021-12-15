@@ -15,11 +15,13 @@ class Day15Solution implements SolutionInterface, SecondPartSolutionInterface
     private array $map = [];
     /** @var array<int, array<int, int>> */
     private array $risk = [];
+    /** @var array<string, int> */
+    private array $unvisitedNodes;
 
     public function solve(string $input = null)
     {
         $this->init($input);
-        $this->explore(0, 0, 0);
+        $this->dijkstra();
 
         return $this->risk[$this->maxY][$this->maxX];
     }
@@ -28,7 +30,7 @@ class Day15Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $this->init($input);
         $this->mirrorMap();
-        $this->explore(0, 0, 0);
+        $this->dijkstra();
 
         return $this->risk[$this->maxY][$this->maxX];
     }
@@ -58,11 +60,33 @@ class Day15Solution implements SolutionInterface, SecondPartSolutionInterface
         $this->maxY = $y;
     }
 
-    private function explore(int $startX, int $startY, int $currentRisk): void
+    private function dijkstra(): void
+    {
+        $currentX = 0;
+        $currentY = 0;
+
+        $this->unvisitedNodes = [];
+
+        do {
+            $this->explore((int) $currentX, (int) $currentY);
+
+            $newNodeToVisit = array_search(min($this->unvisitedNodes), $this->unvisitedNodes, true);
+            if (! is_string($newNodeToVisit)) {
+                throw new \InvalidArgumentException('Cannot find next node');
+            }
+            unset($this->unvisitedNodes[$newNodeToVisit]);
+
+            [$currentY, $currentX] = explode('-', $newNodeToVisit);
+        } while (! isset($this->risk[$this->maxY][$this->maxX]));
+    }
+
+    private function explore(int $startX, int $startY): void
     {
         if ($startX === $this->maxX && $startY === $this->maxY) {
             return;
         }
+
+        $currentRisk = $this->risk[$startY][$startX];
 
         $possibleMoves = [
             [$startX, $startY + 1], // down
@@ -86,7 +110,7 @@ class Day15Solution implements SolutionInterface, SecondPartSolutionInterface
             $alreadyVisitedAtRisk = $this->risk[$y][$x] ?? PHP_INT_MAX;
             if ($nextRisk < $alreadyVisitedAtRisk) {
                 $this->risk[$y][$x] = $nextRisk;
-                $this->explore($x, $y, $this->risk[$y][$x]);
+                $this->unvisitedNodes[$y . '-' . $x] = $nextRisk;
             }
         }
     }
