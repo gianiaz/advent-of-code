@@ -11,22 +11,7 @@ class PolymerMachineTest extends TestCase
 {
     public function test(): void
     {
-        $machine = new PolymerMachine('NNCB', 'CH -> B
-HH -> N
-CB -> H
-NH -> C
-HB -> C
-HC -> B
-HN -> C
-NN -> C
-BH -> H
-NC -> B
-NB -> B
-BN -> B
-BB -> N
-BC -> B
-CC -> N
-CN -> C');
+        $machine = $this->createTestMachine();
 
         $this->assertSame('NNCB', $machine->getPolymer());
 
@@ -62,5 +47,46 @@ CN -> C');
         $this->assertSame(298, $counts['C']);
         $this->assertSame(161, $counts['H']);
         $this->assertSame(865, $counts['N']);
+    }
+
+    /**
+     * @dataProvider smartElementCountProvider
+     */
+    public function testGetSmartElementCount(int $steps, array $expectedCounts): void
+    {
+        $machine = $this->createTestMachine();
+
+        $counts = $machine->getSmartElementCounts($steps);
+
+        $this->assertEquals($expectedCounts, $counts);
+    }
+
+    public function smartElementCountProvider(): array
+    {
+        return [
+            [0, ['B' => 1, 'C' => 1, 'N' => 2]],
+            [1, ['B' => 2, 'C' => 2, 'H' => 1, 'N' => 2]],
+            [10, ['B' => 1749, 'C' => 298, 'H' => 161, 'N' => 865]],
+        ];
+    }
+
+    private function createTestMachine(): PolymerMachine
+    {
+        return new PolymerMachine('NNCB', 'CH -> B
+HH -> N
+CB -> H
+NH -> C
+HB -> C
+HC -> B
+HN -> C
+NN -> C
+BH -> H
+NC -> B
+NB -> B
+BN -> B
+BB -> N
+BC -> B
+CC -> N
+CN -> C');
     }
 }

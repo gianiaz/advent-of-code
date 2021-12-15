@@ -39,6 +39,6 @@ CN -> C';
     {
         $day14Solution = new Day14Solution();
 
-        $this->markTestIncomplete();
+        $this->assertSame(2188189693529, $day14Solution->solveSecondPart(self::TEST_INPUT));
     }
 }

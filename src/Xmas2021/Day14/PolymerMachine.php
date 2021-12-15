@@ -54,4 +54,45 @@ class PolymerMachine
 
         return $elementCounts;
     }
+
+    public function getSmartElementCounts(int $steps): array
+    {
+        $pairs = [];
+        foreach (range(1, strlen($this->polymer) - 1) as $i) {
+            $pairs[$this->polymer[$i - 1] . $this->polymer[$i]] ??= 0;
+            ++$pairs[$this->polymer[$i - 1] . $this->polymer[$i]];
+        }
+
+        while ($steps-- > 0) {
+            $newPairs = [];
+            foreach ($pairs as $pair => $count) {
+                [$firstElement, $secondElement] = str_split($pair);
+                $insertion = $this->rules[$pair];
+                $newPairs[$firstElement . $insertion] ??= 0;
+                $newPairs[$firstElement . $insertion] += $count;
+                $newPairs[$insertion . $secondElement] ??= 0;
+                $newPairs[$insertion . $secondElement] += $count;
+            }
+            $pairs = $newPairs;
+        }
+
+        $elementCounts = [];
+        foreach ($pairs as $pair => $count) {
+            [$firstElement, $secondElement] = str_split($pair);
+            $elementCounts[$firstElement] ??= 0;
+            $elementCounts[$firstElement] += $count;
+            $elementCounts[$secondElement] ??= 0;
+            $elementCounts[$secondElement] += $count;
+        }
+
+        foreach ($elementCounts as $element => $count) {
+            if ($count === 1) {
+                continue;
+            }
+
+            $elementCounts[$element] = ceil($count / 2);
+        }
+
+        return $elementCounts;
+    }
 }

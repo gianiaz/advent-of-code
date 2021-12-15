@@ -28,5 +28,9 @@ class Day14Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
         $machine = new PolymerMachine(...explode(PHP_EOL . PHP_EOL, $input));
+
+        $elementCounts = $machine->getSmartElementCounts(40);
+
+        return (int) (max($elementCounts) - min($elementCounts));
     }
 }
