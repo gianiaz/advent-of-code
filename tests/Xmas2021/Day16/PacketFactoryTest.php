@@ -24,7 +24,7 @@ class PacketFactoryTest extends TestCase
 
     public function testOperatorPacketCreation(): void
     {
-        $packet = (new PacketFactory())->create($this->createStreamFromBin('00111000000000000110111101000101001010010001001000000000'));
+        $packet = (new PacketFactory())->create($this->createStreamFromHex('38006F45291200'));
 
         $this->assertInstanceOf(OperatorPacket::class, $packet);
         $this->assertSame(1, $packet->getVersion());
@@ -51,10 +51,36 @@ class PacketFactoryTest extends TestCase
         $this->assertSame(3, $subPackets[2]->getParsedData());
     }
 
+    public function testNestedOperatorPackets(): void
+    {
+        $packet = (new PacketFactory())->create($this->createStreamFromHex('8A004A801A8002F478'));
+
+        $this->assertInstanceOf(OperatorPacket::class, $packet);
+        $this->assertSame(4, $packet->getVersion());
+        $subPackets = $packet->getSubPackets();
+        $this->assertCount(1, $subPackets);
+
+        $nestedOperator = array_pop($subPackets);
+        $this->assertInstanceOf(OperatorPacket::class, $nestedOperator);
+        $this->assertSame(1, $nestedOperator->getVersion());
+
+        $subPackets2 = $nestedOperator->getSubPackets();
+        $this->assertCount(1, $subPackets2);
+        $nestedOperator = array_pop($subPackets2);
+        $this->assertInstanceOf(OperatorPacket::class, $nestedOperator);
+        $this->assertSame(5, $nestedOperator->getVersion());
+
+        $subPackets3 = $nestedOperator->getSubPackets();
+        $this->assertCount(1, $subPackets3);
+        $nestedLiteral = array_pop($subPackets3);
+        $this->assertInstanceOf(LiteralPacket::class, $nestedLiteral);
+        $this->assertSame(6, $nestedLiteral->getVersion());
+    }
+
     /**
      * @return resource
      */
-    private function createStreamFromBin(string $string)
+    private function createStreamFromHex(string $string)
     {
         $stream = fopen('php://memory', 'r+');
         if (false === $stream) {
@@ -70,8 +96,30 @@ class PacketFactoryTest extends TestCase
     /**
      * @return resource
      */
-    private function createStreamFromHex(string $string)
+    private function createStreamFromBin(string $string)
     {
-        return $this->createStreamFromBin(hex2bin($string));
+        $hexString = '';
+        foreach (str_split($string, 4) as $binary) {
+            $hexString .= [
+                '0000' =>'0',
+                '0001' =>'1',
+                '0010' =>'2',
+                '0011' =>'3',
+                '0100' =>'4',
+                '0101' =>'5',
+                '0110' =>'6',
+                '0111' =>'7',
+                '1000' =>'8',
+                '1001' =>'9',
+                '1010' =>'A',
+                '1011' =>'B',
+                '1100' =>'C',
+                '1101' =>'D',
+                '1110' =>'E',
+                '1111' =>'F',
+            ][$binary];
+        }
+
+        return $this->createStreamFromHex($hexString);
     }
 }
