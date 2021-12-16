@@ -20,7 +20,7 @@ class PacketFactoryTest extends TestCase
         $this->assertSame(6, $packet->getVersion());
         $this->assertSame(4, $packet->getTypeId());
         $this->assertSame(['0111', '1110', '0101'], $packet->getRawData());
-        $this->assertSame(2021, $packet->getParsedData());
+        $this->assertSame(2021, $packet->getValue());
     }
 
     public function testOperatorPacketCreation(): void
@@ -33,8 +33,8 @@ class PacketFactoryTest extends TestCase
         $subPackets = $packet->getSubPackets();
         $this->assertCount(2, $subPackets);
         $this->assertContainsOnlyInstancesOf(LiteralPacket::class, $subPackets);
-        $this->assertSame(10, $subPackets[0]->getParsedData());
-        $this->assertSame(20, $subPackets[1]->getParsedData());
+        $this->assertSame(10, $subPackets[0]->getValue());
+        $this->assertSame(20, $subPackets[1]->getValue());
     }
 
     public function testOperatorWithHexPacket(): void
@@ -47,9 +47,9 @@ class PacketFactoryTest extends TestCase
         $subPackets = $packet->getSubPackets();
         $this->assertCount(3, $subPackets);
         $this->assertContainsOnlyInstancesOf(LiteralPacket::class, $subPackets);
-        $this->assertSame(1, $subPackets[0]->getParsedData());
-        $this->assertSame(2, $subPackets[1]->getParsedData());
-        $this->assertSame(3, $subPackets[2]->getParsedData());
+        $this->assertSame(1, $subPackets[0]->getValue());
+        $this->assertSame(2, $subPackets[1]->getValue());
+        $this->assertSame(3, $subPackets[2]->getValue());
     }
 
     public function testNestedOperatorPackets(): void

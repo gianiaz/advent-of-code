@@ -15,12 +15,16 @@ class Day16Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $packet = (new PacketFactory())->create(self::createStream($input));
 
-        return$this->getVersionSum($packet);
+        return $this->getVersionSum($packet);
     }
 
     public function solveSecondPart(string $input = null)
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+
+        return (new PacketFactory())
+            ->create(self::createStream($input))
+            ->getValue();
     }
 
     /**

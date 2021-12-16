@@ -34,7 +34,7 @@ class LiteralPacket extends AbstractPacket
         return 4;
     }
 
-    public function getParsedData(): int
+    public function getValue(): int
     {
         return bindec(implode($this->rawData));
     }

@@ -14,6 +14,7 @@ abstract class AbstractPacket
     }
 
     abstract public function getTypeId(): int;
+    abstract public function getValue(): int;
 
     public function getVersion(): int
     {
