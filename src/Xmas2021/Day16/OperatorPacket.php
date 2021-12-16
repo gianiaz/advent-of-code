@@ -6,25 +6,15 @@ namespace Jean85\AdventOfCode\Xmas2021\Day16;
 
 class OperatorPacket extends AbstractPacket
 {
-
     private int $typeId;
-    private int $lengthTypeId;
+    /** @var AbstractPacket[] */
+    private array $subPackets;
 
-    public function __construct(int $version, int $typeId, string $data)
+    public function __construct(int $version, int $typeId, array $subPackets)
     {
         parent::__construct($version);
         $this->typeId = $typeId;
-        $this->lengthTypeId = (int)$data[0];
-
-        switch ($this->lengthTypeId) {
-            case self::TOTAL_LENGTH:
-                $length = bindec(substr($data, 1, 15));
-                $subPackets = substr($data, 16, $length);
-            case self::SUBPACKET_NUMBER:
-                $subPacketNumber = bindec(substr($data, 1, 11));
-            default:
-                throw new \InvalidArgumentException('Invalid length type: ' . $this->lengthTypeId); 
-        }
+        $this->subPackets = $subPackets;
     }
 
     public function getTypeId(): int
@@ -32,13 +22,16 @@ class OperatorPacket extends AbstractPacket
         return $this->typeId;
     }
 
-    public function getLengthTypeId(): int
-    {
-        return $this->lengthTypeId;
-    }
-
     public function getParsedData(): int
     {
         throw new \RuntimeException('TODO');
+    }
+
+    /**
+     * @return AbstractPacket[]
+     */
+    public function getSubPackets(): array
+    {
+        return $this->subPackets;
     }
 }

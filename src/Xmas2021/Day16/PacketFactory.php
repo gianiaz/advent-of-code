@@ -12,29 +12,67 @@ class PacketFactory
     private const TOTAL_LENGTH = 0;
     private const SUBPACKET_NUMBER = 1;
 
-    public function create(string $input): AbstractPacket
+    /**
+     * @param resource $input
+     */
+    public function create($input): AbstractPacket
     {
-        $version = bindec(substr($input, 0, 3));
-        $typeId = bindec(substr($input, 3, 3));
-        $data = substr($input, 6);
+        $version = bindec(\Safe\fread($input, 3));
+        $typeId = bindec(\Safe\fread($input, 3));
+
+        if (0 === $version && 0 === $typeId) {
+            throw new \RuntimeException('End of stream?');
+        }
 
         switch ($typeId) {
             case self::TYPE_LITERAL:
-                return new LiteralPacket($version, $data);
+                return new LiteralPacket($version, $input);
             default: // operators
-                $lengthTypeId = (int)$data[0];
+                return new OperatorPacket($version, $typeId, $this->parseSubpackets($input));
+        }
+    }
 
-                switch ($lengthTypeId) {
-                    case self::TOTAL_LENGTH:
-                        $length = bindec(substr($data, 1, 15));
-                        $subPacketsRawData = substr($data, 16, $length);
-                    case self::SUBPACKET_NUMBER:
-                        $subPacketNumber = bindec(substr($data, 1, 11));
-                    default:
-                        throw new \InvalidArgumentException('Invalid length type: ' . $this->lengthTypeId);
+    /**
+     * @param resource $input
+     *
+     * @return AbstractPacket[]
+     */
+    private function parseSubpackets($input): array
+    {
+        $lengthTypeId = (int) \Safe\fread($input, 1);
+
+        switch ($lengthTypeId) {
+            case self::TOTAL_LENGTH:
+                $length = bindec(\Safe\fread($input, 15));
+                $subStream = $this->getSubstream($input, $length);
+                $subPackets = [];
+                try {
+                    while ($subPacket = $this->create($subStream)) {
+                        $subPackets[] = $subPacket;
+                    }
+                } catch (\RuntimeException $e) {
                 }
 
-                return new OperatorPacket($version, $typeId, $subPackets);
+                return $subPackets;
+            case self::SUBPACKET_NUMBER:
+                $subPacketNumber = bindec(\Safe\fread($input, 11));
+                break;
+            default:
+                throw new \InvalidArgumentException('Invalid length type: ' . $lengthTypeId);
         }
+    }
+
+    /**
+     * @param resource $input
+     *
+     * @return resource
+     */
+    private function getSubstream($input, int $length)
+    {
+        $substream = \Safe\fopen('php://memory', 'r+');
+        fwrite($substream, \Safe\fread($input, $length));
+        rewind($substream);
+
+        return $substream;
     }
 }
