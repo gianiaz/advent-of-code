@@ -9,11 +9,26 @@ use PHPUnit\Framework\TestCase;
 
 class Day16SolutionTest extends TestCase
 {
-    public function test(): void
+    /**
+     * @dataProvider packetsWithVersionSumDataProvider
+     */
+    public function test(string $input, int $expectedVersionSum): void
     {
         $day16Solution = new Day16Solution();
 
-        $this->markTestIncomplete();
-        $this->assertSame(40, $day16Solution->solve(self::TEST_INPUT));
+        $this->assertSame($expectedVersionSum, $day16Solution->solve($input));
+    }
+
+    /**
+     * @return array{string, int}[]
+     */
+    public function packetsWithVersionSumDataProvider(): array
+    {
+        return [
+            ['8A004A801A8002F478', 16],
+            ['620080001611562C8802118E34', 12],
+            ['C0015000016115A2E0802F182340', 23],
+            ['A0016C880162017C3686B18A3D4780', 31],
+        ];
     }
 }

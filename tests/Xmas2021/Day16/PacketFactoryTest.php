@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2021\Day16;
 
+use Jean85\AdventOfCode\Xmas2021\Day16\Day16Solution;
 use Jean85\AdventOfCode\Xmas2021\Day16\LiteralPacket;
 use Jean85\AdventOfCode\Xmas2021\Day16\OperatorPacket;
 use Jean85\AdventOfCode\Xmas2021\Day16\PacketFactory;
@@ -77,20 +78,28 @@ class PacketFactoryTest extends TestCase
         $this->assertSame(6, $nestedLiteral->getVersion());
     }
 
+    public function testNestedDoubleOperatorPackets(): void
+    {
+        $packet = (new PacketFactory())->create($this->createStreamFromHex('620080001611562C8802118E34'));
+
+        $this->assertInstanceOf(OperatorPacket::class, $packet);
+        $this->assertSame(3, $packet->getVersion());
+        $subPackets = $packet->getSubPackets();
+        $this->assertCount(2, $subPackets);
+        $this->assertContainsOnlyInstancesOf(OperatorPacket::class, $subPackets);
+        /** @var OperatorPacket $operatorPacket */
+        foreach ($subPackets as $operatorPacket) {
+            $this->assertCount(2, $operatorPacket->getSubPackets());
+            $this->assertContainsOnlyInstancesOf(LiteralPacket::class, $operatorPacket->getSubPackets());
+        }
+    }
+
     /**
      * @return resource
      */
     private function createStreamFromHex(string $string)
     {
-        $stream = fopen('php://memory', 'r+');
-        if (false === $stream) {
-            throw new \RuntimeException();
-        }
-
-        fwrite($stream, $string);
-        rewind($stream);
-
-        return $stream;
+        return Day16Solution::createStream($string);
     }
 
     /**

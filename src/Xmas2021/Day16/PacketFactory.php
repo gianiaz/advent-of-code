@@ -30,10 +30,6 @@ class PacketFactory
         $version = bindec(\Safe\fread($input, 3));
         $typeId = bindec(\Safe\fread($input, 3));
 
-        if (0 === $version && 0 === $typeId) {
-            throw new \RuntimeException('End of stream?');
-        }
-
         switch ($typeId) {
             case self::TYPE_LITERAL:
                 return new LiteralPacket($version, $input);
@@ -83,6 +79,9 @@ class PacketFactory
      */
     private function getSubstream($input, int $length)
     {
+        if ($length === 0) {
+            throw new \RuntimeException('End of stream?');
+        }
         $substream = \Safe\fopen('php://memory', 'r+');
         fwrite($substream, \Safe\fread($input, $length));
         rewind($substream);
