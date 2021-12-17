@@ -16,6 +16,8 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
     private array $possibleYVelocities;
     /** @var array<int, int> YVelocity => maxHeight */
     private array $maxHeights;
+    /** @var string[] */
+    public array $validCombinations;
 
     public function solve(string $input = self::INPUT)
     {
@@ -27,7 +29,7 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 
         foreach (array_keys($this->possibleXVelocities) as $stepsAtWhichWeHit) {
             foreach ($this->possibleYVelocities[$stepsAtWhichWeHit] ?? [] as $yVelocity) {
-                $maxHeight = max($maxHeight, $this->maxHeights[$yVelocity]);
+                $maxHeight = max($maxHeight, $this->maxHeights[$yVelocity] ?? 0);
             }
         }
 
@@ -36,6 +38,25 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = self::INPUT)
     {
+        $target = new TargetArea($input);
+
+        $this->calculatePossibleXVelocities($target);
+        $this->calculatePossibleYVelocities($target);
+
+        $this->validCombinations = [];
+
+        foreach ($this->possibleXVelocities as $stepsAtWhichWeHit => $xVelocities) {
+            foreach ($this->possibleYVelocities[$stepsAtWhichWeHit] ?? [] as $yVelocity) {
+                foreach ($xVelocities as $xVelocity) {
+                    $combination = $xVelocity . ',' . $yVelocity;
+                    $this->validCombinations[$combination] = $combination;
+                }
+            }
+        }
+
+        sort($this->validCombinations);
+
+        return count($this->validCombinations);
     }
 
     private function calculatePossibleXVelocities(TargetArea $target): void
@@ -68,7 +89,7 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 
     private function calculatePossibleYVelocities(TargetArea $target): void
     {
-        $yVelocity = 0;
+        $yVelocity = min(1, $target->getMinY());
         $this->possibleYVelocities = [];
 
         if (empty($this->possibleXVelocities)) {
@@ -78,7 +99,7 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 
         do {
             $position = 0;
-            $currentVelocity = ++$yVelocity;
+            $currentVelocity = $yVelocity;
             $steps = 0;
             do {
                 ++$steps;
@@ -90,9 +111,9 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 
                 if ($target->isInside(y: $position)) {
                     $this->possibleYVelocities[$steps][] = $yVelocity;
-                    break;
                 }
             } while ($steps <= $maxSteps && $position >= $target->getMinY());
-        } while ($yVelocity < abs($target->getMinY())); // overshoot: too fast when falling down, first step below 0 is already below target
+            ++$yVelocity;
+        } while ($yVelocity <= abs($target->getMinY())); // overshoot: too fast when falling down, first step below 0 is already below target
     }
 }
