@@ -12,34 +12,34 @@ class SnailFishNumber implements SnailFishNumberInterface
     public SnailFishNumberInterface $left;
     public SnailFishNumberInterface $right;
 
-    public static function createFromInput(string $input): self
+    public static function createFromInput(string $inputString): self
     {
-        if ($input[0] !== '[') {
+        if ($inputString[0] !== '[') {
             throw new \InvalidArgumentException();
         }
 
-        return new self(self::createStream(substr($input, 1)));
+        $input = self::createStream(substr($inputString, 1));
+
+        return self::parse($input);
     }
 
-    /**
-     * @param resource $input
-     */
-    private function __construct($input, self $up = null)
+    private static function parse($input, self $up = null): self
     {
-        $this->up = $up;
+        $snailFishNumber = new self();
+        $snailFishNumber->up = $up;
 
         $char = \Safe\fread($input, 1);
 
         if ($char === '[') {
-            $this->left = new self($input, $this);
+            $snailFishNumber->left = self::parse($input, $snailFishNumber);
         } elseif (']' === $char) {
-            if (! isset($this->right)) {
+            if (! isset($snailFishNumber->right)) {
                 throw new \RuntimeException('Parsing error, expecting right populated, got: ' . $char);
             }
 
-            return;
+            return $snailFishNumber;
         } elseif (is_numeric($char)) {
-            $this->left = new NormalNumber((int) $char, $this);
+            $snailFishNumber->left = new NormalNumber((int) $char, $snailFishNumber);
         }
 
         if (',' !== $char = fread($input, 1)) {
@@ -47,9 +47,9 @@ class SnailFishNumber implements SnailFishNumberInterface
         }
 
         if ('[' === $char = fread($input, 1)) {
-            $this->right = new self($input, $this);
+            $snailFishNumber->right = self::parse($input, $snailFishNumber);
         } elseif (is_numeric($char)) {
-            $this->right = new NormalNumber((int) $char, $this);
+            $snailFishNumber->right = new NormalNumber((int) $char, $snailFishNumber);
         } else {
             throw new \RuntimeException('Parsing error, expecting `]`, got: ' . $char);
         }
@@ -57,6 +57,12 @@ class SnailFishNumber implements SnailFishNumberInterface
         if (']' !== $char = fread($input, 1)) {
             throw new \RuntimeException('Parsing error, expecting `]`, got: ' . $char);
         }
+
+        return $snailFishNumber;
+    }
+
+    private function __construct()
+    {
     }
 
     public function getMagnitude(): int
