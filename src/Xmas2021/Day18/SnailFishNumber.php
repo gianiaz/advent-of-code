@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2021\Day18;
 
-class SnailFishNumber
+use Webmozart\Assert\Assert;
+
+class SnailFishNumber implements SnailFishNumberInterface
 {
-    private self|int $left;
-    private self|int $right;
+    private ?self $up;
+    private SnailFishNumberInterface $left;
+    private SnailFishNumberInterface $right;
 
     public static function createFromInput(string $input): self
     {
@@ -21,20 +24,22 @@ class SnailFishNumber
     /**
      * @param resource $input
      */
-    private function __construct($input)
+    private function __construct($input, self $up = null)
     {
+        $this->up = $up;
+
         $char = \Safe\fread($input, 1);
 
         if ($char === '[') {
-            $this->left = new self($input);
+            $this->left = new self($input, $this);
         } elseif (']' === $char) {
-            if (isset($this->right)) {
-                return;
-            } else {
+            if (! isset($this->right)) {
                 throw new \RuntimeException('Parsing error, expecting right populated, got: ' . $char);
             }
+
+            return;
         } elseif (is_numeric($char)) {
-            $this->left = (int) $char;
+            $this->left = new NormalNumber((int) $char);
         }
 
         if (',' !== $char = fread($input, 1)) {
@@ -42,9 +47,9 @@ class SnailFishNumber
         }
 
         if ('[' === $char = fread($input, 1)) {
-            $this->right = new self($input);
+            $this->right = new self($input, $this);
         } elseif (is_numeric($char)) {
-            $this->right = (int) $char;
+            $this->right = new NormalNumber((int) $char);
         } else {
             throw new \RuntimeException('Parsing error, expecting `]`, got: ' . $char);
         }
@@ -56,19 +61,60 @@ class SnailFishNumber
 
     public function getMagnitude(): int
     {
-        if ($this->left instanceof self) {
-            $leftMagnitude = 3 * $this->left->getMagnitude();
-        } else {
-            $leftMagnitude = 3 * $this->left;
+        return  3 * $this->left->getMagnitude()
+              + 2 * $this->right->getMagnitude();
+    }
+
+    public function reduce(int $nesting = 0): bool
+    {
+        if ($nesting === 4) {
+            Assert::isInstanceOf($this->left, NormalNumber::class);
+            Assert::isInstanceOf($this->right, NormalNumber::class);
+
+            $this->up->goUpAndSumToTheLeft($this->left, $this);
+            $this->up->goUpAndSumToTheRight($this->right, $this);
+
+            if ($this->up->left === $this) {
+                $this->up->left = new NormalNumber(0);
+            } else {
+                $this->up->right = new NormalNumber(0);
+            }
+
+            return true;
         }
 
-        if ($this->right instanceof self) {
-            $rightMagnitude = 2 * $this->right->getMagnitude();
-        } else {
-            $rightMagnitude = 2 * $this->right;
-        }
+        ++$nesting;
 
-        return $leftMagnitude + $rightMagnitude;
+        return $this->left->reduce($nesting)
+            || $this->right->reduce($nesting);
+    }
+
+    private function goUpAndSumToTheLeft(NormalNumber $number, self $prev): void
+    {
+        if ($this->left === $prev) {
+            $this->up?->goUpAndSumToTheLeft($number, $this);
+        } else {
+            $this->left->goDownAndSumToTheRight($number);
+        }
+    }
+
+    private function goUpAndSumToTheRight(NormalNumber $number, self $prev): void
+    {
+        if ($this->right === $prev) {
+            $this->up?->goUpAndSumToTheRight($number, $this);
+        } else {
+            $this->right->goDownAndSumToTheLeft($number);
+        }
+    }
+
+    public function goDownAndSumToTheLeft(NormalNumber $number): void
+    {
+        $this->left->goDownAndSumToTheLeft($number);
+    }
+
+    public function goDownAndSumToTheRight(NormalNumber $number): void
+    {
+        $this->right->goDownAndSumToTheRight($number);
     }
 
     public function __toString(): string

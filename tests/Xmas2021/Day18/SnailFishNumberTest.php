@@ -78,4 +78,30 @@ class SnailFishNumberTest extends TestCase
             [3488, '[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]'],
         ];
     }
+
+    /**
+     * @dataProvider explodingNumbersDataProvider
+     */
+    public function testReduce(string $input, string $reducedNumber): void
+    {
+        $snailFishNumber = SnailFishNumber::createFromInput($input);
+
+        $this->assertTrue($snailFishNumber->reduce());
+
+        $this->assertSame($reducedNumber, $snailFishNumber->__toString());
+    }
+
+    /**
+     * @return array{string, string}[]
+     */
+    public function explodingNumbersDataProvider(): array
+    {
+        return [
+            ['[[[[[9,8],1],2],3],4]', '[[[[0,9],2],3],4]'],
+            ['[7,[6,[5,[4,[3,2]]]]]', '[7,[6,[5,[7,0]]]]'],
+            ['[[6,[5,[4,[3,2]]]],1]', '[[6,[5,[7,0]]],3]'],
+            ['[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]', '[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]'],
+            ['[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]', '[[3,[2,[8,0]]],[9,[5,[7,0]]]]'],
+        ];
+    }
 }
