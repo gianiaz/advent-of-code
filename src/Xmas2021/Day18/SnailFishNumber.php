@@ -56,6 +56,19 @@ class SnailFishNumber
 
     public function getMagnitude(): int
     {
+        if ($this->left instanceof self) {
+            $leftMagnitude = 3 * $this->left->getMagnitude();
+        } else {
+            $leftMagnitude = 3 * $this->left;
+        }
+
+        if ($this->right instanceof self) {
+            $rightMagnitude = 2 * $this->right->getMagnitude();
+        } else {
+            $rightMagnitude = 2 * $this->right;
+        }
+
+        return $leftMagnitude + $rightMagnitude;
     }
 
     public function __toString(): string
