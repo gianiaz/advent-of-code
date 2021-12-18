@@ -25,8 +25,7 @@ class SnailFishNumber implements SnailFishNumberInterface
 
     private static function parse($input, self $up = null): self
     {
-        $snailFishNumber = new self();
-        $snailFishNumber->up = $up;
+        $snailFishNumber = new self($up);
 
         $char = \Safe\fread($input, 1);
 
@@ -61,8 +60,9 @@ class SnailFishNumber implements SnailFishNumberInterface
         return $snailFishNumber;
     }
 
-    private function __construct()
+    private function __construct(?SnailFishNumber $up)
     {
+        $this->up = $up;
     }
 
     public function getMagnitude(): int
@@ -142,5 +142,18 @@ class SnailFishNumber implements SnailFishNumberInterface
         rewind($stream);
 
         return $stream;
+    }
+
+    public function add(string $string): self
+    {
+        $addition = new self(null);
+        $this->up = $addition;
+        $addition->left = $this;
+        $addition->right = self::createFromInput($string);
+        $addition->right->up = $addition;
+
+        while ($addition->reduce());
+
+        return $addition;
     }
 }

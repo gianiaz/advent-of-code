@@ -104,4 +104,23 @@ class SnailFishNumberTest extends TestCase
             ['[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]', '[[3,[2,[8,0]]],[9,[5,[7,0]]]]'],
         ];
     }
+
+    public function testAddition(): void
+    {
+        $snailFishNumber = SnailFishNumber::createFromInput('[1,1]')
+            ->add('[2,2]')
+            ->add('[3,3]')
+            ->add('[4,4]')
+        ;
+
+        $this->assertSame('[[[[1,1],[2,2]],[3,3]],[4,4]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[5,5]');
+
+        $this->assertSame('[[[[3,0],[5,3]],[4,4]],[5,5]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[6,6]');
+
+        $this->assertSame('[[[[5,0],[7,4]],[5,5]],[6,6]]', $snailFishNumber->__toString());
+    }
 }
