@@ -9,8 +9,8 @@ use Webmozart\Assert\Assert;
 class SnailFishNumber implements SnailFishNumberInterface
 {
     private ?self $up;
-    private SnailFishNumberInterface $left;
-    private SnailFishNumberInterface $right;
+    public SnailFishNumberInterface $left;
+    public SnailFishNumberInterface $right;
 
     public static function createFromInput(string $input): self
     {
@@ -39,7 +39,7 @@ class SnailFishNumber implements SnailFishNumberInterface
 
             return;
         } elseif (is_numeric($char)) {
-            $this->left = new NormalNumber((int) $char);
+            $this->left = new NormalNumber((int) $char, $this);
         }
 
         if (',' !== $char = fread($input, 1)) {
@@ -49,7 +49,7 @@ class SnailFishNumber implements SnailFishNumberInterface
         if ('[' === $char = fread($input, 1)) {
             $this->right = new self($input, $this);
         } elseif (is_numeric($char)) {
-            $this->right = new NormalNumber((int) $char);
+            $this->right = new NormalNumber((int) $char, $this);
         } else {
             throw new \RuntimeException('Parsing error, expecting `]`, got: ' . $char);
         }
@@ -75,9 +75,9 @@ class SnailFishNumber implements SnailFishNumberInterface
             $this->up->goUpAndSumToTheRight($this->right, $this);
 
             if ($this->up->left === $this) {
-                $this->up->left = new NormalNumber(0);
+                $this->up->left = new NormalNumber(0, $this->up);
             } else {
-                $this->up->right = new NormalNumber(0);
+                $this->up->right = new NormalNumber(0, $this->up);
             }
 
             return true;

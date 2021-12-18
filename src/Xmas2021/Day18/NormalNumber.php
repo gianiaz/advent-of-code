@@ -6,8 +6,10 @@ namespace Jean85\AdventOfCode\Xmas2021\Day18;
 
 class NormalNumber implements SnailFishNumberInterface
 {
-    public function __construct(private int $value)
-    {
+    public function __construct(
+        private int $value,
+        private SnailFishNumber $up
+    ) {
     }
 
     public function add(self $number): void
@@ -38,7 +40,17 @@ class NormalNumber implements SnailFishNumberInterface
     public function reduce(int $nesting = 0): bool
     {
         if ($this->value > 9) {
-            // TODO
+            $splitNumber = SnailFishNumber::createFromInput(\Safe\sprintf(
+                '[%d,%d]',
+                floor($this->value / 2),
+                ceil($this->value / 2)
+            ));
+
+            if ($this->up->left === $this) {
+                $this->up->left = $splitNumber;
+            } else {
+                $this->up->right = $splitNumber;
+            }
 
             return true;
         }

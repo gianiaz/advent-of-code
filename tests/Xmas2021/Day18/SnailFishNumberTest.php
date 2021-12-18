@@ -82,7 +82,7 @@ class SnailFishNumberTest extends TestCase
     /**
      * @dataProvider explodingNumbersDataProvider
      */
-    public function testReduce(string $input, string $reducedNumber): void
+    public function testExplode(string $input, string $reducedNumber): void
     {
         $snailFishNumber = SnailFishNumber::createFromInput($input);
 
