@@ -13,7 +13,7 @@ class SnailFishNumberTest extends TestCase
      * @dataProvider snailFishNumberInputDataProvider
      * @dataProvider inputDataProvider
      */
-    public function testCreationAndStringable(string $input): void
+    public function testCreationAndToString(string $input): void
     {
         $snailFishNumber = SnailFishNumber::createFromInput($input);
 
@@ -36,6 +36,7 @@ class SnailFishNumberTest extends TestCase
             ['[[[[1,2],[3,4]],[[5,6],[7,8]]],9]'],
             ['[[[9,[3,8]],[[0,9],6]],[[[3,7],[4,9]],3]]'],
             ['[[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]'],
+            ['[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]'],
         ];
     }
 
@@ -122,5 +123,38 @@ class SnailFishNumberTest extends TestCase
         $snailFishNumber = $snailFishNumber->add('[6,6]');
 
         $this->assertSame('[[[[5,0],[7,4]],[5,5]],[6,6]]', $snailFishNumber->__toString());
+    }
+
+    public function testAdditionBis(): void
+    {
+        $snailFishNumber = SnailFishNumber::createFromInput('[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]');
+
+        $snailFishNumber = $snailFishNumber->add('[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]');
+
+        $this->assertSame('[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]');
+        $this->assertSame('[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]');
+        $this->assertSame('[[[[7,0],[7,7]],[[7,7],[7,8]]],[[[7,7],[8,8]],[[7,7],[8,7]]]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[7,[5,[[3,8],[1,4]]]]');
+        $this->assertSame('[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[[2,[2,2]],[8,[8,1]]]');
+        $this->assertSame('[[[[6,6],[6,6]],[[6,0],[6,7]]],[[[7,7],[8,9]],[8,[8,1]]]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[2,9]');
+        $this->assertSame('[[[[6,6],[7,7]],[[0,7],[7,7]]],[[[5,5],[5,6]],9]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[1,[[[9,3],9],[[9,0],[0,7]]]]');
+        $this->assertSame('[[[[7,8],[6,7]],[[6,8],[0,8]]],[[[7,7],[5,0]],[[5,5],[5,6]]]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[[[5,[7,4]],7],1]');
+        $this->assertSame('[[[[7,7],[7,7]],[[8,7],[8,7]]],[[[7,0],[7,7]],9]]', $snailFishNumber->__toString());
+
+        $snailFishNumber = $snailFishNumber->add('[[[[4,2],2],6],[8,7]]');
+        $this->assertSame('[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]', $snailFishNumber->__toString());
     }
 }

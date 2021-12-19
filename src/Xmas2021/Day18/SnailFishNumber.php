@@ -9,8 +9,17 @@ use Webmozart\Assert\Assert;
 class SnailFishNumber implements SnailFishNumberInterface
 {
     private ?self $up;
-    public SnailFishNumberInterface $left;
-    public SnailFishNumberInterface $right;
+    private SnailFishNumberInterface $left;
+    private SnailFishNumberInterface $right;
+
+    public static function createManually(SnailFishNumberInterface $left, SnailFishNumberInterface $right): self
+    {
+        $snailFishNumber = new self(null);
+        $snailFishNumber->setLeft($left);
+        $snailFishNumber->setRight($right);
+
+        return $snailFishNumber;
+    }
 
     public static function createFromInput(string $inputString): self
     {
@@ -155,5 +164,28 @@ class SnailFishNumber implements SnailFishNumberInterface
         while ($addition->reduce());
 
         return $addition;
+    }
+
+    public function setUp(self $up): void
+    {
+        Assert::isInstanceOf($up, self::class);
+        $this->up = $up;
+    }
+
+    public function getLeft(): SnailFishNumberInterface
+    {
+        return $this->left;
+    }
+
+    public function setLeft(SnailFishNumberInterface $left): void
+    {
+        $this->left = $left;
+        $left->setUp($this);
+    }
+
+    public function setRight(SnailFishNumberInterface $right): void
+    {
+        $this->right = $right;
+        $right->setUp($this);
     }
 }

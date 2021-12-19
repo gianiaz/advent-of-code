@@ -40,16 +40,15 @@ class NormalNumber implements SnailFishNumberInterface
     public function reduce(int $nesting = 0): bool
     {
         if ($this->value > 9) {
-            $splitNumber = SnailFishNumber::createFromInput(\Safe\sprintf(
-                '[%d,%d]',
-                floor($this->value / 2),
-                ceil($this->value / 2)
-            ));
+            $splitNumber = SnailFishNumber::createManually(
+                new self((int) floor($this->value / 2), $this->up),
+                new self((int) ceil($this->value / 2), $this->up)
+            );
 
-            if ($this->up->left === $this) {
-                $this->up->left = $splitNumber;
+            if ($this->up->getLeft() === $this) {
+                $this->up->setLeft($splitNumber);
             } else {
-                $this->up->right = $splitNumber;
+                $this->up->setRight($splitNumber);
             }
 
             return true;
@@ -61,5 +60,10 @@ class NormalNumber implements SnailFishNumberInterface
     public function __toString(): string
     {
         return (string) $this->value;
+    }
+
+    public function setUp(SnailFishNumber $up): void
+    {
+        $this->up = $up;
     }
 }
