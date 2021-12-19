@@ -36,6 +36,7 @@ class SnailFishNumberTest extends TestCase
             ['[[[[1,2],[3,4]],[[5,6],[7,8]]],9]'],
             ['[[[9,[3,8]],[[0,9],6]],[[[3,7],[4,9]],3]]'],
             ['[[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]'],
+            ['[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]'],
             ['[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]'],
         ];
     }
@@ -131,6 +132,7 @@ class SnailFishNumberTest extends TestCase
 
         $snailFishNumber = $snailFishNumber->add('[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]');
 
+        $this->assertFalse($snailFishNumber->reduce());
         $this->assertSame('[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]', $snailFishNumber->__toString());
 
         $snailFishNumber = $snailFishNumber->add('[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]');

@@ -37,8 +37,12 @@ class NormalNumber implements SnailFishNumberInterface
         $this->add($number);
     }
 
-    public function reduce(int $nesting = 0): bool
+    public function reduce(int $nesting = 0, bool $allowSplit = false): bool
     {
+        if (! $allowSplit) {
+            return false;
+        }
+
         if ($this->value > 9) {
             $splitNumber = SnailFishNumber::createManually(
                 new self((int) floor($this->value / 2), $this->up),

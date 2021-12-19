@@ -12,7 +12,7 @@ interface SnailFishNumberInterface
 
     public function goDownAndSumToTheRight(NormalNumber $number): void;
 
-    public function reduce(int $nesting = 0): bool;
+    public function reduce(int $nesting = 0, bool $allowSplit = false): bool;
 
     public function setUp(SnailFishNumber $up): void;
 }

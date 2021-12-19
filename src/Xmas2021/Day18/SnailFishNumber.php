@@ -80,7 +80,7 @@ class SnailFishNumber implements SnailFishNumberInterface
               + 2 * $this->right->getMagnitude();
     }
 
-    public function reduce(int $nesting = 0): bool
+    public function reduce(int $nesting = 0, bool $allowSplit = false): bool
     {
         if ($nesting === 4) {
             Assert::isInstanceOf($this->left, NormalNumber::class);
@@ -100,8 +100,9 @@ class SnailFishNumber implements SnailFishNumberInterface
 
         ++$nesting;
 
-        return $this->left->reduce($nesting)
-            || $this->right->reduce($nesting);
+        return $this->left->reduce($nesting, $allowSplit)
+            || $this->right->reduce($nesting, $allowSplit)
+        ;
     }
 
     private function goUpAndSumToTheLeft(NormalNumber $number, self $prev): void
@@ -161,7 +162,7 @@ class SnailFishNumber implements SnailFishNumberInterface
         $addition->right = self::createFromInput($string);
         $addition->right->up = $addition;
 
-        while ($addition->reduce());
+        while ($addition->reduce() || $addition->reduce(0, true));
 
         return $addition;
     }

@@ -13,7 +13,6 @@ class Day18SolutionTest extends TestCase
     {
         $day18Solution = new Day18Solution();
 
-        $this->markTestIncomplete();
         $this->assertEquals(4140, $day18Solution->solve($this->getTestInput()));
     }
 
