@@ -26,5 +26,21 @@ class Day18Solution implements SolutionInterface, SecondPartSolutionInterface
     public function solveSecondPart(string $input = null)
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+
+        $numbers = explode(PHP_EOL, $input);
+
+        $maxMagnitude = 0;
+
+        foreach ($numbers as $i => $first) {
+            foreach ($numbers as $j => $second) {
+                if ($i === $j) {
+                    continue;
+                }
+
+                $maxMagnitude = max($maxMagnitude, (SnailFishNumber::createFromInput($first))->add($second)->getMagnitude());
+            }
+        }
+
+        return $maxMagnitude;
     }
 }
