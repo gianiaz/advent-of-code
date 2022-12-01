@@ -6,5 +6,5 @@ namespace Jean85\AdventOfCode;
 
 interface SolutionInterface
 {
-    public function solve();
+    public function solve(): string;
 }

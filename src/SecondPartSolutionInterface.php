@@ -6,5 +6,5 @@ namespace Jean85\AdventOfCode;
 
 interface SecondPartSolutionInterface
 {
-    public function solveSecondPart();
+    public function solveSecondPart(): string;
 }

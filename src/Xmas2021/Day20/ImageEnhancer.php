@@ -23,10 +23,11 @@ class ImageEnhancer
 
     public function enhance(Image $oldImage): Image
     {
-        if ($this->algorithm[0]) {
-            $default = ! $oldImage->getDefault();
-        } else {
-            $default = $oldImage->getDefault();
+        $default = $oldImage->getDefault();
+        if (true === $this->algorithm[0] && false === $oldImage->getDefault()) {
+            $default = true;
+        } elseif (false === $this->algorithm[511] && true === $oldImage->getDefault()) {
+            $default = false;
         }
 
         $newImage = new Image($default);
