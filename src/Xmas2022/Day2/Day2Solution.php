@@ -2527,7 +2527,13 @@ B Y';
 
     public function solveSecondPart(string $input = self::INPUT): string
     {
-        return '';
+        $totalScore = 0;
+
+        foreach (explode(PHP_EOL, $input) as $round) {
+            $totalScore += $this->calculateAction($round);
+        }
+
+        return (string)$totalScore;
     }
 
     private function calculateScore(string $round): int
@@ -2569,5 +2575,30 @@ B Y';
                 Sign::Paper => self::LOST,
             },
         };
+    }
+
+    private function calculateAction(string $round): int
+    {
+        [$a, $b] = explode(' ', $round);
+        $a = Sign::from($a);
+        $b = match ($b) {
+            'X' => match ($a) { // NEED TO LOSE
+                Sign::Rock => Sign::Scissor,
+                Sign::Paper => Sign::Rock,
+                Sign::Scissor => Sign::Paper,
+            },
+            'Y' => $a, // NEED TO DRAW
+            'Z' => match ($a) { // NEED TO WIN
+                Sign::Rock => Sign::Paper,
+                Sign::Paper => Sign::Scissor,
+                Sign::Scissor => Sign::Rock,
+            },
+        };
+
+        return match($b) {
+            Sign::Rock => 1,
+            Sign::Paper => 2,
+            Sign::Scissor => 3,
+        } + $this->calculateOutcome($a, $b);
     }
 }

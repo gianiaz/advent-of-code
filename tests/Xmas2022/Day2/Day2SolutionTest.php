@@ -22,9 +22,8 @@ C Z';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $Day2Solution = new Day2Solution();
 
-        $this->assertSame('45000', $Day2Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('12', $Day2Solution->solveSecondPart(self::TEST_INPUT));
     }
 }
