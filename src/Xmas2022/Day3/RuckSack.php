@@ -22,13 +22,13 @@ class RuckSack
         
         $priority = 0;
         foreach (array_intersect($inFirst, $inSecond) as $commonItem) {
-            $priority += $this->convertToPriority($commonItem);
+            $priority += self::convertToPriority($commonItem);
         }
         
         return $priority;
     }
 
-    private function convertToPriority(string $item): int
+    public static function convertToPriority(string $item): int
     {
         if (strlen($item) !== 1) {
             throw new \InvalidArgumentException('Unexpected item: ' . $item);

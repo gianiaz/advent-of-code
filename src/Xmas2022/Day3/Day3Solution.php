@@ -27,6 +27,46 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        return '';
+        $ruckSackGenerator = $this->generate($input);
+        $total = 0;
+        
+        do {
+            $elf1 = $ruckSackGenerator->current();
+            $ruckSackGenerator->next();
+            $elf2 = $ruckSackGenerator->current();
+            $ruckSackGenerator->next();
+            $elf3 = $ruckSackGenerator->current();
+            $ruckSackGenerator->next();
+
+            $total += $this->findCommon($elf1, $elf2, $elf3);
+            
+        } while($ruckSackGenerator->valid());
+
+        return (string)$total;
+    }
+
+    /**
+     * @return \Generator<string>
+     */
+    private function generate(string $input): \Generator
+    {
+        foreach (explode(PHP_EOL, $input) as $row) {
+            yield array_unique(str_split($row));
+        }
+    }
+
+    /***
+     * @param string[] $elf1
+     * @param string[] $elf2
+     * @param string[] $elf3
+     */
+    private function findCommon(array $elf1, array $elf2, array $elf3): int
+    {
+        $priority = 0;
+        foreach (array_intersect($elf1, $elf2, $elf3) as $commonItem) {
+            $priority += RuckSack::convertToPriority($commonItem);
+        }
+
+        return $priority;
     }
 }
