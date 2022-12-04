@@ -29,6 +29,12 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
         $total = 0;
+        foreach (explode(PHP_EOL, $input) as $row) {
+            [$elf1, $elf2] = Elf::parse($row);
+            if ($elf1->overlapsWith($elf2)) {
+                $total++;
+            }
+        }
         
         return (string)$total;
     }

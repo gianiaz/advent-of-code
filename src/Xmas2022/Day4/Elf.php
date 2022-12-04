@@ -28,4 +28,10 @@ class Elf
         return $this->start <= $otherElf->start
             && $this->end >= $otherElf->end;
     }
+
+    public function overlapsWith(Elf $otherElf): bool
+    {
+        return $this->start <= $otherElf->end
+            && $this->end >= $otherElf->start;
+    }
 }
