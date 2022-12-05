@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2022\Day5;
 
-class Crane
+class CrateMover9000
 {
     /**
      * @var array<int, list<int>>
      */
-    private array $stacks = [];
+    protected array $stacks = [];
 
     /**
      * @var Instruction[]
      */
-    private array $instructions = [];
+    protected array $instructions = [];
 
     public function __construct(string $input)
     {

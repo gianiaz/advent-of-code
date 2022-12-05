@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2022\Day5;
 
-use Jean85\AdventOfCode\Xmas2022\Day5\Crane;
+use Jean85\AdventOfCode\Xmas2022\Day5\CrateMover9000;
 use Jean85\AdventOfCode\Xmas2022\Day5\Day5Solution;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ move 1 from 1 to 2';
 
     public function testStacksParsing(): void
     {
-        $crane = new Crane(self::TEST_INPUT);
+        $crane = new CrateMover9000(self::TEST_INPUT);
 
         $expectedStacks = [
             1 => ['Z', 'N'],
@@ -35,7 +35,7 @@ move 1 from 1 to 2';
 
     public function testInstructionsParsing(): void
     {
-        $crane = new Crane(self::TEST_INPUT);
+        $crane = new CrateMover9000(self::TEST_INPUT);
 
         $this->assertSame(1, $crane->getInstructions()[0]->quantity);
         $this->assertSame(2, $crane->getInstructions()[0]->from);

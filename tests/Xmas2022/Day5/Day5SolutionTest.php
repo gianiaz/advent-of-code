@@ -28,9 +28,8 @@ move 1 from 1 to 2';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $Day2Solution = new Day5Solution();
 
-        $this->assertSame('4', $Day2Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('MCD', $Day2Solution->solveSecondPart(self::TEST_INPUT));
     }
 }

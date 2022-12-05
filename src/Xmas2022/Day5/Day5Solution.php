@@ -13,7 +13,7 @@ class Day5Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $crane = new Crane($input);
+        $crane = new CrateMover9000($input);
         $crane->run();
 
         $result = '';
@@ -28,8 +28,14 @@ class Day5Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $total = 0;
+        $crane = new CrateMover9001($input);
+        $crane->run();
 
-        return (string) $total;
+        $result = '';
+        foreach ($crane->getStacks() as $stack) {
+            $result .= array_pop($stack);
+        }
+
+        return $result;
     }
 }
