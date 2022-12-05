@@ -13,9 +13,15 @@ class Day5Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $total = 0;
+        $crane = new Crane($input);
+        $crane->run();
 
-        return (string) $total;
+        $result = '';
+        foreach ($crane->getStacks() as $stack) {
+            $result .= array_pop($stack);
+        }
+
+        return $result;
     }
 
     public function solveSecondPart(string $input = null): string

@@ -21,10 +21,9 @@ move 1 from 1 to 2';
 
     public function test(): void
     {
-        $this->markTestIncomplete();
         $Day2Solution = new Day5Solution();
 
-        $this->assertSame('2', $Day2Solution->solve(self::TEST_INPUT));
+        $this->assertSame('CMZ', $Day2Solution->solve(self::TEST_INPUT));
     }
 
     public function testSecondPart(): void

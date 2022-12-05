@@ -6,7 +6,7 @@ namespace Jean85\AdventOfCode\Xmas2022\Day5;
 
 class Instruction
 {
-    public readonly int $stack;
+    public readonly int $quantity;
     public readonly int $from;
     public readonly int $to;
 
@@ -18,7 +18,7 @@ class Instruction
             throw new \InvalidArgumentException('Parsing error');
         }
 
-        $this->stack = (int) $matches[1];
+        $this->quantity = (int) $matches[1];
         $this->from = (int) $matches[2];
         $this->to = (int) $matches[3];
     }

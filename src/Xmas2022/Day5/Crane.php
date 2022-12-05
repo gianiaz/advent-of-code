@@ -23,6 +23,18 @@ class Crane
         $this->parseInstructionsInput($instructionsInput);
     }
 
+    public function run(): void
+    {
+        foreach ($this->instructions as $instruction) {
+            $counter = $instruction->quantity;
+
+            while ($counter--) {
+                $crate = array_pop($this->stacks[$instruction->from]);
+                $this->stacks[$instruction->to][] = $crate;
+            }
+        }
+    }
+
     private function parseCratesInput(string $cratesInput): void
     {
         $rows = explode(PHP_EOL, $cratesInput);
