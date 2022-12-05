@@ -18,6 +18,7 @@ class OctopusMapTest extends TestCase
 
     /**
      * @param array<int, string> $expected
+     *
      * @dataProvider stepsDataProvider
      */
     public function testStep(array $expected): void

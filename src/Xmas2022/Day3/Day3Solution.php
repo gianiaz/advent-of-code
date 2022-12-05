@@ -20,7 +20,7 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
             $total += $ruckSack->getPriority();
         }
 
-        return (string)$total;
+        return (string) $total;
     }
 
     public function solveSecondPart(string $input = null): string
@@ -29,7 +29,7 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $ruckSackGenerator = $this->generate($input);
         $total = 0;
-        
+
         do {
             $elf1 = $ruckSackGenerator->current();
             $ruckSackGenerator->next();
@@ -39,10 +39,9 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
             $ruckSackGenerator->next();
 
             $total += $this->findCommon($elf1, $elf2, $elf3);
-            
-        } while($ruckSackGenerator->valid());
+        } while ($ruckSackGenerator->valid());
 
-        return (string)$total;
+        return (string) $total;
     }
 
     /**
@@ -55,7 +54,7 @@ class Day3Solution implements SolutionInterface, SecondPartSolutionInterface
         }
     }
 
-    /***
+    /*
      * @param string[] $elf1
      * @param string[] $elf2
      * @param string[] $elf3

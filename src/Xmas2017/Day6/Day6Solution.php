@@ -21,8 +21,6 @@ class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day4Solution constructor.
-     *
-     * @param $input
      */
     public function __construct(array $input = self::INPUT)
     {

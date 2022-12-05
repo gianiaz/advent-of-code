@@ -2275,7 +2275,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
             }
         }
 
-        return (string)$maxCalories;
+        return (string) $maxCalories;
     }
 
     public function solveSecondPart(string $input = self::INPUT): string
@@ -2288,7 +2288,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
         sort($elves);
 
-        return (string)(
+        return (string) (
             array_pop($elves)
             + array_pop($elves)
             + array_pop($elves)
@@ -2301,7 +2301,7 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
         $totalCalories = 0;
 
         foreach ($food as $caloriesPerFood) {
-            $totalCalories += (int)trim($caloriesPerFood);
+            $totalCalories += (int) trim($caloriesPerFood);
         }
 
         return $totalCalories;

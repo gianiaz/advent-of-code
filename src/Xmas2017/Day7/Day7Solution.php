@@ -1436,9 +1436,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
         return $weight;
     }
 
-    /**
-     * @param $supportedTowerName
-     */
     public function getTowerByName($supportedTowerName): Tower
     {
         return $this->input[$supportedTowerName];

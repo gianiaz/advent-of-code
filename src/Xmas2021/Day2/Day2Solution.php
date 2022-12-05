@@ -1028,13 +1028,13 @@ class Day2Solution implements SolutionInterface, SecondPartSolutionInterface
 
             switch ($direction) {
                 case 'forward':
-                     $position += $distance;
+                    $position += $distance;
                     break;
                 case 'up':
-                     $depth -= $distance;
+                    $depth -= $distance;
                     break;
                 case 'down':
-                     $depth += $distance;
+                    $depth += $distance;
                     break;
                 default:
                     throw new \InvalidArgumentException($direction);

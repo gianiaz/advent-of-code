@@ -65,7 +65,7 @@ class Moon
         return abs($this->velocity->x)
             + abs($this->velocity->y)
             + abs($this->velocity->z)
-            ;
+        ;
     }
 
     public function getTotalEnergy(): int

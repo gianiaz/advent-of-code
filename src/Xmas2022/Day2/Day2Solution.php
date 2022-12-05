@@ -2509,7 +2509,7 @@ B Y
 B Y
 C Y
 B Y';
-    
+
     private const DRAW = 3;
     private const WON = 6;
     private const LOST = 0;
@@ -2517,12 +2517,12 @@ B Y';
     public function solve(string $input = self::INPUT): string
     {
         $totalScore = 0;
-        
+
         foreach (explode(PHP_EOL, $input) as $round) {
             $totalScore += $this->calculateScore($round);
         }
-        
-        return (string)$totalScore;
+
+        return (string) $totalScore;
     }
 
     public function solveSecondPart(string $input = self::INPUT): string
@@ -2533,7 +2533,7 @@ B Y';
             $totalScore += $this->calculateAction($round);
         }
 
-        return (string)$totalScore;
+        return (string) $totalScore;
     }
 
     private function calculateScore(string $round): int
@@ -2544,11 +2544,11 @@ B Y';
             'Y' => 'B',
             'Z' => 'C',
         };
-        
+
         $a = Sign::from($a);
         $b = Sign::from($b);
 
-        return match($b) {
+        return match ($b) {
             Sign::Rock => 1,
             Sign::Paper => 2,
             Sign::Scissor => 3,
@@ -2595,7 +2595,7 @@ B Y';
             },
         };
 
-        return match($b) {
+        return match ($b) {
             Sign::Rock => 1,
             Sign::Paper => 2,
             Sign::Scissor => 3,

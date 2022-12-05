@@ -17,11 +17,11 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
         foreach (explode(PHP_EOL, $input) as $row) {
             [$elf1, $elf2] = Elf::parse($row);
             if ($elf1->contains($elf2) || $elf2->contains($elf1)) {
-                $total++;
+                ++$total;
             }
         }
 
-        return (string)$total;
+        return (string) $total;
     }
 
     public function solveSecondPart(string $input = null): string
@@ -32,10 +32,10 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
         foreach (explode(PHP_EOL, $input) as $row) {
             [$elf1, $elf2] = Elf::parse($row);
             if ($elf1->overlapsWith($elf2)) {
-                $total++;
+                ++$total;
             }
         }
-        
-        return (string)$total;
+
+        return (string) $total;
     }
 }

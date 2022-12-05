@@ -17,8 +17,6 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day1Solution constructor.
-     *
-     * @param $input
      */
     public function __construct(string $input = self::INPUT)
     {
@@ -72,17 +70,11 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
         return $matching;
     }
 
-    /**
-     * @param $position
-     */
     private function getMatchingPosition($position): int
     {
         return ($position + 1) % \count($this->singleNumbers);
     }
 
-    /**
-     * @param $position
-     */
     private function getMatchingPositionForSecondPart($position): int
     {
         $listSize = \count($this->singleNumbers);

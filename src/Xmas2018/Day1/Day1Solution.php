@@ -59,9 +59,6 @@ class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
         return $changes;
     }
 
-    /**
-     * @param $change
-     */
     private function convertToInteger($change): int
     {
         $integer = (int) substr($change, 1);

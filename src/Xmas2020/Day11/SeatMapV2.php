@@ -16,7 +16,7 @@ class SeatMapV2 extends SeatMap
              + $this->countAsOccupiedInSight($row, +1, $seat, -1)
              + $this->countAsOccupiedInSight($row, +1, $seat, 0)
              + $this->countAsOccupiedInSight($row, +1, $seat, +1)
-         ;
+        ;
     }
 
     private function countAsOccupiedInSight(int $row, int $rowAdd, int $seat, int $seatAdd): int

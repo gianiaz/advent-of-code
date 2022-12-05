@@ -23,8 +23,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day7Solution constructor.
-     *
-     * @param $input
      */
     public function __construct(array $input = null, int $workerCount = 5, int $baseWorkerTime = 60)
     {

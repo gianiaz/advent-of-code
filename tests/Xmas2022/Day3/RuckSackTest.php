@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Xmas2022\Day3;
 
 use Jean85\AdventOfCode\Xmas2022\Day3\RuckSack;
@@ -13,7 +15,7 @@ class RuckSackTest extends TestCase
     public function testGetCorrectSplit(string $input, string $expectedFirst, string $expectedSecond): void
     {
         $this->assertSame(strlen($expectedFirst), strlen($expectedSecond));
-        
+
         $ruckSack = new RuckSack($input);
 
         $this->assertSame(strlen($input), strlen($ruckSack->firstCompartment . $ruckSack->secondCompartment));

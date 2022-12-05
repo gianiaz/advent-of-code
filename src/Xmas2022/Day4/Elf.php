@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85\AdventOfCode\Xmas2022\Day4;
 
 class Elf
@@ -16,7 +18,7 @@ class Elf
             new self(...explode('-', $range2)),
         ];
     }
-    
+
     private function __construct(
         public readonly int $start,
         public readonly int $end,

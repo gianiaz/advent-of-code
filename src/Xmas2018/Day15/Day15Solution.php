@@ -13,8 +13,6 @@ class Day15Solution implements SolutionInterface, SecondPartSolutionInterface
 
     /**
      * Day15Solution constructor.
-     *
-     * @param $input
      */
     public function __construct(string $input = null)
     {

@@ -80,9 +80,6 @@ class RecipeScoreboard
         return $stepsForward % \count($this->recipes);
     }
 
-    /**
-     * @param $newRecipe
-     */
     private function addToTheRecipes(string $newRecipe): void
     {
         if ($newRecipe === $this->stringToFind[$this->currentFoundChars]) {
