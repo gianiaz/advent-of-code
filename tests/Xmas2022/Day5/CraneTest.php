@@ -33,6 +33,24 @@ move 1 from 1 to 2';
         $this->assertEquals($expectedStacks, $crane->getStacks());
     }
 
+    public function testInstructionsParsing(): void
+    {
+        $crane = new Crane(self::TEST_INPUT);
+
+        $this->assertSame(1, $crane->getInstructions()[0]->stack);
+        $this->assertSame(2, $crane->getInstructions()[0]->from);
+        $this->assertSame(1, $crane->getInstructions()[0]->to);
+        $this->assertSame(3, $crane->getInstructions()[1]->stack);
+        $this->assertSame(1, $crane->getInstructions()[1]->from);
+        $this->assertSame(3, $crane->getInstructions()[1]->to);
+        $this->assertSame(2, $crane->getInstructions()[2]->stack);
+        $this->assertSame(2, $crane->getInstructions()[2]->from);
+        $this->assertSame(1, $crane->getInstructions()[2]->to);
+        $this->assertSame(1, $crane->getInstructions()[3]->stack);
+        $this->assertSame(1, $crane->getInstructions()[3]->from);
+        $this->assertSame(2, $crane->getInstructions()[3]->to);
+    }
+
     public function testSecondPart(): void
     {
         $this->markTestIncomplete();

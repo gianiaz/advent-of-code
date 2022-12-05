@@ -11,10 +11,16 @@ class Crane
      */
     private array $stacks = [];
 
+    /**
+     * @var Instruction[]
+     */
+    private array $instructions = [];
+
     public function __construct(string $input)
     {
         [$cratesInput, $instructionsInput] = explode(PHP_EOL . PHP_EOL, $input);
         $this->parseCratesInput($cratesInput);
+        $this->parseInstructionsInput($instructionsInput);
     }
 
     private function parseCratesInput(string $cratesInput): void
@@ -39,11 +45,26 @@ class Crane
         }
     }
 
+    private function parseInstructionsInput(string $instructionsInput): void
+    {
+        foreach (explode(PHP_EOL, trim($instructionsInput)) as $instruction) {
+            $this->instructions[] = new Instruction($instruction);
+        }
+    }
+
     /**
      * @return array<int, list<int>>
      */
     public function getStacks(): array
     {
         return $this->stacks;
+    }
+
+    /**
+     * @return Instruction[]
+     */
+    public function getInstructions(): array
+    {
+        return $this->instructions;
     }
 }
