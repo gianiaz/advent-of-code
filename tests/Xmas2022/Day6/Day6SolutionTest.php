@@ -19,12 +19,14 @@ class Day6SolutionTest extends TestCase
         $this->assertSame((string) $expected, $Day2Solution->solve($input));
     }
 
-    public function testSecondPart(): void
+    /**
+     * @dataProvider inputMessageDataProvider
+     */
+    public function testSecondPart(string $input, int $expected): void
     {
-        $this->markTestIncomplete();
         $Day2Solution = new Day6Solution();
 
-        $this->assertSame('MCD', $Day2Solution->solveSecondPart(''));
+        $this->assertSame((string) $expected, $Day2Solution->solveSecondPart($input));
     }
 
     /**
@@ -38,6 +40,20 @@ class Day6SolutionTest extends TestCase
             ['nppdvjthqldpwncqszvftbrmjlhg', 6],
             ['nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg', 10],
             ['zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 11],
+        ];
+    }
+
+    /**
+     * @return array{string, positive-int}[]
+     */
+    public function inputMessageDataProvider(): array
+    {
+        return [
+            ['mjqjpqmgbljsphdztnvjfqwrcgsmlb', 19],
+            ['bvwbjplbgvbhsrlpgdmjqwftvncz', 23],
+            ['nppdvjthqldpwncqszvftbrmjlhg', 23],
+            ['nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg', 29],
+            ['zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 26],
         ];
     }
 }

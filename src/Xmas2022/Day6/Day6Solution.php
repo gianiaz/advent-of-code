@@ -11,6 +11,16 @@ class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null): string
     {
+        return $this->getMarker($input, 4);
+    }
+
+    public function solveSecondPart(string $input = null): string
+    {
+        return $this->getMarker($input, 14);
+    }
+
+    private function getMarker(?string $input, int $markerLength): string
+    {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
         $marker = [];
@@ -18,11 +28,11 @@ class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
 
         for ($i = 0; $i < $inputLength; ++$i) {
             $marker[] = $input[$i];
-            if (count($marker) < 4) {
+            if (count($marker) < $markerLength) {
                 continue;
             }
 
-            if (count(array_unique($marker)) === 4) {
+            if (count(array_unique($marker)) === $markerLength) {
                 return (string) (1 + $i);
             }
 
@@ -30,12 +40,5 @@ class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
         }
 
         throw new \RuntimeException('Unable to find start-of-packet marker');
-    }
-
-    public function solveSecondPart(string $input = null): string
-    {
-        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
-
-        return $result;
     }
 }
