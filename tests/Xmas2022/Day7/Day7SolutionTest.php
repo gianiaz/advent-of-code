@@ -42,9 +42,8 @@ $ ls
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day7Solution();
 
-        $this->assertSame('MCD', $solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('24933642', $solution->solveSecondPart(self::TEST_INPUT));
     }
 }

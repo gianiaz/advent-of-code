@@ -59,6 +59,18 @@ class RootFolder
         return $total;
     }
 
+    /**
+     * @return \Generator<Folder>
+     */
+    public function getRecursiveIterator(): \Generator
+    {
+        foreach ($this->subfolders as $folder) {
+            yield from $folder->getRecursiveIterator();
+        }
+
+        yield from $this->subfolders;
+    }
+
     public function getSize(): int
     {
         return $this->size ??= $this->calculateSize();
