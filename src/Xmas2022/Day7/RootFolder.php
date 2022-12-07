@@ -36,7 +36,7 @@ class RootFolder
 
     public function getSubFolder(string $name): RootFolder
     {
-        if ($name === $this->name) {
+        if ($name === '/') {
             return $this;
         }
 
@@ -94,7 +94,7 @@ class RootFolder
                 continue;
             }
 
-            if (1 !== \Safe\preg_match('/^(\d+) (\w+)/', $line, $matches)) {
+            if (1 !== \Safe\preg_match('/^(\d+) ([\w.]+)/', $line, $matches)) {
                 throw new \InvalidArgumentException('Parsing failed: ' . $line);
             }
 
