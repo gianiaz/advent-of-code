@@ -15,7 +15,7 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $rootFolder = RootFolder::createFromInput($input);
 
-        return (string) $rootFolder->getSize();
+        return (string) $rootFolder->getRecursiveSizeOfDirectoriesBelow(100000);
     }
 
     public function solveSecondPart(string $input = null): string

@@ -35,7 +35,6 @@ $ ls
 
     public function test(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day7Solution();
 
         $this->assertSame('95437', $solution->solve(self::TEST_INPUT));

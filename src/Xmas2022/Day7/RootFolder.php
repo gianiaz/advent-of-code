@@ -44,6 +44,21 @@ class RootFolder
             ?? throw new \RuntimeException('Subfolder not found: [' . $name . ']');
     }
 
+    public function getRecursiveSizeOfDirectoriesBelow(int $max): int
+    {
+        $total = 0;
+
+        if ($this->getSize() < $max) {
+            $total += $this->getSize();
+        }
+
+        foreach ($this->subfolders as $folder) {
+            $total += $folder->getRecursiveSizeOfDirectoriesBelow($max);
+        }
+
+        return $total;
+    }
+
     public function getSize(): int
     {
         return $this->size ??= $this->calculateSize();
