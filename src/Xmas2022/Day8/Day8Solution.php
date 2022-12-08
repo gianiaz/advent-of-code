@@ -28,9 +28,21 @@ class Day8Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = null): string
     {
-        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+        $map = $this->prepareMap($input);
 
-        return (string) '';
+        $result = 0;
+
+        foreach ($map as $row => $line) {
+            foreach ($line as $col => $tree) {
+                $visibility = $this->calculateScenicScore($map, $row, $col);
+
+                if ($visibility > $result) {
+                    $result = $visibility;
+                }
+            }
+        }
+
+        return (string) $result;
     }
 
     /**
@@ -80,5 +92,35 @@ class Day8Solution implements SolutionInterface, SecondPartSolutionInterface
         }
 
         return true;
+    }
+
+    private function calculateScenicScore(array $map, int $row, int $col): int
+    {
+        return $this->calculateVisibility($map, $row, $col, 1, 0)
+            * $this->calculateVisibility($map, $row, $col, -1, 0)
+            * $this->calculateVisibility($map, $row, $col, 0, 1)
+            * $this->calculateVisibility($map, $row, $col, 0, -1)
+        ;
+    }
+
+    private function calculateVisibility(array $map, int $row, int $col, int $addRow, int $addCol): int
+    {
+        $tree = $map[$row][$col];
+        $visibility = 0;
+        $row += $addRow;
+        $col += $addCol;
+
+        while (isset($map[$row][$col])) {
+            ++$visibility;
+
+            if ($map[$row][$col] >= $tree) {
+                break;
+            }
+
+            $row += $addRow;
+            $col += $addCol;
+        }
+
+        return $visibility;
     }
 }
