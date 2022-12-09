@@ -11,11 +11,14 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null): string
     {
-        $map = $this->prepareMap($input);
+        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+        $rope = new Rope();
 
-        $result = 0;
+        foreach (explode(PHP_EOL, $input) as $row) {
+            $rope->apply(new Instruction($row));
+        }
 
-        return (string) $result;
+        return (string) $rope->countVisitedByTail();
     }
 
     public function solveSecondPart(string $input = null): string

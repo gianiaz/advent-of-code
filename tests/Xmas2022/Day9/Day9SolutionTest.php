@@ -20,10 +20,9 @@ R 2';
 
     public function test(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day9Solution();
 
-        $this->assertSame('21', $solution->solve(self::TEST_INPUT));
+        $this->assertSame('13', $solution->solve(self::TEST_INPUT));
     }
 
     public function testSecondPart(): void
