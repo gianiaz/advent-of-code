@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2022\Day9;
 
+use const true;
+
 class Rope
 {
     public readonly Coordinates $head;
@@ -19,15 +21,7 @@ class Rope
 
     public function apply(Instruction $instruction): void
     {
-        $this->markAsVisited();
-
-        for ($i = 0; $i < $instruction->distance; ++$i) {
-            $this->head->move($instruction->direction);
-            if ($this->tail->isNotAdjacent($this->head)) {
-                $this->tail->follow($this->head, $instruction->direction);
-                $this->markAsVisited();
-            }
-        }
+        $this->moveTwoKnots($instruction, $this->head, $this->tail, true);
     }
 
     public function countVisitedByTail(): int
@@ -38,5 +32,19 @@ class Rope
     private function markAsVisited(): void
     {
         $this->visitedByTail[$this->tail->__toString()] = true;
+    }
+
+    private function moveTwoKnots(Instruction $instruction, Coordinates $head, $tail, bool $markVisited = false): void
+    {
+        for ($i = 0; $i < $instruction->distance; ++$i) {
+            $head->move($instruction->direction);
+            if ($tail->isNotAdjacent($head)) {
+                $tail->follow($head, $instruction->direction);
+            }
+
+            if ($markVisited) {
+                $this->markAsVisited();
+            }
+        }
     }
 }
