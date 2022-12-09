@@ -22,31 +22,42 @@ class Coordinates
         };
     }
 
-    public function isNotAdjacent(Coordinates $other): bool
+    public function follow(Coordinates $head): void
     {
-        return 1 < abs($this->x - $other->x)
-            || 1 < abs($this->y - $other->y);
-    }
+        $distance = $this->manhattanDistance($head);
 
-    public function follow(Coordinates $head, Direction $direction): void
-    {
-        $this->x = match ($direction) {
-            Direction::Up,
-            Direction::Down => $head->x,
-            Direction::Left => $head->x + 1,
-            Direction::Right => $head->x - 1,
-        };
+        if ($distance <= 1) {
+            return;
+        }
 
-        $this->y = match ($direction) {
-            Direction::Up => $head->y - 1,
-            Direction::Down => $head->y + 1,
-            Direction::Left,
-            Direction::Right => $head->y,
-        };
+        $diffX = $head->x - $this->x;
+        if ($distance > 2 || abs($diffX) > 1) {
+            $this->x += $diffX > 0
+                ? 1
+                : -1
+            ;
+        }
+
+        $diffY = $head->y - $this->y;
+        if ($distance > 2 || abs($diffY) > 1) {
+            $this->y += $diffY > 0
+                ? 1
+                : -1
+            ;
+        }
     }
 
     public function __toString(): string
     {
         return $this->x . '-' . $this->y;
+    }
+
+    /**
+     * @return positive-int
+     */
+    private function manhattanDistance(Coordinates $other): int
+    {
+        return abs($this->x - $other->x)
+            + abs($this->y - $other->y);
     }
 }

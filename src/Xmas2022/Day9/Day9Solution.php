@@ -11,26 +11,26 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null): string
     {
-        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
         $rope = new Rope();
+
+        return $this->simulateRope($input, $rope);
+    }
+
+    public function solveSecondPart(string $input = null): string
+    {
+        $rope = new RopeWithMultipleKnots(10);
+
+        return $this->simulateRope($input, $rope);
+    }
+
+    private function simulateRope(?string $input, Rope $rope): string
+    {
+        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
         foreach (explode(PHP_EOL, $input) as $row) {
             $rope->apply(new Instruction($row));
         }
 
-        return (string) $rope->countVisitedByTail();
-    }
-
-    public function solveSecondPart(string $input = null): string
-    {
-        $map = $this->prepareMap($input);
-
-        $result = 0;
-
-        return (string) $result;
-    }
-
-    private function prepareMap(?string $input): array
-    {
+        return (string)$rope->countVisitedByTail();
     }
 }

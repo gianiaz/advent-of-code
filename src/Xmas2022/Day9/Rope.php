@@ -21,7 +21,11 @@ class Rope
 
     public function apply(Instruction $instruction): void
     {
-        $this->moveTwoKnots($instruction, $this->head, $this->tail, true);
+        for ($i = 0; $i < $instruction->distance; ++$i) {
+            $this->head->move($instruction->direction);
+            $this->tail->follow($this->head);
+            $this->markAsVisited();
+        }
     }
 
     public function countVisitedByTail(): int
@@ -29,22 +33,8 @@ class Rope
         return count($this->visitedByTail);
     }
 
-    private function markAsVisited(): void
+    protected function markAsVisited(): void
     {
         $this->visitedByTail[$this->tail->__toString()] = true;
-    }
-
-    private function moveTwoKnots(Instruction $instruction, Coordinates $head, $tail, bool $markVisited = false): void
-    {
-        for ($i = 0; $i < $instruction->distance; ++$i) {
-            $head->move($instruction->direction);
-            if ($tail->isNotAdjacent($head)) {
-                $tail->follow($head, $instruction->direction);
-            }
-
-            if ($markVisited) {
-                $this->markAsVisited();
-            }
-        }
     }
 }

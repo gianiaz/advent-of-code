@@ -27,9 +27,8 @@ R 2';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day9Solution();
 
-        $this->assertSame('8', $solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('1', $solution->solveSecondPart(self::TEST_INPUT));
     }
 }
