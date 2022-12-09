@@ -22,12 +22,26 @@ class Coordinates
         };
     }
 
-    public function isAdjacent(Coordinates $head): bool
+    public function isNotAdjacent(Coordinates $other): bool
     {
-        return true;
+        return 1 < abs($this->x - $other->x)
+            || 1 < abs($this->y - $other->y);
     }
 
     public function follow(Coordinates $head, Direction $direction): void
     {
+        $this->x = match ($direction) {
+            Direction::Up,
+            Direction::Down => $head->x,
+            Direction::Left => $head->x + 1,
+            Direction::Right => $head->x - 1,
+        };
+
+        $this->y = match ($direction) {
+            Direction::Up => $head->y - 1,
+            Direction::Down => $head->y + 1,
+            Direction::Left,
+            Direction::Right => $head->y,
+        };
     }
 }

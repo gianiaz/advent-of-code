@@ -18,33 +18,41 @@ class RopeTest extends TestCase
         $rope->apply(new Instruction('R 4'));
 
         $this->assertEquals(new Coordinates(4, 0), $rope->head);
+        $this->assertEquals(new Coordinates(3, 0), $rope->tail);
 
         $rope->apply(new Instruction('U 4'));
 
         $this->assertEquals(new Coordinates(4, 4), $rope->head);
+        $this->assertEquals(new Coordinates(4, 3), $rope->tail);
 
         $rope->apply(new Instruction('L 3'));
 
         $this->assertEquals(new Coordinates(1, 4), $rope->head);
+        $this->assertEquals(new Coordinates(2, 4), $rope->tail);
 
         $rope->apply(new Instruction('D 1'));
 
         $this->assertEquals(new Coordinates(1, 3), $rope->head);
+        $this->assertEquals(new Coordinates(2, 4), $rope->tail);
 
         $rope->apply(new Instruction('R 4'));
 
         $this->assertEquals(new Coordinates(5, 3), $rope->head);
+        $this->assertEquals(new Coordinates(4, 3), $rope->tail);
 
         $rope->apply(new Instruction('D 1'));
 
         $this->assertEquals(new Coordinates(5, 2), $rope->head);
+        $this->assertEquals(new Coordinates(4, 3), $rope->tail);
 
         $rope->apply(new Instruction('L 5'));
 
         $this->assertEquals(new Coordinates(0, 2), $rope->head);
+        $this->assertEquals(new Coordinates(1, 2), $rope->tail);
 
         $rope->apply(new Instruction('R 2'));
 
         $this->assertEquals(new Coordinates(2, 2), $rope->head);
+        $this->assertEquals(new Coordinates(1, 2), $rope->tail);
     }
 }

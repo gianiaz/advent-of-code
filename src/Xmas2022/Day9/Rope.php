@@ -19,11 +19,9 @@ class Rope
     {
         for ($i = 0; $i < $instruction->distance; ++$i) {
             $this->head->move($instruction->direction);
-            if ($this->tail->isAdjacent($this->head)) {
-                continue;
+            if ($this->tail->isNotAdjacent($this->head)) {
+                $this->tail->follow($this->head, $instruction->direction);
             }
-
-            $this->tail->follow($this->head, $instruction->direction);
         }
     }
 }
