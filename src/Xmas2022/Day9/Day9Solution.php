@@ -31,6 +31,6 @@ class Day9Solution implements SolutionInterface, SecondPartSolutionInterface
             $rope->apply(new Instruction($row));
         }
 
-        return (string)$rope->countVisitedByTail();
+        return (string) $rope->countVisitedByTail();
     }
 }
