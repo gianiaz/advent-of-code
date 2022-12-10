@@ -165,9 +165,14 @@ noop';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day10Solution();
+        $expectedOutput = '##  ##  ##  ##  ##  ##  ##  ##  ##  ##  
+###   ###   ###   ###   ###   ###   ### 
+####    ####    ####    ####    ####    
+#####     #####     #####     #####     
+######      ######      ######      ####
+#######       #######       #######     ';
 
-        $this->assertSame('8', $solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame($expectedOutput, trim($solution->solveSecondPart(self::TEST_INPUT)));
     }
 }

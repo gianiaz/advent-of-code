@@ -23,7 +23,7 @@ class HandheldDevice
     {
         ++$this->tickCounter;
         if (null === $this->currentInstruction) {
-            $this->currentInstruction = array_shift($this->instructions);
+            $this->currentInstruction = array_shift($this->instructions) ?? Instruction::endOfInput();
         }
     }
 

@@ -40,8 +40,25 @@ class Day10Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $result = 0;
+        $device = new HandheldDevice();
+        $device->loadInstructions($input);
+        $result = '';
 
-        return (string) $result;
+        do {
+            $device->startCycle();
+
+            $result .= abs(($device->getTickCounter() % 40) - 1 - $device->getRegistryX()) <= 1
+                ? '#'
+                : ' '
+            ;
+
+            $device->completeCycle();
+
+            if (0 === ($device->getTickCounter() % 40)) {
+                $result .= PHP_EOL;
+            }
+        } while ($device->getTickCounter() < 240);
+
+        return $result;
     }
 }

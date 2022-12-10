@@ -28,6 +28,11 @@ class Instruction
         $this->remainingCycles = $this->cycleCost;
     }
 
+    public static function endOfInput(): self
+    {
+        return new self(PHP_INT_MAX, 0);
+    }
+
     public function tick(): void
     {
         --$this->remainingCycles;
