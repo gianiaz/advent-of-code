@@ -6,6 +6,7 @@ namespace Jean85\AdventOfCode\Xmas2022\Day11;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
+use const true;
 
 class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
 {
@@ -16,7 +17,7 @@ class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
         $jungle = new Jungle($input);
         $rounds = 20;
         while ($rounds--) {
-            $jungle->doRound();
+            $jungle->doRound(true);
         }
 
         return (string) $jungle->getMonkeyBusiness();
@@ -26,8 +27,12 @@ class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $map = new Map($input);
+        $jungle = new Jungle($input);
+        $rounds = 10000;
+        while ($rounds--) {
+            $jungle->doRound(false);
+        }
 
-        return (string) $map->findShorterDistanceFromLowestPoint();
+        return (string) $jungle->getMonkeyBusiness();
     }
 }

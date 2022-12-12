@@ -8,18 +8,24 @@ class Jungle
 {
     /** @var Monkey[] */
     private array $monkeys;
+    public readonly int $commonMultiple;
 
     public function __construct(string $input)
     {
+        $commonMultiple = 1;
         foreach (explode(PHP_EOL . PHP_EOL, $input) as $description) {
-            $this->monkeys[] = new Monkey($this, $description);
+            $monkey = new Monkey($this, $description);
+            $commonMultiple *= $monkey->testDividend;
+            $this->monkeys[] = $monkey;
         }
+
+        $this->commonMultiple = $commonMultiple;
     }
 
-    public function doRound(): void
+    public function doRound(bool $getsBored): void
     {
         foreach ($this->monkeys as $monkey) {
-            $monkey->doTurn();
+            $monkey->doTurn($getsBored);
         }
     }
 

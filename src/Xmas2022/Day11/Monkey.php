@@ -11,7 +11,7 @@ class Monkey
 
     private Operation $operation;
 
-    private int $testDividend;
+    public readonly int $testDividend;
     private int $ifTrue;
     private int $ifFalse;
 
@@ -36,11 +36,15 @@ class Monkey
         $this->ifFalse = (int) $matches[1];
     }
 
-    public function doTurn(): void
+    public function doTurn(bool $getsBored): void
     {
         while ($item = array_shift($this->items)) {
             $new = $this->operation->apply($item);
-            $new = (int) floor($new / 3.0);
+            if ($getsBored) {
+                $new = (int) floor($new / 3.0);
+            } else {
+                $new %= $this->jungle->commonMultiple;
+            }
 
             $recipient = $this->getRecipient($new);
             $this->jungle->getMonkey($recipient)->items[] = $new;

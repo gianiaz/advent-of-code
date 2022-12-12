@@ -6,6 +6,7 @@ namespace Tests\Xmas2022\Day11;
 
 use Jean85\AdventOfCode\Xmas2022\Day11\Jungle;
 use PHPUnit\Framework\TestCase;
+use const true;
 
 class JungleTest extends TestCase
 {
@@ -13,7 +14,7 @@ class JungleTest extends TestCase
     {
         $jungle = new Jungle(Day11SolutionTest::TEST_INPUT);
 
-        $jungle->doRound();
+        $jungle->doRound(true);
 
         $this->assertEquals(
             [20, 23, 27, 26],

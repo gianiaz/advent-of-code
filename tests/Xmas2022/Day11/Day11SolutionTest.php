@@ -46,9 +46,8 @@ Monkey 3:
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day11Solution();
 
-        $this->assertSame('29', trim($solution->solveSecondPart(self::TEST_INPUT)));
+        $this->assertSame('2713310158', trim($solution->solveSecondPart(self::TEST_INPUT)));
     }
 }
