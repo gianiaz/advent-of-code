@@ -39,7 +39,6 @@ Monkey 3:
 
     public function test(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day11Solution();
 
         $this->assertSame('10605', $solution->solve(self::TEST_INPUT));

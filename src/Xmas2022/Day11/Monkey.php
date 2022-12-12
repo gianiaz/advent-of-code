@@ -15,6 +15,8 @@ class Monkey
     private int $ifTrue;
     private int $ifFalse;
 
+    private int $inspectCounter = 0;
+
     public function __construct(private readonly Jungle $jungle, string $input)
     {
         \Safe\preg_match('/Starting items: ([\d, ]+)/', $input, $matches);
@@ -42,6 +44,7 @@ class Monkey
 
             $recipient = $this->getRecipient($new);
             $this->jungle->getMonkey($recipient)->items[] = $new;
+            ++$this->inspectCounter;
         }
     }
 
@@ -58,5 +61,10 @@ class Monkey
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function getInspectCounter(): int
+    {
+        return $this->inspectCounter;
     }
 }

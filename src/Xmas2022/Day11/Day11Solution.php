@@ -13,9 +13,13 @@ class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $map = new Map($input);
+        $jungle = new Jungle($input);
+        $rounds = 20;
+        while ($rounds--) {
+            $jungle->doRound();
+        }
 
-        return (string) $map->findDistanceFromStart();
+        return (string) $jungle->getMonkeyBusiness();
     }
 
     public function solveSecondPart(string $input = null): string

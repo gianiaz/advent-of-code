@@ -28,4 +28,18 @@ class Jungle
         return $this->monkeys[$number]
             ?? throw new \InvalidArgumentException('Monkey not found: ' . $number);
     }
+
+    public function getMonkeyBusiness(): int
+    {
+        $counters = [];
+
+        foreach ($this->monkeys as $monkey) {
+            $counters[] = $monkey->getInspectCounter();
+        }
+
+        sort($counters);
+
+        return array_pop($counters)
+            * array_pop($counters);
+    }
 }
