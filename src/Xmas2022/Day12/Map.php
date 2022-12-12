@@ -34,14 +34,42 @@ class Map
         }
     }
 
-    public function findPath(): int
+    public function findDistanceFromStart(): int
+    {
+        return $this->findPath($this->start);
+    }
+
+    public function findShorterDistanceFromLowestPoint(): int
+    {
+        $shortestPath = PHP_INT_MAX;
+
+        foreach ($this->map as $y => $row) {
+            foreach ($row as $x => $height) {
+                if ($height === 0) {
+                    $shortestPath = min(
+                        $shortestPath,
+                        $this->findPath(new Coordinates($x, $y), $shortestPath)
+                    );
+                }
+            }
+        }
+
+        return $shortestPath;
+    }
+
+    private function findPath(Coordinates $startingPoint, int $stopAfter = PHP_INT_MAX): int
     {
         $step = 0;
-        /** @var Coordinates[] $current */
-        $visiting = [$this->start];
+        $visiting = [$startingPoint];
+        $this->cost = [];
 
         do {
             ++$step;
+
+            if ($step > $stopAfter) {
+                // give up!
+                return PHP_INT_MAX;
+            }
 
             $newVisiting = [];
 
@@ -81,7 +109,7 @@ class Map
             $visiting = $newVisiting;
         } while (! empty($visiting));
 
-        throw new \RuntimeException('Early termination!');
+        return PHP_INT_MAX;
     }
 
     public function printHeight(): string

@@ -15,13 +15,15 @@ class Day12Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $map = new Map($input);
 
-        return (string) $map->findPath();
+        return (string) $map->findDistanceFromStart();
     }
 
     public function solveSecondPart(string $input = null): string
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        return $result;
+        $map = new Map($input);
+
+        return (string) $map->findShorterDistanceFromLowestPoint();
     }
 }

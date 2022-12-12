@@ -24,9 +24,8 @@ abdefghi';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day12Solution();
 
-        $this->assertSame($expectedOutput, trim($solution->solveSecondPart(self::TEST_INPUT)));
+        $this->assertSame('29', trim($solution->solveSecondPart(self::TEST_INPUT)));
     }
 }
