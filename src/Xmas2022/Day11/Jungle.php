@@ -10,11 +10,11 @@ class Jungle
     private array $monkeys;
     public readonly int $commonMultiple;
 
-    public function __construct(string $input)
+    public function __construct(string $input, bool $monkeysGetBored)
     {
         $commonMultiple = 1;
         foreach (explode(PHP_EOL . PHP_EOL, $input) as $description) {
-            $monkey = new Monkey($this, $description);
+            $monkey = new Monkey($this, $description, $monkeysGetBored);
             $commonMultiple *= $monkey->testDividend;
             $this->monkeys[] = $monkey;
         }
@@ -22,10 +22,10 @@ class Jungle
         $this->commonMultiple = $commonMultiple;
     }
 
-    public function doRound(bool $getsBored): void
+    public function doRound(): void
     {
         foreach ($this->monkeys as $monkey) {
-            $monkey->doTurn($getsBored);
+            $monkey->doTurn();
         }
     }
 

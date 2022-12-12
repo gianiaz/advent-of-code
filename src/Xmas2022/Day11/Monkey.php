@@ -17,7 +17,7 @@ class Monkey
 
     private int $inspectCounter = 0;
 
-    public function __construct(private readonly Jungle $jungle, string $input)
+    public function __construct(private readonly Jungle $jungle, string $input, private readonly bool $getsBored)
     {
         \Safe\preg_match('/Starting items: ([\d, ]+)/', $input, $matches);
         foreach (explode(', ', $matches[1]) as $item) {
@@ -36,15 +36,15 @@ class Monkey
         $this->ifFalse = (int) $matches[1];
     }
 
-    public function doTurn(bool $getsBored): void
+    public function doTurn(): void
     {
         while ($item = array_shift($this->items)) {
             $new = $this->operation->apply($item);
-            if ($getsBored) {
+            if ($this->getsBored) {
                 $new = (int) floor($new / 3.0);
-            } else {
-                $new %= $this->jungle->commonMultiple;
             }
+
+            $new %= $this->jungle->commonMultiple;
 
             $recipient = $this->getRecipient($new);
             $this->jungle->getMonkey($recipient)->items[] = $new;

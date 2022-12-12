@@ -12,9 +12,9 @@ class JungleTest extends TestCase
 {
     public function testBasicRound(): void
     {
-        $jungle = new Jungle(Day11SolutionTest::TEST_INPUT);
+        $jungle = new Jungle(Day11SolutionTest::TEST_INPUT, true);
 
-        $jungle->doRound(true);
+        $jungle->doRound();
 
         $this->assertEquals(
             [20, 23, 27, 26],

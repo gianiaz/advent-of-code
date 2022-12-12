@@ -12,25 +12,21 @@ class Day11Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null): string
     {
-        $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
-
-        $jungle = new Jungle($input);
-        $rounds = 20;
-        while ($rounds--) {
-            $jungle->doRound(true);
-        }
-
-        return (string) $jungle->getMonkeyBusiness();
+        return $this->getSolution($input, 20, true);
     }
 
     public function solveSecondPart(string $input = null): string
     {
+        return $this->getSolution($input, 10000, false);
+    }
+
+    private function getSolution(?string $input, int $rounds, bool $getsBored): string
+    {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $jungle = new Jungle($input);
-        $rounds = 10000;
+        $jungle = new Jungle($input, $getsBored);
         while ($rounds--) {
-            $jungle->doRound(false);
+            $jungle->doRound();
         }
 
         return (string) $jungle->getMonkeyBusiness();
