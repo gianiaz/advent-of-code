@@ -21,9 +21,10 @@ class Day13Solution implements SolutionInterface, SecondPartSolutionInterface
     public function solveSecondPart(string $input = null): string
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
+        $input .= PHP_EOL . PHP_EOL . '[[2]]' . PHP_EOL . '[[6]]';
 
-        $map = new Map($input);
+        $receiver = new Receiver($input);
 
-        return (string) $map->findShorterDistanceFromLowestPoint();
+        return (string) $receiver->getDecoderKey();
     }
 }

@@ -83,4 +83,31 @@ class Receiver
 
         return $result;
     }
+
+    public function getDecoderKey(): int
+    {
+        $decoderKey = 1;
+
+        foreach ($this->getSortedPackets() as $i => $packet) {
+            if ($packet === [[2]] || $packet === [[6]]) {
+                $decoderKey *= $i + 1;
+            }
+        }
+
+        return $decoderKey;
+    }
+
+    private function getSortedPackets(): array
+    {
+        $packets = [];
+
+        foreach ($this->couples as $couple) {
+            $packets[] = $couple[0];
+            $packets[] = $couple[1];
+        }
+
+        usort($packets, $this->getSortOrder(...));
+
+        return $packets;
+    }
 }
