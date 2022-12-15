@@ -22,8 +22,9 @@ class Day14Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $receiver = new Scan($input);
+        $scan = new Scan($input);
+        $scan->addFloor();
 
-        return (string) $scan->getSandCount();
+        return (string) $scan->dropSand();
     }
 }

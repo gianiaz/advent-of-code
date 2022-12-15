@@ -36,6 +36,15 @@ class Scan
         }
     }
 
+    public function addFloor(): void
+    {
+        $floor = $this->maxY + 2;
+
+        foreach (range(0, $this->maxX * 3) as $x) {
+            $this->map[$floor][$x] = '#';
+        }
+    }
+
     /**
      * @return \Generator<array{int, int}>
      */
@@ -64,7 +73,7 @@ class Scan
             $sandY = 0;
 
             do {
-                if ($sandY > $this->maxY) {
+                if ($sandY > $this->maxY + 3) {
                     return $sandCount;
                 }
 
@@ -87,6 +96,10 @@ class Scan
 
                 $this->map[$sandY][$sandX] = 'o';
                 ++$sandCount;
+
+                if ($sandY === 0) {
+                    return $sandCount;
+                }
 
                 break;
             } while (true);
