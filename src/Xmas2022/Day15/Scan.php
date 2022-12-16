@@ -39,23 +39,66 @@ class Scan
         }
     }
 
-    private function markSensorArea(Sensor $sensor, int $willInspectRow): void
+    public function findMissingBeacon(int $maxCoordinate): Coordinates
+    {
+        $lastMatchedSensor = $this->sensors[0];
+
+        foreach (range(0, $maxCoordinate) as $y) {
+            $x = 0;
+            do {
+                $coordinate = new Coordinates($x, $y);
+                if ($lastMatchedSensor->isWithinRange($coordinate)) {
+                    $diff = $lastMatchedSensor->range - $lastMatchedSensor->location->manhattan($coordinate);
+                    $x += $diff;
+                    continue;
+                }
+
+                foreach ($this->sensors as $sensor) {
+                    if ($sensor->isWithinRange($coordinate)) {
+                        $lastMatchedSensor = $sensor;
+                        $diff = $lastMatchedSensor->range - $lastMatchedSensor->location->manhattan($coordinate);
+                        $x += $diff;
+                        continue 2;
+                    }
+                }
+
+                return $coordinate;
+            } while (++$x <= $maxCoordinate);
+        }
+    }
+
+    private function markSensorArea(Sensor $sensor, int $willInspectRow, int $toRow = null): void
     {
         $sensorLocation = $sensor->location;
         $distance = $sensorLocation->manhattan($sensor->nearestBeacon);
 
-        if (abs($willInspectRow - $sensor->location->y) > $distance) {
-            return;
-        }
-
         $this->map[$sensorLocation->y][$sensorLocation->x] = 'S';
         $this->map[$sensor->nearestBeacon->y][$sensor->nearestBeacon->x] = 'B';
 
-        $y = $willInspectRow;
-        $diff = $sensorLocation->y - $y;
-        $diffX = $distance - abs($diff);
-        foreach (range($sensorLocation->x - $diffX, $sensorLocation->x + $diffX) as $x) {
-            $this->map[$y][$x] ??= '#';
+        foreach (range($willInspectRow, $toRow ?? $willInspectRow) as $y) {
+            if (abs($y - $sensor->location->y) > $distance) {
+                continue;
+            }
+
+            $diff = $sensorLocation->y - $y;
+            $diffX = $distance - abs($diff);
+            foreach (range($sensorLocation->x - $diffX, $sensorLocation->x + $diffX) as $x) {
+                $this->map[$y][$x] ??= '#';
+            }
         }
+    }
+
+    public function printMap(int $maxCoordinate): string
+    {
+        $result = '';
+
+        foreach (range(0, $maxCoordinate) as $y) {
+            foreach (range(0, $maxCoordinate) as $x) {
+                $result .= $this->map[$y][$x] ?? ' ';
+            }
+            $result .= PHP_EOL;
+        }
+
+        return $result;
     }
 }

@@ -23,8 +23,8 @@ class Day15Solution implements SolutionInterface, SecondPartSolutionInterface
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
         $scan = new Scan($input);
-        $scan->addFloor();
+        $missingBeacon = $scan->findMissingBeacon(4000000);
 
-        return (string) $scan->dropSand();
+        return (string) (($missingBeacon->x * 4000000) + $missingBeacon->y);
     }
 }

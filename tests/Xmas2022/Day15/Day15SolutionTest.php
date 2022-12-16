@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2022\Day15;
 
-use Jean85\AdventOfCode\Xmas2022\Day15\Day15Solution;
+use Jean85\AdventOfCode\Xmas2022\Day15\Coordinates;
 use Jean85\AdventOfCode\Xmas2022\Day15\Scan;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +34,8 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
-        $solution = new Day15Solution();
+        $scan = new Scan(self::TEST_INPUT);
 
-        $this->assertSame('93', trim($solution->solveSecondPart(self::TEST_INPUT)));
+        $this->assertEquals(new Coordinates(14, 11), $scan->findMissingBeacon(20), $scan->printMap(20));
     }
 }
