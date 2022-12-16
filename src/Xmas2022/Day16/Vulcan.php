@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2022\Day16;
 
+use drupol\phpermutations\Generators\Permutations;
+
 class Vulcan
 {
     /** @var Valve */
@@ -39,32 +41,39 @@ class Vulcan
 
     public function getMaximumReleasedPressure(): int
     {
-        $solution = [
-            $this->valves['DD'],
-            $this->valves['BB'],
-            $this->valves['JJ'],
-            $this->valves['HH'],
-            $this->valves['EE'],
-            $this->valves['CC'],
-        ];
-
-        foreach ($solution as $step) {
-            $this->stepTo($step->name);
-            if ($this->currentValve->flowRate > 0) {
-                $this->openCurrentValve();
+        $maximumRelease = 0;
+        $functioningValves = array_filter($this->valves, fn (Valve $v) => $v->flowRate);
+        $allCombinations = new Permutations($functioningValves);
+        
+        foreach ($allCombinations->generator() as $i => $combination) {
+            if (0 === $i % 100000) {
+                echo 'Combination ' . $i . PHP_EOL;
             }
+            foreach ($combination as $step) {
+                try {
+                    $this->stepTo($step);
+                } catch (\RuntimeException) {
+                    break;
+                }
+
+                if ($this->remainingMinutes > 0 && $this->currentValve->flowRate > 0) {
+                    $this->openCurrentValve();
+                }
+            }
+
+            while ($this->remainingMinutes > 0) {
+                $this->tick();
+            }
+
+            $maximumRelease = max($maximumRelease, $this->releasedPressure);
+            $this->reset();
         }
 
-        while ($this->remainingMinutes > 0) {
-            $this->tick();
-        }
-
-        return $this->releasedPressure;
+        return $maximumRelease;
     }
 
-    public function stepTo(string $valveName): void
+    public function stepTo(Valve $nextValve): void
     {
-        $nextValve = $this->getValve($valveName);
         $distance = $this->findDistance($this->currentValve, $nextValve);
 
         do {
@@ -92,6 +101,10 @@ class Vulcan
 
     public function findDistance(Valve $start, Valve $target): int
     {
+        if (isset($this->memoizedDistance[$start->name][$target->name])) {
+            return $this->memoizedDistance[$start->name][$target->name];
+        }
+        
         $distance = 1;
         $visitedValves = [$start->name => $start];
         $toVisit = $start->linkedValves;
@@ -100,7 +113,7 @@ class Vulcan
             $newToVisit = [];
             foreach ($toVisit as $neighbour) {
                 if ($neighbour->name === $target->name) {
-                    return $distance;
+                    return $this->memoizedDistance[$start->name][$target->name] = $distance;
                 }
 
                 if (isset($visitedValves[$neighbour->name])) {
@@ -150,5 +163,13 @@ class Vulcan
     public function getReleaseFlow(): int
     {
         return $this->releaseFlow;
+    }
+
+    private function reset(): void
+    {
+        $this->currentValve = $this->getValve('AA');
+        $this->remainingMinutes = 30;
+        $this->releasedPressure = 0;
+        $this->releaseFlow = 0;
     }
 }

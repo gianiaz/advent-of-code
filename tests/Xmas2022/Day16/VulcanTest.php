@@ -19,7 +19,7 @@ class VulcanTest extends TestCase
         $this->assertSame(0, $vulcan->getReleaseFlow());
         $this->assertSame(0, $vulcan->getReleasedPressure());
 
-        $vulcan->stepTo('DD');
+        $vulcan->stepTo($vulcan->getValve('DD'));
 
         $this->assertValveName('DD', $vulcan->getCurrentValve());
         $this->assertSame(1, $vulcan->getMinute());
@@ -33,7 +33,7 @@ class VulcanTest extends TestCase
         $this->assertSame(20, $vulcan->getReleaseFlow());
         $this->assertSame(0, $vulcan->getReleasedPressure());
 
-        $vulcan->stepTo('BB');
+        $vulcan->stepTo($vulcan->getValve('BB'));
 
         $this->assertValveName('BB', $vulcan->getCurrentValve());
         $this->assertSame(4, $vulcan->getMinute());
@@ -47,7 +47,7 @@ class VulcanTest extends TestCase
         $this->assertSame(33, $vulcan->getReleaseFlow());
         $this->assertSame(60, $vulcan->getReleasedPressure());
 
-        $vulcan->stepTo('JJ');
+        $vulcan->stepTo($vulcan->getValve('JJ'));
 
         $this->assertValveName('JJ', $vulcan->getCurrentValve());
         $this->assertSame(8, $vulcan->getMinute());
@@ -62,9 +62,9 @@ class VulcanTest extends TestCase
         $this->assertSame(192, $vulcan->getReleasedPressure());
 
         $this->markTestIncomplete();
-        $vulcan->stepTo('HH');
-        $vulcan->stepTo('EE');
-        $vulcan->stepTo('CC');
+        $vulcan->stepTo($vulcan->getValve('HH'));
+        $vulcan->stepTo($vulcan->getValve('EE'));
+        $vulcan->stepTo($vulcan->getValve('CC'));
     }
 
     private function assertValveName(string $expectedName, Valve $valve): void
