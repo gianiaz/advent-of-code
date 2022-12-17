@@ -14,6 +14,18 @@ class Valve
     ) {
     }
 
+    public static function cacheKey(self ...$valves): string
+    {
+        if (count($valves)) {
+            return implode(
+                '-',
+                array_map(fn (self $v) => $v->name, $valves)
+            );
+        }
+
+        return 'end';
+    }
+
     public function addNeighbourValve(self $neighbour): void
     {
         $this->linkedValves[$neighbour->name] = $neighbour;

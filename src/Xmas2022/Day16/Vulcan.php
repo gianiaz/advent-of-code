@@ -14,6 +14,7 @@ class Vulcan
     private int $remainingMinutes = 30;
     private int $releasedPressure = 0;
     private int $releaseFlow = 0;
+    private $memoizedStates;
 
     public function __construct(string $input)
     {
@@ -36,7 +37,7 @@ class Vulcan
             }
         }
 
-        $this->currentValve = $this->valves['AA'];
+        $currentValve = $this->valves['AA'];
     }
 
     public function getMaximumReleasedPressure(): int
@@ -44,59 +45,65 @@ class Vulcan
         $maximumRelease = 0;
         $functioningValves = array_filter($this->valves, fn (Valve $v) => $v->flowRate);
         $allCombinations = new Permutations($functioningValves);
-        
+
         foreach ($allCombinations->generator() as $i => $combination) {
             if (0 === $i % 100000) {
                 echo 'Combination ' . $i . PHP_EOL;
             }
-            foreach ($combination as $step) {
-                try {
-                    $this->stepTo($step);
-                } catch (\RuntimeException) {
-                    break;
-                }
 
-                if ($this->remainingMinutes > 0 && $this->currentValve->flowRate > 0) {
-                    $this->openCurrentValve();
-                }
-            }
+            $state = new State($this->getValve('AA'));
+            $state = $this->play($state, ...$combination);
+            $state->stay();
 
-            while ($this->remainingMinutes > 0) {
-                $this->tick();
-            }
-
-            $maximumRelease = max($maximumRelease, $this->releasedPressure);
-            $this->reset();
+            $maximumRelease = max($maximumRelease, $state->releasedPressure);
         }
 
         return $maximumRelease;
     }
 
+    private function play(State $state, Valve ...$steps): State
+    {
+        if ($state->remainingMinutes === 0) {
+            return $state;
+        }
+
+        $cacheKeySteps = Valve::cacheKey(...$steps);
+        $cacheKeyState = $state->__toString();
+        if (isset($this->memoizedStates[$cacheKeySteps][$cacheKeyState])) {
+            return $this->memoizedStates[$cacheKeySteps][$cacheKeyState];
+        }
+
+        $state = clone $state;
+
+        if (count($steps) === 0) {
+            return $state;
+        }
+
+        $lastStep = array_pop($steps);
+        $state = clone $this->play($state, ...$steps);
+
+        if ($state->remainingMinutes === 0) {
+            return $state;
+        }
+
+        if ($state->currentValveShouldBeOpened()) {
+            $state->openCurrentValve();
+        }
+
+        $state->moveTo($lastStep, $this->findDistance($state->currentValve, $lastStep));
+
+        return $this->memoizedStates[$cacheKeySteps][$cacheKeyState] = clone $state;
+    }
+
     public function stepTo(Valve $nextValve): void
     {
-        $distance = $this->findDistance($this->currentValve, $nextValve);
+        $distance = $this->findDistance($currentValve, $nextValve);
 
         do {
             $this->tick();
         } while (--$distance);
 
-        $this->currentValve = $nextValve;
-    }
-
-    private function tick(): void
-    {
-        if ($this->remainingMinutes < 1) {
-            throw new \RuntimeException('No more minutes');
-        }
-
-        --$this->remainingMinutes;
-        $this->releasedPressure += $this->releaseFlow;
-    }
-
-    public function openCurrentValve(): void
-    {
-        $this->tick();
-        $this->releaseFlow += $this->currentValve->flowRate;
+        $currentValve = $nextValve;
     }
 
     public function findDistance(Valve $start, Valve $target): int
@@ -104,7 +111,7 @@ class Vulcan
         if (isset($this->memoizedDistance[$start->name][$target->name])) {
             return $this->memoizedDistance[$start->name][$target->name];
         }
-        
+
         $distance = 1;
         $visitedValves = [$start->name => $start];
         $toVisit = $start->linkedValves;
@@ -138,38 +145,5 @@ class Vulcan
     {
         return $this->valves[$name]
             ?? throw new \InvalidArgumentException('Valve not found: ' . $name);
-    }
-
-    public function getCurrentValve(): Valve
-    {
-        return $this->currentValve;
-    }
-
-    public function getMinute(): int
-    {
-        return 30 - $this->remainingMinutes;
-    }
-
-    public function getRemainingMinutes(): int
-    {
-        return $this->remainingMinutes;
-    }
-
-    public function getReleasedPressure(): int
-    {
-        return $this->releasedPressure;
-    }
-
-    public function getReleaseFlow(): int
-    {
-        return $this->releaseFlow;
-    }
-
-    private function reset(): void
-    {
-        $this->currentValve = $this->getValve('AA');
-        $this->remainingMinutes = 30;
-        $this->releasedPressure = 0;
-        $this->releaseFlow = 0;
     }
 }
