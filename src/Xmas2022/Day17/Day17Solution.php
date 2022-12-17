@@ -16,7 +16,7 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
         $verticalChamber = new VerticalChamber($input);
         $rocks = 2022;
 
-        while (--$rocks) {
+        while ($rocks--) {
             $verticalChamber->simulateNextRock();
         }
 
