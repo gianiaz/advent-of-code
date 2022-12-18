@@ -7,14 +7,26 @@ namespace Jean85\AdventOfCode\Xmas2022\Day17;
 class VerticalChamber
 {
     /** @var string[][] */
-    private array $map = [];
-    private int $maxY = -1;
+    private array $map;
+    private int $rockCount;
+    /** @var array<int, int> */
+    private array $yReachedAtRock;
+    private int $maxY;
     private JetStreamGenerator $jetStreamGenerator;
     private RockGenerator $rockGenerator;
 
-    public function __construct(string $jetStream)
+    public function __construct(private readonly string $jetStream)
     {
-        $this->jetStreamGenerator = new JetStreamGenerator($jetStream);
+        $this->reset();
+    }
+
+    public function reset(): void
+    {
+        $this->map = [];
+        $this->yReachedAtRock = [];
+        $this->rockCount = 0;
+        $this->maxY = -1;
+        $this->jetStreamGenerator = new JetStreamGenerator($this->jetStream);
         $this->rockGenerator = new RockGenerator();
     }
 
@@ -58,7 +70,9 @@ class VerticalChamber
             $this->map[$piece->y][$piece->x] = '#';
         }
 
+        ++$this->rockCount;
         $this->maxY = max(array_keys($this->map));
+        $this->yReachedAtRock[$this->maxY] ??= $this->rockCount;
     }
 
     private function pushByJetStream(Rock $rock): void
@@ -109,5 +123,54 @@ class VerticalChamber
         }
 
         return isset($this->map[$location->y][$location->x]);
+    }
+
+    /**
+     * @return array{int, int} Starting rock and rock length of the pattern
+     */
+    public function findPatternSize(): array
+    {
+        $rocks = 0;
+        do {
+            $this->simulateNextRock();
+        } while (++$rocks < 2000);
+
+        $patternStart = $this->findPatternStart();
+        $patternLength = $this->findPatternLength();
+        $patternStartsAfterRock = $this->yReachedAtRock[$patternStart];
+
+        return [
+            $patternStartsAfterRock,
+            $this->yReachedAtRock[$patternStart + $patternLength] - $patternStartsAfterRock,
+        ];
+    }
+
+    public function findPatternStart(): int
+    {
+        $reverseMap = strrev($this->drawMap());
+        $patternStart = 0;
+
+        do {
+            $offset = 10 * ++$patternStart;
+            $needle = substr($reverseMap, $offset, 10 * 10);
+            $patternFound = strpos($reverseMap, $needle, $offset + 10 * 10);
+        } while (false === $patternFound);
+
+        return $patternStart - 1;
+    }
+
+    public function findPatternLength(): int
+    {
+        $drawnMap = $this->drawMap();
+
+        $offset = $this->findPatternStart();
+        $patternLength = 10;
+
+        do {
+            $needle = substr($drawnMap, $offset * 10, ++$patternLength * 10);
+            $initialPatternRepetitions ??= substr_count($drawnMap, $needle) - 1; // subtracting 1 due to incomplete pattern at the end
+        } while ($initialPatternRepetitions <= substr_count($drawnMap, $needle));
+
+        return --$patternLength;
     }
 }

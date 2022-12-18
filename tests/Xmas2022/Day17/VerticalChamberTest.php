@@ -154,4 +154,14 @@ class VerticalChamberTest extends TestCase
 |..####.|
 +-------+', $verticalChamber->drawMap());
     }
+
+    public function testGetPatternSize(): void
+    {
+        $verticalChamber = new VerticalChamber(Day17SolutionTest::TEST_INPUT);
+
+        $patternSize = $verticalChamber->findPatternSize();
+        $this->assertSame(53, $verticalChamber->findPatternLength());
+        $this->assertSame(25, $verticalChamber->findPatternStart());
+        $this->assertSame([16, 51], $patternSize);
+    }
 }
