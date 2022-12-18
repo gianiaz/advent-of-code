@@ -72,7 +72,7 @@ class VerticalChamber
 
         ++$this->rockCount;
         $this->maxY = max(array_keys($this->map));
-        $this->yReachedAtRock[$this->maxY] ??= $this->rockCount;
+        $this->yReachedAtRock[$this->maxY] = $this->rockCount;
     }
 
     private function pushByJetStream(Rock $rock): void
@@ -148,6 +148,7 @@ class VerticalChamber
     public function findPatternStart(): int
     {
         $reverseMap = strrev($this->drawMap());
+        file_put_contents('test.log', $reverseMap);
         $patternStart = 0;
 
         do {
