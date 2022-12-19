@@ -6,7 +6,6 @@ namespace Jean85\AdventOfCode\Xmas2022\Day17;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
-use const true;
 
 class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 {
@@ -21,33 +20,35 @@ class Day17Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = null): string
     {
+        $rocks = 1000000000000;
+        $totalHeight = $this->getHeightWithPatternCalculation($input, $rocks);
+
+        return (string) $totalHeight;
+    }
+
+    private function getHeightWithPatternCalculation(?string $input, int $rocks): int
+    {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
         $verticalChamber = new VerticalChamber($input);
         [$patternStart, $patternLength] = $verticalChamber->findPatternSize();
 
-        $heightReachedAtStart = $this->runSimulationFor($patternStart, $verticalChamber);
-        $heightReachedPerPattern = $this->runSimulationFor($patternLength, $verticalChamber, false) - $heightReachedAtStart;
+        $verticalChamber->reset();
 
-        $rocks = 1000000000000;
-        $heightReachedWithPattern = $heightReachedPerPattern * floor($rocks / $patternLength);
+        $heightReachedAtStart = $this->runSimulationFor($patternStart, $verticalChamber);
+        $heightReachedPerPattern = $this->runSimulationFor($patternLength, $verticalChamber) - $heightReachedAtStart;
 
         $rocks -= $patternStart;
+        $heightReachedWithPattern = $heightReachedPerPattern * ((int) floor($rocks / $patternLength) - 1);
+
         $rocks %= $patternLength;
 
-        $totalHeight = $heightReachedAtStart
-            + $heightReachedWithPattern
-            + $this->runSimulationFor($rocks, $verticalChamber, false);
-
-        return (string) $totalHeight;
+        return $heightReachedWithPattern
+            + $this->runSimulationFor($rocks, $verticalChamber);
     }
 
-    private function runSimulationFor(int $rocks, VerticalChamber $verticalChamber, bool $reset = true): int
+    private function runSimulationFor(int $rocks, VerticalChamber $verticalChamber): int
     {
-        if ($reset) {
-            $verticalChamber->reset();
-        }
-
         while ($rocks--) {
             $verticalChamber->simulateNextRock();
         }

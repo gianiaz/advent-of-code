@@ -133,11 +133,14 @@ class VerticalChamber
         $rocks = 0;
         do {
             $this->simulateNextRock();
-        } while (++$rocks < 2000);
+        } while (++$rocks < 10000);
 
-        $patternStart = $this->findPatternStart();
+        $patternStart = $this->findPatternStartAfter();
         $patternLength = $this->findPatternLength();
-        $patternStartsAfterRock = $this->yReachedAtRock[$patternStart];
+
+        while (false === $patternStartsAfterRock = $this->yReachedAtRock[$patternStart] ?? false) {
+            --$patternStart;
+        }
 
         return [
             $patternStartsAfterRock,
@@ -145,31 +148,43 @@ class VerticalChamber
         ];
     }
 
-    public function findPatternStart(): int
+    public function findPatternStartAfter(): int
     {
         $reverseMap = strrev($this->drawMap());
-        file_put_contents('test.log', $reverseMap);
-        $patternStart = 0;
+
+        $offset = (int) round(strlen($reverseMap) / 2, -1); // start in the middle
+        $length = 10;
+        $needle = substr($reverseMap, $offset, ++$length * 10);
+        $patternFound = strpos($reverseMap, $needle);
+        $lastPatternFoundAt = $patternFound;
 
         do {
-            $offset = 10 * ++$patternStart;
-            $needle = substr($reverseMap, $offset, 10 * 10);
-            $patternFound = strpos($reverseMap, $needle, $offset + 10 * 10);
-        } while (false === $patternFound);
+            if ($patternFound > $lastPatternFoundAt) {
+                return (int) ($lastPatternFoundAt / 10) - 1;
+            }
 
-        return $patternStart - 1;
+            $offset -= 10;
+            $lastPatternFoundAt = $patternFound;
+            $needle = substr($reverseMap, $offset, ++$length * 10);
+            $patternFound = strpos($reverseMap, $needle);
+        } while ($patternFound !== false);
+
+        throw new \RuntimeException('WAT?');
     }
 
     public function findPatternLength(): int
     {
         $drawnMap = $this->drawMap();
 
-        $offset = $this->findPatternStart();
+        $offset = $this->findPatternStartAfter();
         $patternLength = 10;
 
         do {
             $needle = substr($drawnMap, $offset * 10, ++$patternLength * 10);
             $initialPatternRepetitions ??= substr_count($drawnMap, $needle) - 1; // subtracting 1 due to incomplete pattern at the end
+            if ($initialPatternRepetitions <= 1) {
+                throw new \RuntimeException('Cannot find pattern repetition');
+            }
         } while ($initialPatternRepetitions <= substr_count($drawnMap, $needle));
 
         return --$patternLength;
