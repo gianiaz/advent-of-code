@@ -11,6 +11,9 @@ class Scan
 
     /** @var list<Cube> */
     private array $list = [];
+    private int $maxX = 0;
+    private int $maxY = 0;
+    private int $maxZ = 0;
 
     public function __construct(string $input)
     {
@@ -27,6 +30,9 @@ class Scan
 
             $this->map[$cube->x][$cube->y][$cube->z] = $cube;
             $this->list[] = $cube;
+            $this->maxX = max($this->maxX, $cube->x + 1);
+            $this->maxY = max($this->maxY, $cube->y + 1);
+            $this->maxZ = max($this->maxZ, $cube->z + 1);
         }
     }
 
@@ -35,12 +41,58 @@ class Scan
         $total = 0;
         foreach ($this->list as $cube) {
             foreach ($cube->getNeighbours() as $neighbour) {
-                if (! isset($this->map[$neighbour->x][$neighbour->y][$neighbour->z])) {
+                if (null === $this->getCubeFromMap($neighbour)) {
                     ++$total;
                 }
             }
         }
 
         return $total;
+    }
+
+    public function countExternalSides(): int
+    {
+        $this->simulateVapor();
+
+        $total = 0;
+        foreach ($this->list as $cube) {
+            foreach ($cube->getNeighbours() as $neighbour) {
+                if ($this->getCubeFromMap($neighbour)?->isReachedBySteam) {
+                    ++$total;
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    private function getCubeFromMap(Cube $neighbour): ?Cube
+    {
+        return $this->map[$neighbour->x][$neighbour->y][$neighbour->z] ?? null;
+    }
+
+    private function simulateVapor(): void
+    {
+        $start = new Cube(0, 0, 0, true);
+
+        $this->visitByVapor($start);
+    }
+
+    private function visitByVapor(Cube $vapor): void
+    {
+        foreach ($vapor->getNeighbours() as $neighbour) {
+            if (
+                $neighbour->x > $this->maxX
+                || $neighbour->y > $this->maxY
+                || $neighbour->z > $this->maxZ
+            ) {
+                continue;
+            }
+
+            if (null === $this->getCubeFromMap($neighbour)) {
+                $this->map[$neighbour->x][$neighbour->y][$neighbour->z] = $neighbour->getVapor();
+                $this->visitByVapor($neighbour);
+            }
+        }
     }
 }

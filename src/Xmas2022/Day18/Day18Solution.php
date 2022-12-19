@@ -24,6 +24,6 @@ class Day18Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $scan = new Scan($input);
 
-        return (string) $scan->countFreeSides();
+        return (string) $scan->countExternalSides();
     }
 }
