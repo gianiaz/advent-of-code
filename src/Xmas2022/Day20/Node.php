@@ -11,13 +11,21 @@ class Node
     public self $next;
 
     public function __construct(
-        public readonly int $value,
-        self $prev = null,
-        self $next = null,
+        public int $value,
+        private readonly int $decryptionKey
     ) {
-        $this->remainingSwaps = abs($this->value);
-        $this->prev = $prev ?? $this;
-        $this->next = $next ?? $this;
+        $this->resetSwapCount(1);
+        $this->prev = $this;
+        $this->next = $this;
+    }
+
+    public function resetSwapCount(int $count): void
+    {
+        $this->remainingSwaps = abs($this->value) * $this->decryptionKey;
+
+        if ($count > 1) {
+            $this->remainingSwaps %= $count;
+        }
     }
 
     public function append(Node $newNode): void

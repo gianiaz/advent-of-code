@@ -26,11 +26,8 @@ class Day20SolutionTest extends TestCase
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day20Solution();
 
-        $this->assertGreaterThan(1514285714288, PHP_INT_MAX);
-
-        $this->assertSame('58', $solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('1623178306', $solution->solveSecondPart(self::TEST_INPUT));
     }
 }

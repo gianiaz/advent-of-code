@@ -8,10 +8,10 @@ class EncryptedCoordinates
 {
     /** @var Node[] */
     private array $nodes = [];
-    private Node $firstNode;
+    public Node $firstNode;
     private Node $nodeZero;
 
-    public function __construct(string $input)
+    public function __construct(string $input, private readonly int $decryptionKey = 1)
     {
         $prevNode = null;
 
@@ -20,7 +20,7 @@ class EncryptedCoordinates
                 throw new \InvalidArgumentException('Invalid value ' . $value);
             }
 
-            $newNode = new Node((int) $value);
+            $newNode = new Node((int) $value, $decryptionKey);
             $prevNode?->append($newNode);
 
             $this->firstNode ??= $newNode;
@@ -31,6 +31,10 @@ class EncryptedCoordinates
             if ($newNode->value === 0) {
                 $this->nodeZero = $newNode;
             }
+        }
+
+        if ($decryptionKey > 1) {
+            $this->resetSwapCounts();
         }
     }
 
@@ -50,13 +54,29 @@ class EncryptedCoordinates
      */
     public function getStatus(): array
     {
+        return $this->getStatusFrom($this->firstNode);
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getStatusFromZero(): array
+    {
+        return $this->getStatusFrom($this->nodeZero);
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getStatusFrom(Node $startNode): array
+    {
         $result = [];
-        $currentNode = $this->firstNode;
+        $currentNode ??= $startNode;
 
         do {
-            $result[] = $currentNode->value;
+            $result[] = $currentNode->value * $this->decryptionKey;
             $currentNode = $currentNode->next;
-        } while ($currentNode !== $this->firstNode);
+        } while ($currentNode !== $startNode);
 
         return $result;
     }
@@ -91,5 +111,12 @@ class EncryptedCoordinates
         }
 
         return null;
+    }
+
+    public function resetSwapCounts(): void
+    {
+        foreach ($this->nodes as $node) {
+            $node->resetSwapCount(count($this->nodes) - 1);
+        }
     }
 }

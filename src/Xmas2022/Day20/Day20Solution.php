@@ -29,8 +29,24 @@ class Day20Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $scan = new Scan($input);
+        $decryptionKey = 811589153;
+        $encryptedCoordinates = new EncryptedCoordinates($input, $decryptionKey);
 
-        return (string) $scan->countExternalSides();
+        for ($times = 0; $times < 10; ++$times) {
+            echo 'Start swapping...';
+            do {
+            } while ($encryptedCoordinates->swapOneNode());
+
+            $encryptedCoordinates->resetSwapCounts();
+
+            echo ' swap ' . $times . ' completed' . PHP_EOL;
+        }
+
+        $result = $encryptedCoordinates->getNode(1000)->value
+            + $encryptedCoordinates->getNode(2000)->value
+            + $encryptedCoordinates->getNode(3000)->value
+        ;
+
+        return (string) ($result * $decryptionKey);
     }
 }
