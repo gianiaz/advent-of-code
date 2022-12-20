@@ -9,6 +9,7 @@ class EncryptedCoordinates
     /** @var Node[] */
     private array $nodes = [];
     private Node $firstNode;
+    private Node $nodeZero;
 
     public function __construct(string $input)
     {
@@ -26,7 +27,22 @@ class EncryptedCoordinates
             $this->nodes[] = $newNode;
 
             $prevNode = $newNode;
+
+            if ($newNode->value === 0) {
+                $this->nodeZero = $newNode;
+            }
         }
+    }
+
+    public function getNode(int $i): Node
+    {
+        $node = $this->nodeZero;
+
+        while ($i--) {
+            $node = $node->next;
+        }
+
+        return $node;
     }
 
     /**
@@ -52,8 +68,6 @@ class EncryptedCoordinates
             return null;
         }
 
-        echo 'Swapping ' . $node->value . PHP_EOL;
-
         while ($node->remainingSwaps) {
             if ($node === $this->firstNode) {
                 $this->firstNode = match (true) {
@@ -63,11 +77,7 @@ class EncryptedCoordinates
             }
 
             $node->swap();
-
-            echo json_encode($this->getStatus()) . PHP_EOL;
         }
-
-        echo PHP_EOL;
 
         return $node;
     }

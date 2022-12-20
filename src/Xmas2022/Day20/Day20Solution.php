@@ -13,9 +13,16 @@ class Day20Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= trim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $scan = new Scan($input);
+        $encryptedCoordinates = new EncryptedCoordinates($input);
+        do {
+        } while ($encryptedCoordinates->swapOneNode());
 
-        return (string) $scan->countFreeSides();
+        $result = $encryptedCoordinates->getNode(1000)->value
+            + $encryptedCoordinates->getNode(2000)->value
+            + $encryptedCoordinates->getNode(3000)->value
+        ;
+
+        return (string) $result;
     }
 
     public function solveSecondPart(string $input = null): string

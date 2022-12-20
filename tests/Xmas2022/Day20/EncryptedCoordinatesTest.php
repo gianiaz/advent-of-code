@@ -38,5 +38,9 @@ class EncryptedCoordinatesTest extends TestCase
         $swappedNode = $encryptedCoordinates->swapOneNode();
 
         $this->assertSame([1, 2, -3, 4, 0, 3, -2], $encryptedCoordinates->getStatus(), 'Mismatch while moving node ' . $swappedNode->value . PHP_EOL . json_encode($encryptedCoordinates->getStatus()));
+
+        $this->assertSame(4, $encryptedCoordinates->getNode(1000)->value);
+        $this->assertSame(-3, $encryptedCoordinates->getNode(2000)->value);
+        $this->assertSame(2, $encryptedCoordinates->getNode(3000)->value);
     }
 }

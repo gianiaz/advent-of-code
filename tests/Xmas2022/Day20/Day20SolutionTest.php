@@ -19,7 +19,6 @@ class Day20SolutionTest extends TestCase
 
     public function test(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day20Solution();
 
         $this->assertSame('3', $solution->solve(self::TEST_INPUT));
