@@ -140,7 +140,7 @@ The new geode-cracking robot is ready; you now have 2 of them.
 2 geode-cracking robots crack 2 geodes; you now have 9 open geodes.
 ';
 
-        $blueprint = new Blueprint(trim(explode(PHP_EOL, Day19SolutionTest::TEST_INPUT)[0]));
+        $blueprint = new Blueprint(trim(explode(PHP_EOL, Day20SolutionTest::TEST_INPUT)[0]));
 
         foreach (explode(PHP_EOL . PHP_EOL, $expectedBlueprintOutput) as $expectedOutput) {
             $this->assertSame($expectedOutput, $blueprint->tick());
