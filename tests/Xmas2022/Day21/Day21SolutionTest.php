@@ -34,9 +34,8 @@ hmdt: 32';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
         $solution = new Day21Solution();
 
-        $this->assertSame('1623178306', $solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('301', $solution->solveSecondPart(self::TEST_INPUT));
     }
 }

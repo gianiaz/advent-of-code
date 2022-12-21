@@ -11,7 +11,7 @@ enum Operation: string
     case Multiply = '*';
     case Divide = '/';
 
-    public function apply(int $a, int $b): int
+    public function apply(int|float $a, int|float $b): int|float
     {
         return match ($this) {
             self::Add => $a + $b,
