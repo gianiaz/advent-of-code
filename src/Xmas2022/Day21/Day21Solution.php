@@ -23,28 +23,14 @@ class Day21Solution implements SolutionInterface, SecondPartSolutionInterface
     public function solveSecondPart(string $input = null): string
     {
         $this->parseInput($input);
-        $this->monkeys[self::HUMAN] = 'UNKNOWN';
+        $this->monkeys[self::HUMAN] = new UnresolvedMonkey('unknown', Operation::Divide, 'unknown');
 
         $this->resolveAsManyMonkeysAsPossible();
 
         $root = $this->monkeys['root'];
-        $copy = $this->monkeys;
+        [$solvedBranch, $unresolvedBranch] = $this->getBranches($root);
 
-        echo 'Bruteforcing...' . PHP_EOL;
-        
-        foreach (range(1, 100_000_000) as $possibleSolution) {
-            if (0 === $possibleSolution % 100000) {
-                echo $possibleSolution . '...' . PHP_EOL;
-            }
-
-            $this->monkeys = $copy;
-            $this->monkeys[self::HUMAN] = $possibleSolution;
-            if ($this->resolveMonkey($root->a) === $this->resolveMonkey($root->b)) {
-                return (string) $possibleSolution;
-            }
-        }
-
-        return 'Bruteforce failed';
+        return (string) $this->reverse($unresolvedBranch, $solvedBranch);
     }
 
     private function parseMonkeyDescription(string $description): int|UnresolvedMonkey
@@ -113,5 +99,40 @@ class Day21Solution implements SolutionInterface, SecondPartSolutionInterface
                 }
             }
         } while ($resolved);
+    }
+
+    private function reverse(UnresolvedMonkey $unresolvedMonkey, int|float $target): int|float
+    {
+        $unresolvedBranch = $this->monkeys[$unresolvedMonkey->a] instanceof UnresolvedMonkey
+            ? $this->monkeys[$unresolvedMonkey->a]
+            : $this->monkeys[$unresolvedMonkey->b];
+
+        $newTarget = $unresolvedMonkey->operation->reverse(
+            $target,
+            $this->monkeys[$unresolvedMonkey->a],
+            $this->monkeys[$unresolvedMonkey->b],
+        );
+
+        if (in_array(self::HUMAN, [$unresolvedMonkey->a, $unresolvedMonkey->b], true)) {
+            return $newTarget;
+        }
+
+        return $this->reverse($unresolvedBranch, $newTarget);
+    }
+
+    /**
+     * @return array{int, UnresolvedMonkey}
+     */
+    private function getBranches(int|string|UnresolvedMonkey $root): array
+    {
+        $solvedBranch = is_int($this->monkeys[$root->a])
+            ? $this->monkeys[$root->a]
+            : $this->monkeys[$root->b];
+
+        $unresolvedMonkey = $this->monkeys[$root->a] instanceof UnresolvedMonkey
+            ? $this->monkeys[$root->a]
+            : $this->monkeys[$root->b];
+
+        return [$solvedBranch, $unresolvedMonkey];
     }
 }

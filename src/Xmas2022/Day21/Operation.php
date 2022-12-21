@@ -20,4 +20,26 @@ enum Operation: string
             self::Divide => $a / $b,
         };
     }
+
+    public function reverse(float|int $target, int|float|UnresolvedMonkey $a, int|float|UnresolvedMonkey $b): int|float
+    {
+        if (gettype($a) === gettype($b)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $knownOperand = $a instanceof UnresolvedMonkey ? $b : $a;
+
+        return match ($this) {
+            self::Add => $target - $knownOperand,
+            self::Subtract => match ($knownOperand) {
+                $a => $knownOperand - $target,
+                $b => $target + $knownOperand,
+            },
+            self::Multiply => $target / $knownOperand,
+            self::Divide => match ($knownOperand) {
+                $a => $knownOperand / $target,
+                $b => $target * $knownOperand,
+            },
+        };
+    }
 }
