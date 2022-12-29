@@ -7,12 +7,12 @@ namespace Jean85\AdventOfCode\Xmas2022\Day22;
 class Board
 {
     /** @var list<positive-int|Turn> */
-    private array $instructions= [];
+    private array $instructions = [];
     /** @var list<positive-int|Turn> */
     private array $currentInstructions;
     /** @var array<int, array<int, string>> */
-    private array $map;
-    private Direction $currentDirection;
+    protected array $map;
+    protected Direction $currentDirection;
     private int $x;
     private int $y;
     private int $maxX = 0;
@@ -33,6 +33,17 @@ class Board
         $this->currentInstructions = $this->instructions;
         $this->y = min(array_keys($this->map));
         $this->x = min(array_keys($this->map[$this->y]));
+    }
+
+    public function setCurrentPosition(int $x, int $y): void
+    {
+        $this->x = $x;
+        $this->y = $y;
+    }
+
+    public function setCurrentDirection(Direction $currentDirection): void
+    {
+        $this->currentDirection = $currentDirection;
     }
 
     public function getPassword(): int
@@ -72,7 +83,9 @@ class Board
 
     public function executeAllInstructions(): void
     {
+        $i = 1;
         while (! empty($this->currentInstructions)) {
+            # echo 'Executing instruction ' . $i++ . PHP_EOL;
             $this->executeOneInstruction();
         }
     }
@@ -102,48 +115,28 @@ class Board
         while ($steps--) {
             $newX = $this->x + $this->currentDirection->toX();
             $newY = $this->y + $this->currentDirection->toY();
+            $oldDirection = $this->currentDirection;
 
             if (! isset($this->map[$newY][$newX])) {
-                if ($this->currentDirection->toX() > 0) {
-                    // wrap right to left
-                    $newX = min(array_keys($this->map[$newY]));
-                } elseif ($this->currentDirection->toX() < 0) {
-                    // wrap left to right
-                    $newX = max(array_keys($this->map[$newY]));
-                } elseif ($this->currentDirection->toY() > 0) {
-                    // wrap up to bottom
-                    $newY = min(array_keys($this->map));
-
-                    while (! isset($this->map[$newY][$newX])) {
-                        ++$newY;
-                    }
-                } elseif ($this->currentDirection->toY() < 0) {
-                    // wrap bottom to up
-                    $newY = max(array_keys($this->map));
-
-                    while (! isset($this->map[$newY][$newX])) {
-                        --$newY;
-                    }
-                } else {
-                    throw new \InvalidArgumentException('Unknown wrapping around');
-                }
+                [$newX, $newY] = $this->wrapAroundEdge($newX, $newY);
             }
 
             $newTile = $this->map[$newY][$newX];
             switch ($newTile) {
                 case '#':
                     $steps = 0;
+                    $this->currentDirection = $oldDirection;
                     break;
                 case '>':
                 case '<':
                 case 'v':
-                case 'A':
+                case '^':
                 case '.':
                     $this->x = $newX;
                     $this->y = $newY;
                     break;
                 default:
-                    throw new \InvalidArgumentException('Unknown new tile: ' . $newTile);
+                    throw new \InvalidArgumentException('Unknown new tile: [' . $newTile . '] at X: ' . $newX . ' Y: ' . $newY);
             }
 
             $this->drawCurrentPosition();
@@ -168,5 +161,37 @@ class Board
     protected function drawCurrentPosition(): void
     {
         $this->map[$this->y][$this->x] = $this->currentDirection->toMap();
+    }
+
+    /**
+     * @return array{int, int}
+     */
+    protected function wrapAroundEdge(int $newX, int $newY): array
+    {
+        if ($this->currentDirection->toX() > 0) {
+            // wrap right to left
+            $newX = min(array_keys($this->map[$newY]));
+        } elseif ($this->currentDirection->toX() < 0) {
+            // wrap left to right
+            $newX = max(array_keys($this->map[$newY]));
+        } elseif ($this->currentDirection->toY() > 0) {
+            // wrap up to bottom
+            $newY = min(array_keys($this->map));
+
+            while (! isset($this->map[$newY][$newX])) {
+                ++$newY;
+            }
+        } elseif ($this->currentDirection->toY() < 0) {
+            // wrap bottom to up
+            $newY = max(array_keys($this->map));
+
+            while (! isset($this->map[$newY][$newX])) {
+                --$newY;
+            }
+        } else {
+            throw new \InvalidArgumentException('Unknown wrapping around');
+        }
+
+        return [$newX, $newY];
     }
 }

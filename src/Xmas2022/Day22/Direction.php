@@ -42,7 +42,7 @@ enum Direction: int
             self::Right => '>',
             self::Down => 'v',
             self::Left => '<',
-            self::Up => 'A',
+            self::Up => '^',
         };
     }
 }

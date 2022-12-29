@@ -23,7 +23,7 @@ class Day22Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= rtrim(file_get_contents(__DIR__ . '/input.txt'));
 
-        $board = new Board($input);
+        $board = new CubicBoard($input);
         $board->executeAllInstructions();
 
         return (string) $board->getPassword();
