@@ -9,13 +9,16 @@ use PHPUnit\Framework\TestCase;
 
 class Day1SolutionTest extends TestCase
 {
-    private const TEST_INPUT = '';
+    private const TEST_INPUT = '1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet';
 
     public function test(): void
     {
         $day1Solution = new Day1Solution();
 
-        $this->assertSame('', $day1Solution->solve(self::TEST_INPUT));
+        $this->assertSame('142', $day1Solution->solve(self::TEST_INPUT));
     }
 
     public function testSecondPart(): void
