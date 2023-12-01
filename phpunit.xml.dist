@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" 
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" 
          backupGlobals="false" 
          colors="true" 
-         cacheResult="false"
+         cacheResult="false" 
          bootstrap="vendor/autoload.php"
 >
   <testsuites>
-    <testsuite name="2017">
-      <directory>tests/Xmas2017</directory>
-    </testsuite>
-    <testsuite name="2018">
-      <directory>tests/Xmas2018</directory>
-    </testsuite>
-    <testsuite name="2019">
-      <directory>tests/Xmas2019</directory>
-    </testsuite>
-    <testsuite name="2020">
-      <directory>tests/Xmas2020</directory>
+    <testsuite name="2023">
+      <directory>tests/Xmas2023</directory>
     </testsuite>
   </testsuites>
-  <coverage>
+  <coverage/>
+  <source>
     <include>
       <directory>src</directory>
     </include>
-  </coverage>
+  </source>
 </phpunit>
