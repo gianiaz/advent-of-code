@@ -10,6 +10,5 @@ class UnresolvedMonkey
         public readonly string $a,
         public readonly Operation $operation,
         public readonly string $b,
-    ) {
-    }
+    ) {}
 }

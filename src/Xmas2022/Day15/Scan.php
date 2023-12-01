@@ -29,7 +29,7 @@ class Scan
     {
         $this->markNoCloserBeaconPositions($y);
 
-        return count(array_filter($this->map[$y], fn ($a): bool => $a === '#'));
+        return count(array_filter($this->map[$y], fn($a): bool => $a === '#'));
     }
 
     private function markNoCloserBeaconPositions(int $willInspectRow): void

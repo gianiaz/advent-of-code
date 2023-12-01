@@ -38,8 +38,8 @@ class RuckSack
 
         if (ctype_upper($item)) {
             return 27 + ord($item) - ord('A');
-        } else {
-            return 1 + ord($item) - ord('a');
         }
+
+        return 1 + ord($item) - ord('a');
     }
 }

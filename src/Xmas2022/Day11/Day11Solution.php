@@ -6,6 +6,7 @@ namespace Jean85\AdventOfCode\Xmas2022\Day11;
 
 use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
+
 use const true;
 
 class Day11Solution implements SolutionInterface, SecondPartSolutionInterface

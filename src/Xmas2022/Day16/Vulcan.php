@@ -43,7 +43,7 @@ class Vulcan
     public function getMaximumReleasedPressure(): int
     {
         $maximumRelease = 0;
-        $functioningValves = array_filter($this->valves, fn (Valve $v) => $v->flowRate);
+        $functioningValves = array_filter($this->valves, fn(Valve $v) => $v->flowRate);
         $allCombinations = new Permutations($functioningValves);
 
         foreach ($allCombinations->generator() as $i => $combination) {

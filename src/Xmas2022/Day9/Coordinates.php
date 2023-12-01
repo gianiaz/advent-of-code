@@ -9,8 +9,7 @@ class Coordinates
     public function __construct(
         private int $x = 0,
         private int $y = 0,
-    ) {
-    }
+    ) {}
 
     public function move(Direction $direction): void
     {

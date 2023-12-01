@@ -9,8 +9,7 @@ class Coordinates
     public function __construct(
         public readonly int $x,
         public readonly int $y,
-    ) {
-    }
+    ) {}
 
     public function withIncrease(int|JetStream $deltaX, int $deltaY): self
     {

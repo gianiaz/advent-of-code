@@ -13,7 +13,7 @@ class OperationTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testReverse(Operation $operation, int $expected, int $target, int|null $a, int|null $b): void
+    public function testReverse(Operation $operation, int $expected, int $target, ?int $a, ?int $b): void
     {
         $a ??= $this->mockMonkey();
         $b ??= $this->mockMonkey();

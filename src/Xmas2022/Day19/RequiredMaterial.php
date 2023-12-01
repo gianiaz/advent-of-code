@@ -9,6 +9,5 @@ class RequiredMaterial
     public function __construct(
         public readonly Material $material,
         public readonly int $qty,
-    ) {
-    }
+    ) {}
 }

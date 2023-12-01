@@ -14,8 +14,7 @@ class State
 
     public function __construct(
         public Valve $currentValve,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {

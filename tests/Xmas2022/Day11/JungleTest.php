@@ -6,6 +6,7 @@ namespace Tests\Xmas2022\Day11;
 
 use Jean85\AdventOfCode\Xmas2022\Day11\Jungle;
 use PHPUnit\Framework\TestCase;
+
 use const true;
 
 class JungleTest extends TestCase

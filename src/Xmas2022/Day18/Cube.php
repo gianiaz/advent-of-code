@@ -11,8 +11,7 @@ class Cube
         public readonly int $y,
         public readonly int $z,
         public bool $isReachedBySteam = false,
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Generator<self>

@@ -12,9 +12,7 @@ class RootFolder
     private array $files = [];
     private ?int $size = null;
 
-    protected function __construct(public readonly string $name = '/')
-    {
-    }
+    protected function __construct(public readonly string $name = '/') {}
 
     final public static function createFromInput(string $input): RootFolder
     {

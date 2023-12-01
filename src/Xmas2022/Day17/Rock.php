@@ -8,11 +8,10 @@ abstract class Rock
 {
     final public function __construct(
         protected Coordinates $origin,
-    ) {
-    }
+    ) {}
 
     /**
-     * All coordinates that compose the rock shape
+     * All coordinates that compose the rock shape.
      *
      * @return \Generator<Coordinates>
      */

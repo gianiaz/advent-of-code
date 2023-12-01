@@ -9,7 +9,7 @@ use Jean85\AdventOfCode\SolutionInterface;
 
 class Day21Solution implements SolutionInterface, SecondPartSolutionInterface
 {
-    const HUMAN = 'humn';
+    public const HUMAN = 'humn';
     /** @var array<string, int|UnresolvedMonkey> */
     private array $monkeys;
 

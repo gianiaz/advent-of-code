@@ -22,8 +22,7 @@ class Elf
     private function __construct(
         public readonly int $start,
         public readonly int $end,
-    ) {
-    }
+    ) {}
 
     public function contains(Elf $otherElf): bool
     {
