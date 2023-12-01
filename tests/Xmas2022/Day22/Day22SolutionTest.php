@@ -37,4 +37,11 @@ class Day22SolutionTest extends TestCase
 
         $this->assertSame('5031', $solution->solveSecondPart(self::TEST_INPUT));
     }
+
+    public function testSecondPartWithFullInput(): void
+    {
+        $solution = new Day22Solution();
+
+        $this->assertLessThan(163201, (int) $solution->solveSecondPart());
+    }
 }

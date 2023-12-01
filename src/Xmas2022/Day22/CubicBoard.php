@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2022\Day22;
 
+use PHPUnit\Framework\Assert;
+
 class CubicBoard extends Board
 {
     private readonly int $cubeSideLength;
+    /** @var array<int, array<int, array{Turn, int}>> */
+    private array $wrappingMap = [];
 
     public function __construct(string $input)
     {
@@ -18,6 +22,93 @@ class CubicBoard extends Board
         }
 
         $this->cubeSideLength = (int) sqrt($total / 6);
+
+        $this->prepareWrappingMap();
+    }
+
+    private function prepareWrappingMap(): void
+    {
+        $concaveCorners = $this->findConcaveCorners();
+
+        foreach ($concaveCorners as $corner) {
+            [$x, $y, $direction] = $corner;
+            Assert::assertInstanceOf(Direction::class, $direction);
+            $this->addToWrapMap(
+                Turn::Right,
+                $x - $direction->toX(),
+                $y - $direction->toY(),
+            );
+
+            $passTheCorner = $direction->turn(Turn::Left);
+
+            $this->addToWrapMap(
+                Turn::Left,
+                $x + $passTheCorner->toX(),
+                $y + $passTheCorner->toY(),
+            );
+
+            $previousDirection = $direction->turn(Turn::Right)->turn(Turn::Right);
+            $nextDirection = $passTheCorner;
+
+            $previousX = $x + $previousDirection->toX();
+            $previousY = $y + $previousDirection->toY();
+            $nextX = $x + $nextDirection->toX();
+            $nextY = $y + $nextDirection->toY();
+            $wrapSteps = 1;
+            // try to expand from concave corners until two convex corners are found at the same time
+            do {
+                $previousX += $this->cubeSideLength * $previousDirection->toX();
+                $previousY += $this->cubeSideLength * $previousDirection->toY();
+                $nextX += $this->cubeSideLength * $nextDirection->toX();
+                $nextY += $this->cubeSideLength * $nextDirection->toY();
+
+                if (
+                    ! isset($this->map[$previousY][$previousX])
+                    && ! isset($this->map[$nextY][$nextX])
+                ) {
+                    // both adjacent corners are convex, stop expanding
+                    break;
+                }
+
+                // handle prev corner
+                if (! isset($this->map[$previousY][$previousX])) {
+                    // convex, step back and turn left
+                    $previousX -= $previousDirection->toX();
+                    $previousY -= $previousDirection->toY();
+                    $previousDirection = $previousDirection->turn(Turn::Left);
+                    $this->addToWrapMap(Turn::Right, $previousX, $previousY, $wrapSteps);
+                } elseif ($this->positionToTheRightIsNotSet($previousDirection, $previousX, $previousY)) {
+                    // straight side
+                    $this->addToWrapMap(Turn::Right, $previousX, $previousY, $wrapSteps);
+                } else {
+                    // concave again
+                    $previousDirection = $previousDirection->turn(Turn::Right);
+                    $previousX += $previousDirection->toX();
+                    $previousY += $previousDirection->toY();
+                    $this->addToWrapMap(Turn::Right, $previousX, $previousY, $wrapSteps);
+                }
+
+                // handle next corner
+                if (! isset($this->map[$nextY][$nextX])) {
+                    // convex, step back and turn right
+                    $nextX -= $nextDirection->toX();
+                    $nextY -= $nextDirection->toY();
+                    $nextDirection = $nextDirection->turn(Turn::Right);
+                    $this->addToWrapMap(Turn::Left, $nextX, $nextY, $wrapSteps);
+                } elseif ($this->positionToTheRightIsNotSet($nextDirection, $nextX, $nextY)) {
+                    // straight side
+                    $this->addToWrapMap(Turn::Left, $nextX, $nextY, $wrapSteps);
+                } else {
+                    // concave again
+                    $nextDirection = $nextDirection->turn(Turn::Left);
+                    $nextX += $nextDirection->toX();
+                    $nextY += $nextDirection->toY();
+                    $this->addToWrapMap(Turn::Left, $nextX, $nextY, $wrapSteps);
+                }
+
+                $wrapSteps += 2;
+            } while (true);
+        }
     }
 
     public function executeOneInstruction(): void
@@ -28,56 +119,41 @@ class CubicBoard extends Board
 
     protected function wrapAroundEdge(int $newX, int $newY): array
     {
-        $edgeDirection = $this->currentDirection->turn(Turn::Right);
+        // back inside the face
+        $newX -= $this->currentDirection->toX();
+        $newY -= $this->currentDirection->toY();
 
-        $neededTurns = 1;
-        $additionalTurns = 1;
-        $stepSinceLastTurn = (int) match ($edgeDirection) {
-            Direction::Right => $newX % $this->cubeSideLength,
-            Direction::Down => $newY % $this->cubeSideLength,
-            Direction::Left => $this->cubeSideLength - ($newX % $this->cubeSideLength),
-            Direction::Up => $this->cubeSideLength - ($newY % $this->cubeSideLength),
-        };
-        $neededStepsAfterLastTurn = 0;
-        $neededStepsIdentified = false;
+        [$wrapTurn, $wrapSteps] = $this->getFromWrapMap($newX, $newY);
+        Assert::assertInstanceOf(Turn::class, $wrapTurn);
+        $direction = $this->currentDirection->turn($wrapTurn);
+        $stepOffset = ($direction->toX() * $newX % $this->cubeSideLength)
+                    + ($direction->toY() * $newY % $this->cubeSideLength);
+        $neededSteps = ($wrapSteps * $this->cubeSideLength) + $stepOffset - ($this->cubeSideLength - $stepOffset);
 
-        // walk around the edges, counting the turns
-        while ($neededTurns > 0) {
-            $newX += $edgeDirection->toX();
-            $newY += $edgeDirection->toY();
+        while (--$neededSteps) {
+            $newX += $direction->toX();
+            $newY += $direction->toY();
+            $positionToTheRightIsNotSet = $this->positionToTheRightIsNotSet($direction, $newX, $newY);
+            $positionToTheLeftIsNotSet = $this->positionToTheLeftIsNotSet($direction, $newX, $newY);
 
-            if (isset($this->map[$newY][$newX])) {
-                $newX -= $edgeDirection->toX();
-                $newY -= $edgeDirection->toY();
-                $edgeDirection = $edgeDirection->turn(Turn::Left);
-                $additionalTurns = -1;
-                $neededTurns += $additionalTurns;
-                $neededStepsIdentified = true;
-                $stepSinceLastTurn = 1;
-            } elseif ($this->positionToTheRightIsNotSet($edgeDirection, $newX, $newY)) {
-                $edgeDirection = $edgeDirection->turn(Turn::Right);
-                $neededStepsIdentified = true;
-                $neededTurns += $additionalTurns;
-                $stepSinceLastTurn = 0;
-            } elseif (++$stepSinceLastTurn > $this->cubeSideLength) {
-                $neededStepsIdentified = true;
-                $neededTurns += $additionalTurns;
-                $stepSinceLastTurn = 1;
-            } elseif (! $neededStepsIdentified) {
-                ++$neededStepsAfterLastTurn;
+            if (! isset($this->map[$newY][$newX])) {
+                // convex corner: step back and turn
+                $newX -= $direction->toX();
+                $newY -= $direction->toY();
+                $direction = $direction->turn($wrapTurn);
+            } elseif ($positionToTheRightIsNotSet || $positionToTheLeftIsNotSet) {
+                // still straight
+                continue;
+            } else {
+                // concave corner: turn and step forward
+                $direction = $direction->turn($wrapTurn->opposite());
+                $newX += $direction->toX();
+                $newY += $direction->toY();
             }
         }
 
-        // advance along the last edge
-        while ($neededStepsAfterLastTurn--) {
-            $newX += $edgeDirection->toX();
-            $newY += $edgeDirection->toY();
-        }
-
-        // adjust position & direction by stepping into the cube, over the edge
-        $this->currentDirection = $edgeDirection->turn(Turn::Right);
-        $newX += $this->currentDirection->toX();
-        $newY += $this->currentDirection->toY();
+        // turn opposite to the edge
+        $this->currentDirection = $direction->turn($wrapTurn);
 
         return [$newX, $newY];
     }
@@ -89,5 +165,77 @@ class CubicBoard extends Board
         $newY = $y + $direction->toY();
 
         return ! isset($this->map[$newY][$newX]);
+    }
+
+    private function positionToTheLeftIsNotSet(Direction $direction, int $x, int $y): bool
+    {
+        $direction = $direction->turn(Turn::Left);
+        $newX = $x + $direction->toX();
+        $newY = $y + $direction->toY();
+
+        return ! isset($this->map[$newY][$newX]);
+    }
+
+    /**
+     * @return array{int, int, Direction}[]
+     */
+    private function findConcaveCorners(): array
+    {
+        /** @var array{int, int, Direction}[] $concaveCorners */
+        $concaveCorners = [];
+
+        $startY = min(array_keys($this->map));
+        $startX = min(array_keys($this->map[$startY]));
+
+        $x = $newX = $startX;
+        $y = $newY = $startY;
+        $direction = Direction::Right;
+
+        do {
+            $newX = $x + $direction->toX();
+            $newY = $y + $direction->toY();
+
+            if (! isset($this->map[$newY][$newX])) {
+                // convex corner found, turn right
+                $direction = $direction->turn(Turn::Right);
+            } elseif ($this->positionToTheLeftIsNotSet($direction, $newX, $newY)) {
+                // still on edge, continue
+                $x = $newX;
+                $y = $newY;
+            } else {
+                // concave corner found
+                $concaveCorners[] = [$newX, $newY, $direction];
+                $direction = $direction->turn(Turn::Left);
+                $x = $newX;
+                $y = $newY;
+            }
+        } while ($x !== $startX || $y !== $startY);
+
+        return $concaveCorners;
+    }
+
+    private function intDivision(int $a, int $b): int
+    {
+        return (int) floor($a / $b);
+    }
+
+    private function addToWrapMap(Turn $turn, int $x, int $y, int $steps = 1): void
+    {
+        $roundedY = $this->intDivision($y, $this->cubeSideLength);
+        $roundedX = $this->intDivision($x, $this->cubeSideLength);
+
+        $this->wrappingMap[$roundedY][$roundedX] = [$turn, $steps];
+    }
+
+    /**
+     * @return array{Turn, int}
+     */
+    private function getFromWrapMap(int $x, int $y): array
+    {
+        $roundedY = $this->intDivision($y, $this->cubeSideLength);
+        $roundedX = $this->intDivision($x, $this->cubeSideLength);
+
+        return $this->wrappingMap[$roundedY][$roundedX]
+            ?? throw new \InvalidArgumentException('Unable to find wrap mapping at ' . $x . ', ' . $y);
     }
 }

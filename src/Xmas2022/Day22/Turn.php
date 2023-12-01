@@ -16,4 +16,12 @@ enum Turn: string
             self::Left => -1,
         };
     }
+
+    public function opposite(): self
+    {
+        return match ($this) {
+            self::Right => self::Left,
+            self::Left => self::Right,
+        };
+    }
 }

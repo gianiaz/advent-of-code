@@ -136,9 +136,23 @@ class CubicBoardTest extends TestCase
         $this->assertSame(5031, $board->getPassword());
     }
 
-    private function getReducedInputWithJustOneStepForward(): string
+    public function testRegressionWithFullInputAndWrapAroundCorner(): void
     {
-        $input = Day22SolutionTest::TEST_INPUT;
+        $fullInput = file_get_contents(dirname(__DIR__, 3) . '/src/Xmas2022/Day22/input.txt');
+        $board = new CubicBoard($this->getReducedInputWithJustOneStepForward($fullInput));
+        $board->setCurrentPosition(50, 200);
+        $board->setCurrentDirection(Direction::Right);
+
+        $board->executeAllInstructions();
+
+        $printedMap = explode(PHP_EOL, trim($board->printMap()));
+        $this->assertSame('..........#..#......................#.........#.............#...#....#.#....#.........#.#..........<', $printedMap[0]);
+        $this->assertSame('....#.#...##.#...........#............#.....#....>', array_pop($printedMap));
+    }
+
+    private function getReducedInputWithJustOneStepForward(string $input = null): string
+    {
+        $input ??= Day22SolutionTest::TEST_INPUT;
 
         return rtrim(explode(PHP_EOL . PHP_EOL, $input)[0])
             . PHP_EOL
