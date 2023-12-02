@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2023\Day1;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 
-class Day1Solution implements SolutionInterface
+class Day1Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     private const INPUT = '7jlncfksix7rjgrpglmn9
 vcgkgxninerqjltdbhqzzpd4nine23
@@ -1007,8 +1008,7 @@ nine6nine7seven6
 eightn2skzmpmtgqhvvfxgqonevtbfsmfklzspxdrgj
 nine276rzshsrvncjrdzfxbmzzlvkhdlcc
 sevenfivexgznfftgthree44
-fivekltdkmm3rdmdnm32nineddsfdzpks
-';
+fivekltdkmm3rdmdnm32nineddsfdzpks';
 
     public function solve(string $input = self::INPUT): string
     {
@@ -1020,5 +1020,32 @@ fivekltdkmm3rdmdnm32nineddsfdzpks
         }
 
         return (string) $result;
+    }
+
+    public function solveSecondPart(string $input = self::INPUT): string
+    {
+        $input = str_replace(
+            ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'],
+            ['o1e', 't2o', 't3e', 'f4r', 'f5e', 's6x', 's7n', 'e8t', 'n9e'],
+            $input
+        );
+
+        return $this->solve($input);
+    }
+
+    private function convert(string $input): string
+    {
+        return match ($input) {
+            'one' => '1',
+            'two' => '2',
+            'three' => '3',
+            'four' => '4',
+            'five' => '5',
+            'six' => '6',
+            'seven' => '7',
+            'eight' => '8',
+            'nine' => '9',
+            default => $input,
+        };
     }
 }

@@ -23,9 +23,15 @@ treb7uchet';
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
+        $input = 'two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen';
         $day1Solution = new Day1Solution();
 
-        $this->assertSame('', $day1Solution->solveSecondPart(self::TEST_INPUT));
+        $this->assertSame('281', $day1Solution->solveSecondPart($input));
     }
 }
