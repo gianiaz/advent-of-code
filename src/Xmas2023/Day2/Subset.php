@@ -37,4 +37,9 @@ class Subset
             && $realSubset->green >= $this->green
         ;
     }
+
+    public function getPower(): int
+    {
+        return $this->red * $this->blue * $this->green;
+    }
 }

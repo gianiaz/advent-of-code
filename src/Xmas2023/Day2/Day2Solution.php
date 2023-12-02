@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Jean85\AdventOfCode\Xmas2023\Day2;
 
+use Jean85\AdventOfCode\SecondPartSolutionInterface;
 use Jean85\AdventOfCode\SolutionInterface;
 use Jean85\AdventOfCode\Xmas2023\Input;
 
-class Day2Solution implements SolutionInterface
+class Day2Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null): string
     {
@@ -34,5 +35,20 @@ class Day2Solution implements SolutionInterface
         }
 
         return (string) $solution;
+    }
+
+    public function solveSecondPart(string $input = null): string
+    {
+        $input ??= Input::read(__DIR__);
+
+        $result = 0;
+
+        foreach (explode(PHP_EOL, $input) as $gameInput) {
+            \Safe\preg_match('/Game (\d+): (.+)/', $gameInput, $matches);
+
+            $result += Subset::parse($matches[2])->getPower();
+        }
+
+        return (string) $result;
     }
 }
