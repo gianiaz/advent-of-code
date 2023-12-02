@@ -13,6 +13,26 @@ class Day2Solution implements SolutionInterface
     {
         $input ??= Input::read(__DIR__);
 
-        return (string) $result;
+        $games = [];
+
+        foreach (explode(PHP_EOL, $input) as $gameInput) {
+            \Safe\preg_match('/Game (\d+): (.+)/', $gameInput, $matches);
+
+            $games[$matches[1]] = Subset::parse($matches[2]);
+        }
+
+        $solution = 0;
+        $basicSubset = new Subset();
+        $basicSubset->red = 12;
+        $basicSubset->green = 13;
+        $basicSubset->blue = 14;
+
+        foreach ($games as $count => $subset) {
+            if ($subset->isPossible($basicSubset)) {
+                $solution += $count;
+            }
+        }
+
+        return (string) $solution;
     }
 }
