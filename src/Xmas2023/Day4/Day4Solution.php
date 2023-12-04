@@ -28,8 +28,52 @@ class Day4Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= Input::read(__DIR__);
 
-        $result = 0;
+        $scratchcards = [];
 
-        return (string) $result;
+        foreach (explode(PHP_EOL, $input) as $row) {
+            [$cardNumber, $scratchcardInput] = explode(': ', $row);
+            $number = trim(substr($cardNumber, 4));
+            $scratchcards[$number] = Scratchcard::parse(trim($scratchcardInput));
+        }
+
+        $total = 0;
+        foreach ($scratchcards as $number => $scratchcard) {
+            try {
+                $total += $this->countScratchcardsRecursively($scratchcards, $number);
+            } catch (\Throwable $e) {
+                print_r($number);
+                die();
+            }
+        }
+
+        return (string) $total;
+    }
+
+    /**
+     * @param list<Scratchcard> $scratchcards
+     */
+    private function countScratchcardsRecursively(array $scratchcards, int $number): int
+    {
+        /** @var array<int, int> $memoization */
+        static $memoization;
+
+        if (isset($memoization[$number])) {
+            return $memoization[$number];
+        }
+
+        $startNumber = $number;
+
+        $total = 1;
+
+        $scratchcard = $scratchcards[$number];
+        $winCount = $scratchcard->getOverlapCount();
+
+        while ($winCount--) {
+            $total += $this->countScratchcardsRecursively($scratchcards, ++$number);
+        }
+
+        $memoization[$startNumber] = $total;
+
+        return $total;
     }
 }

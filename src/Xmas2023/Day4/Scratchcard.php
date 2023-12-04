@@ -24,9 +24,14 @@ class Scratchcard
         );
     }
 
+    public function getOverlapCount(): int
+    {
+        return count(array_intersect($this->winningNumbers, $this->numbers));
+    }
+
     public function getPoints(): int
     {
-        $overlappingNumbers = count(array_intersect($this->winningNumbers, $this->numbers));
+        $overlappingNumbers = $this->getOverlapCount();
 
         if ($overlappingNumbers === 0) {
             return 0;
