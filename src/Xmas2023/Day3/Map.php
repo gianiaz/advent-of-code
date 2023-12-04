@@ -48,6 +48,32 @@ class Map
     }
 
     /**
+     * @return int[]
+     */
+    public function getGearRatios(): array
+    {
+        $numbers = [];
+
+        foreach ($this->map as $y => $row) {
+            foreach ($row as $x => $symbol) {
+                if ($symbol !== '*') {
+                    continue;
+                }
+
+                $ratios = iterator_to_array($this->extractNumbersAround($x, $y));
+
+                if (count($ratios) !== 2) {
+                    continue;
+                }
+
+                $numbers[] = $ratios[0] * $ratios[1];
+            }
+        }
+
+        return $numbers;
+    }
+
+    /**
      * @return \Generator<int>
      */
     private function extractNumbersAround(int $startX, int $startY): \Generator

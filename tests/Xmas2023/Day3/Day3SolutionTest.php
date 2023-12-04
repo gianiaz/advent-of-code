@@ -28,10 +28,18 @@ class Day3SolutionTest extends TestCase
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
-        $input = '';
+        $input = '467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..';
         $Day3Solution = new Day3Solution();
 
-        $this->assertSame('', $Day3Solution->solveSecondPart($input));
+        $this->assertSame('467835', $Day3Solution->solveSecondPart($input));
     }
 }
