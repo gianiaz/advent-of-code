@@ -11,8 +11,8 @@ class AlmanacEntry
     public function __construct(
         public readonly string $from,
         public readonly string $to,
-        /** @var array<int, int> */
-        private readonly array $map,
+        /** @var Map[] */
+        private readonly array $maps,
     ) {}
 
     public static function parse(string $input): self
@@ -27,13 +27,11 @@ class AlmanacEntry
         foreach ($rows as $row) {
             $numbers = explode(' ', $row);
             Assert::count($numbers, 3);
-            $length = (int) $numbers[2];
+            $range = (int) $numbers[2];
             $destination = (int) $numbers[0];
             $source = (int) $numbers[1];
 
-            do {
-                $map[$source++] = $destination++;
-            } while (--$length);
+            $map[] = new Map($source, $destination, $range);
         }
 
         return new self($matches[1], $matches[2], $map);
@@ -41,6 +39,14 @@ class AlmanacEntry
 
     public function convert(int $number): int
     {
-        return $this->map[$number] ?? $number;
+        foreach ($this->maps as $map) {
+            if (! $map->isInRange($number)) {
+                continue;
+            }
+
+            return $map->mapValue($number);
+        }
+
+        return $number;
     }
 }
