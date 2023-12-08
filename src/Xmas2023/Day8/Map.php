@@ -31,12 +31,12 @@ class Map
         return new self($instructions, $nodes);
     }
 
-    public function countSteps(string $from, string $to): int
+    public function countSteps(): int
     {
-        $current = $from;
+        $current = 'AAA';
         $steps = 0;
         foreach ($this->getInstructionsLoop() as $instruction) {
-            if ($current === $to) {
+            if ($current === 'ZZZ') {
                 return $steps;
             }
 
@@ -50,5 +50,26 @@ class Map
         do {
             yield from $this->instructions;
         } while (true);
+    }
+
+    public function countStepsAsGhost(): int
+    {
+        $currents = array_filter($this->nodes, fn(Node $node): bool => str_ends_with($node->name, 'A'));
+        $steps = 0;
+
+        foreach ($this->getInstructionsLoop() as $instruction) {
+            $newCurrents = [];
+            foreach ($currents as $node) {
+                $newCurrents[] = $this->nodes[$node->getNext($instruction)];
+            }
+
+            ++$steps;
+            $currents = $newCurrents;
+            $currentsNotInFinalState = array_filter($currents, fn(Node $node): bool => ! str_ends_with($node->name, 'Z'));
+
+            if (count($currentsNotInFinalState) === 0) {
+                return $steps;
+            }
+        }
     }
 }

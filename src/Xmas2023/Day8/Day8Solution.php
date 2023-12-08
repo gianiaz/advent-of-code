@@ -16,15 +16,15 @@ class Day8Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $map = Map::parse($input);
 
-        return (string) $map->countSteps('AAA', 'ZZZ');
+        return (string) $map->countSteps();
     }
 
     public function solveSecondPart(string $input = null): string
     {
         $input ??= Input::read(__DIR__);
 
-        $total = 0;
+        $map = Map::parse($input);
 
-        return (string) $total;
+        return (string) $map->countStepsAsGhost();
     }
 }
