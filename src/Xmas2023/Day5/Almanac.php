@@ -51,4 +51,21 @@ class Almanac
 
         return $this->getLocation($newNumber, $almanacEntry->to);
     }
+
+    public function getLowestLocationFor(Interval $interval): int
+    {
+        if ($interval->type === 'location') {
+            return $interval->start;
+        }
+
+        $almanacEntry = $this->entries[$interval->type]
+            ?? throw new \LogicException('Unable to find almanac entry for ' . $interval->type);
+
+        return min(
+            array_map(
+                $this->getLowestLocationFor(...),
+                $almanacEntry->convertInterval($interval)
+            )
+        );
+    }
 }

@@ -28,8 +28,20 @@ class Day5Solution implements SolutionInterface, SecondPartSolutionInterface
     {
         $input ??= Input::read(__DIR__);
 
-        $total = 0;
+        $almanac = Almanac::parse($input);
+        $solution = PHP_INT_MAX;
 
-        return (string) $total;
+        while ($almanac->getSeeds()->valid()) {
+            $seed = $almanac->getSeeds()->current();
+            $almanac->getSeeds()->next();
+            $seedRange = $almanac->getSeeds()->current();
+            $almanac->getSeeds()->next();
+
+            do {
+                $solution = min($solution, $almanac->getLocation($seed++));
+            } while (--$seedRange);
+        }
+
+        return (string) $solution;
     }
 }

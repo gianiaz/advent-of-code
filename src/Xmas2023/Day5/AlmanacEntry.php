@@ -34,19 +34,45 @@ class AlmanacEntry
             $map[] = new Map($source, $destination, $range);
         }
 
+        // sort by source, so we can fill the gaps
+        usort($map, fn(Map $a, Map $b) => $a->sourceStart <=> $b->sourceStart);
+
         return new self($matches[1], $matches[2], $map);
+    }
+
+    private function getMap(int $at): Map
+    {
+        $prev = null;
+
+        foreach ($this->maps as $map) {
+            if ($map->isInRange($at)) {
+                return $map;
+            }
+
+            if ($map->sourceStart > $at) {
+                return Map::identityBetween($prev, $map);
+            }
+
+            // we got it!
+            if ($map->getSourceEnd() <= $at) {
+                return $map;
+            }
+
+            $prev = $map;
+        }
+
+        return Map::identityBetween($map, null);
     }
 
     public function convert(int $number): int
     {
-        foreach ($this->maps as $map) {
-            if (! $map->isInRange($number)) {
-                continue;
-            }
+        $map = $this->getMap($number);
 
-            return $map->mapValue($number);
-        }
-
-        return $number;
+        return $map->mapValue($number);
     }
+
+    /**
+     * @return Interval[]
+     */
+    public function convertInterval(Interval $interval): array {}
 }

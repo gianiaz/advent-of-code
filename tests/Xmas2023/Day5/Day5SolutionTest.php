@@ -11,7 +11,22 @@ class Day5SolutionTest extends TestCase
 {
     public function test(): void
     {
-        $input = 'seeds: 79 14 55 13
+        $Day5Solution = new Day5Solution();
+
+        $this->assertSame('35', $Day5Solution->solve($this->getInput()));
+    }
+
+    public function testSecondPart(): void
+    {
+        $this->markTestIncomplete();
+        $Day5Solution = new Day5Solution();
+
+        $this->assertSame('46', $Day5Solution->solveSecondPart($this->getInput()));
+    }
+
+    private function getInput(): string
+    {
+        return 'seeds: 79 14 55 13
 
 seed-to-soil map:
 50 98 2
@@ -44,17 +59,5 @@ temperature-to-humidity map:
 humidity-to-location map:
 60 56 37
 56 93 4';
-        $Day5Solution = new Day5Solution();
-
-        $this->assertSame('35', $Day5Solution->solve($input));
-    }
-
-    public function testSecondPart(): void
-    {
-        $this->markTestIncomplete();
-        $input = '';
-        $Day5Solution = new Day5Solution();
-
-        $this->assertSame('30', $Day5Solution->solveSecondPart($input));
     }
 }

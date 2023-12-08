@@ -12,6 +12,19 @@ class Map
         public readonly int $range,
     ) {}
 
+    public static function identityBetween(?Map $prev, ?Map $next): self
+    {
+        $start = 1 + ($prev?->getSourceEnd() ?? -1)
+            ?? throw new \InvalidArgumentException('You need at least one map to handle this case');
+
+        $range = PHP_INT_MAX;
+        if ($next) {
+            $range = $next->sourceStart - ($prev?->sourceStart ?? 0) - 1;
+        }
+
+        return new self($start, $start, $range);
+    }
+
     public function isInRange(int $number): bool
     {
         return $this->sourceStart <= $number
@@ -21,5 +34,10 @@ class Map
     public function mapValue(int $number): int
     {
         return $this->destinationStart + ($number - $this->sourceStart);
+    }
+
+    public function getSourceEnd(): int
+    {
+        return $this->sourceStart + $this->range - 1;
     }
 }
