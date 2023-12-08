@@ -52,24 +52,26 @@ class Map
         } while (true);
     }
 
-    public function countStepsAsGhost(): int
+    public function countStepsAsGhost(): string
     {
-        $currents = array_filter($this->nodes, fn(Node $node): bool => str_ends_with($node->name, 'A'));
-        $steps = 0;
+        $startingPoints = array_filter($this->nodes, fn(Node $node): bool => str_ends_with($node->name, 'A'));
+        $lcm = 1;
 
-        foreach ($this->getInstructionsLoop() as $instruction) {
-            $newCurrents = [];
-            foreach ($currents as $node) {
-                $newCurrents[] = $this->nodes[$node->getNext($instruction)];
+        foreach ($startingPoints as $node) {
+            $steps = 0;
+            $current = $node;
+            foreach ($this->getInstructionsLoop() as $instruction) {
+                if (str_ends_with($current->name, 'Z')) {
+                    break;
+                }
+
+                $current = $this->nodes[$current->getNext($instruction)];
+                ++$steps;
             }
 
-            ++$steps;
-            $currents = $newCurrents;
-            $currentsNotInFinalState = array_filter($currents, fn(Node $node): bool => ! str_ends_with($node->name, 'Z'));
-
-            if (count($currentsNotInFinalState) === 0) {
-                return $steps;
-            }
+            $lcm = gmp_lcm($lcm, $steps);
         }
+
+        return (string) $lcm;
     }
 }

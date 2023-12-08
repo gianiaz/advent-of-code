@@ -25,6 +25,6 @@ class Day8Solution implements SolutionInterface, SecondPartSolutionInterface
 
         $map = Map::parse($input);
 
-        return (string) $map->countStepsAsGhost();
+        return $map->countStepsAsGhost();
     }
 }
