@@ -11,22 +11,24 @@ class Day7SolutionTest extends TestCase
 {
     public function test(): void
     {
-        $input = '32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483';
         $Day7Solution = new Day7Solution();
 
-        $this->assertSame('6440', $Day7Solution->solve($input));
+        $this->assertSame('6440', $Day7Solution->solve($this->getInput()));
     }
 
     public function testSecondPart(): void
     {
-        $this->markTestIncomplete();
-        $input = '';
         $Day7Solution = new Day7Solution();
 
-        $this->assertSame('6', $Day7Solution->solveSecondPart($input));
+        $this->assertSame('5905', $Day7Solution->solveSecondPart($this->getInput()));
+    }
+
+    private function getInput(): string
+    {
+        return '32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483';
     }
 }

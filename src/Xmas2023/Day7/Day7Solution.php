@@ -12,11 +12,16 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 {
     public function solve(string $input = null): string
     {
+        return $this->calculateTotalWinnings($input, false);
+    }
+
+    private function calculateTotalWinnings(?string $input, bool $withJokers): string
+    {
         $input ??= Input::read(__DIR__);
 
         $hands = [];
-        foreach (explode(PHP_EOL, $input) as $row) {
-            $hands[] = Hand::parse($row);
+        foreach (explode(PHP_EOL, trim($input)) as $row) {
+            $hands[] = Hand::parse($row, $withJokers);
         }
 
         Hand::rank($hands);
@@ -31,10 +36,6 @@ class Day7Solution implements SolutionInterface, SecondPartSolutionInterface
 
     public function solveSecondPart(string $input = null): string
     {
-        $input ??= Input::read(__DIR__);
-
-        $map = Map::parse($input);
-
-        return $map->countStepsAsGhost();
+        return $this->calculateTotalWinnings($input, true);
     }
 }

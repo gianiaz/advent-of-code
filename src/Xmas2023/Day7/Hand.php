@@ -14,6 +14,7 @@ class Hand
         public readonly array $cards,
         public readonly int $bidding,
         private readonly string $originalHand,
+        private readonly bool $withJokers,
     ) {
         $map = [];
         $sortedCards = $this->cards;
@@ -22,13 +23,17 @@ class Hand
             $map[$card->value] ??= 0;
             ++$map[$card->value];
         }
-        sort($map);
+        asort($map);
         $map = array_reverse($map);
+
+        if ($this->withJokers) {
+            $map = $this->remapJokers($map);
+        }
 
         $this->mappedCards = $map;
     }
 
-    public static function parse(string $input): self
+    public static function parse(string $input, bool $withJokers = false): self
     {
         $cards = [];
 
@@ -38,7 +43,7 @@ class Hand
             $cards[] = Card::from($char);
         }
 
-        return new self($cards, (int) $bidding, $hand);
+        return new self($cards, (int) $bidding, $hand, $withJokers);
     }
 
     public function getType(): HandType
@@ -51,6 +56,7 @@ class Hand
             [2, 2, 1] => HandType::TwoPair,
             [2, 1, 1, 1] => HandType::OnePair,
             [1, 1, 1, 1, 1] => HandType::HighCard,
+            default => throw new \InvalidArgumentException('Invalid combination for hand ' . $this->originalHand . PHP_EOL . print_r(array_values($this->mappedCards), true)),
         };
     }
 
@@ -67,7 +73,7 @@ class Hand
 
         foreach (range(0, 4) as $rank) {
             if ($a->cards[$rank] !== $b->cards[$rank]) {
-                return $a->cards[$rank]->getRank() <=> $b->cards[$rank]->getRank();
+                return $a->cards[$rank]->getRank($a->withJokers) <=> $b->cards[$rank]->getRank($b->withJokers);
             }
         }
 
@@ -77,5 +83,24 @@ class Hand
     public function __toString(): string
     {
         return $this->originalHand;
+    }
+
+    /**
+     * @param array<value-of<Card>, int> $map
+     *
+     * @return array<value-of<Card>, int>
+     */
+    private function remapJokers(array $map): array
+    {
+        if (! isset($map[Card::J->value]) || count($map) === 1) {
+            return $map;
+        }
+
+        $jokers = $map[Card::J->value];
+        unset($map[Card::J->value]);
+
+        $map[array_keys($map)[0]] += $jokers;
+
+        return $map;
     }
 }

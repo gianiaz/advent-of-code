@@ -20,8 +20,12 @@ enum Card: string
     case n3 = '3';
     case n2 = '2';
 
-    public function getRank(): int
+    public function getRank(bool $withJokers = false): int
     {
+        if ($withJokers && $this === self::J) {
+            return 0;
+        }
+
         return match ($this) {
             self::A => 13,
             self::K => 12,
