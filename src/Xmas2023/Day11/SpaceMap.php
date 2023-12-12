@@ -10,9 +10,9 @@ class SpaceMap
 {
     private readonly int $maxX;
     private readonly int $maxY;
-    /** @var array<int,array<int, Coordinates>> */
+    /** @var array<string,array<string, Coordinates>> */
     private readonly array $galaxiesByX;
-    /** @var array<int,array<int, Coordinates>> */
+    /** @var array<string,array<string, Coordinates>> */
     private readonly array $galaxiesByY;
 
     public function __construct(
@@ -25,8 +25,8 @@ class SpaceMap
         $galaxiesByY = [];
 
         foreach ($this->galaxies as $galaxy) {
-            $galaxiesByX[$galaxy->x][$galaxy->y] = $galaxy;
-            $galaxiesByY[$galaxy->y][$galaxy->x] = $galaxy;
+            $galaxiesByX[$this->toString($galaxy->x)][$this->toString($galaxy->y)] = $galaxy;
+            $galaxiesByY[$this->toString($galaxy->y)][$this->toString($galaxy->x)] = $galaxy;
             $maxX = max($galaxy->x, $maxX);
             $maxY = max($galaxy->y, $maxY);
         }
@@ -58,7 +58,7 @@ class SpaceMap
 
         foreach (range(0, $this->maxY) as $y) {
             foreach (range(0, $this->maxX) as $x) {
-                $print .= isset($this->galaxiesByX[$x][$y])
+                $print .= isset($this->galaxiesByX[$this->toString($x)][$this->toString($y)])
                     ? '#'
                     : '.'
                 ;
@@ -70,30 +70,41 @@ class SpaceMap
         return trim($print);
     }
 
-    public function expand(): self
+    public function expand(int $times = 1): self
     {
-        $expanded = '';
-
-        foreach (range(0, $this->maxY) as $y) {
-            if (! isset($this->galaxiesByY[$y])) {
-                $expanded .= str_repeat('.', $this->maxX + 1) . PHP_EOL;
+        // expand in X only
+        $galaxies = [];
+        $addToX = 0;
+        foreach (range(0, $this->maxX) as $x) {
+            $x = $this->toString($x);
+            if (! isset($this->galaxiesByX[$x])) {
+                $addToX += $times;
+                continue;
             }
 
-            foreach (range(0, $this->maxX) as $x) {
-                if (! isset($this->galaxiesByX[$x])) {
-                    $expanded .= '.';
-                }
-
-                $expanded .= isset($this->galaxiesByX[$x][$y])
-                    ? '#'
-                    : '.'
-                ;
+            foreach ($this->galaxiesByX[$x] as $galaxy) {
+                $galaxies[] = new Coordinates($galaxy->x + $addToX, $galaxy->y);
             }
-
-            $expanded .= PHP_EOL;
         }
 
-        return self::parse($expanded);
+        $new = new self($galaxies);
+
+        // now expand by Y
+        $galaxies = [];
+        $addToY = 0;
+        foreach (range(0, $this->maxY) as $y) {
+            $y = $this->toString($y);
+            if (! isset($new->galaxiesByY[$y])) {
+                $addToY += $times;
+                continue;
+            }
+
+            foreach ($new->galaxiesByY[$y] as $galaxy) {
+                $galaxies[] = new Coordinates($galaxy->x, $galaxy->y + $addToY);
+            }
+        }
+
+        return new self($galaxies);
     }
 
     /**
@@ -106,5 +117,10 @@ class SpaceMap
                 yield $galaxy->getManhattanDistanceFrom($this->galaxies[$j]);
             }
         }
+    }
+
+    private function toString(int $x): string
+    {
+        return '_' . (string) $x;
     }
 }
