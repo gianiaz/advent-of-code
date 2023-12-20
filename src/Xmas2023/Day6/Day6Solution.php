@@ -25,22 +25,9 @@ class Day6Solution implements SolutionInterface, SecondPartSolutionInterface
     public function solveSecondPart(string $input = null): string
     {
         $input ??= Input::read(__DIR__);
+        $input = preg_replace('/(\d)\s+(\d)/', '$1$2', $input);
 
-        $almanac = Almanac::parse($input);
-        $solution = PHP_INT_MAX;
-
-        while ($almanac->getSeeds()->valid()) {
-            $seed = $almanac->getSeeds()->current();
-            $almanac->getSeeds()->next();
-            $seedRange = $almanac->getSeeds()->current();
-            $almanac->getSeeds()->next();
-
-            do {
-                $solution = min($solution, $almanac->getLocation($seed++));
-            } while (--$seedRange);
-        }
-
-        return (string) $solution;
+        return $this->solve($input);
     }
 
     /**
