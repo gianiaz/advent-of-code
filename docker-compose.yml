@@ -2,14 +2,13 @@ version: '3'
 
 services:
   php:
-    build:
-      dockerfile: Dockerfile
-      context: .
+    image: php:8.2-alpine
     working_dir: /var/www
     volumes:
       - .:/var/www
-    environment:
-      BLACKFIRE_SERVER_ID: 9c35daa5-8138-4d07-9b39-7cfe4100d9f0
-      BLACKFIRE_SERVER_TOKEN: b8914f946fe54eeebb8d37de386947e7d1b18f6fb474e356b6e73e0045143525
-      BLACKFIRE_CLIENT_ID: 9a8635d5-241d-4534-8284-0d4fbb1f8279
-      BLACKFIRE_CLIENT_TOKEN: 58cb1c717e24d0cf803084bf44fb7009d7367a5dccc5835da4085db9a6e710cc
+    user: 1000:1000
+  composer:
+    image: composer
+    working_dir: /var/www
+    volumes:
+      - .:/var/www

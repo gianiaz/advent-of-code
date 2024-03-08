@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2023\Day6;
 
-use Jean85\AdventOfCode\Xmas2023\Day6\Day6Solution;
+use Jean85\AdventOfCode\Xmas2022\Day6\Day6Solution;
 use PHPUnit\Framework\TestCase;
 
 class Day6SolutionTest extends TestCase

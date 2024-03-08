@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2023\Day3;
 
-use Jean85\AdventOfCode\Xmas2023\Day3\Map;
+use Jean85\AdventOfCode\Xmas2022\Day3\Map;
 use PHPUnit\Framework\TestCase;
 
 class MapTest extends TestCase

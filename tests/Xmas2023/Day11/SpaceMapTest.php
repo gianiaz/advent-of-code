@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2023\Day11;
 
-use Jean85\AdventOfCode\Xmas2023\Day11\SpaceMap;
+use Jean85\AdventOfCode\Xmas2022\Day11\SpaceMap;
 use PHPUnit\Framework\TestCase;
 
 class SpaceMapTest extends TestCase

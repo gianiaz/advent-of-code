@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2023\Day5;
 
-use Jean85\AdventOfCode\Xmas2023\Day5\AlmanacEntry;
+use Jean85\AdventOfCode\Xmas2022\Day5\AlmanacEntry;
 use PHPUnit\Framework\TestCase;
 
 class AlmanacEntryTest extends TestCase

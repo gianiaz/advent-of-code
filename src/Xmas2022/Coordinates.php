@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jean85\AdventOfCode\Xmas2023;
+namespace Jean85\AdventOfCode\Xmas2022;
 
 class Coordinates
 {

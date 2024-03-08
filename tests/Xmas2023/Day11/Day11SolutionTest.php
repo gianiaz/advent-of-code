@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2023\Day11;
 
-use Jean85\AdventOfCode\Xmas2023\Day11\Day11Solution;
+use Jean85\AdventOfCode\Xmas2022\Day11\Day11Solution;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

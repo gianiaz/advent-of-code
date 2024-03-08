@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Xmas2023\Day7;
 
-use Jean85\AdventOfCode\Xmas2023\Day7\Hand;
-use Jean85\AdventOfCode\Xmas2023\Day7\HandType;
+use Jean85\AdventOfCode\Xmas2022\Day7\Hand;
+use Jean85\AdventOfCode\Xmas2022\Day7\HandType;
 use PHPUnit\Framework\TestCase;
 
 class HandTest extends TestCase
